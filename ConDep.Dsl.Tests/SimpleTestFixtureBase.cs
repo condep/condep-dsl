@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace ConDep.Dsl.Tests
 {
 	[TestFixture]
-	public abstract class SimpleTestFixture : IDisposable
+	public abstract class SimpleTestFixtureBase : IDisposable
 	{
 		private bool _caughtAccessed;
 		private Exception _caught;
@@ -23,7 +23,7 @@ namespace ConDep.Dsl.Tests
 
 		protected abstract void When();
 
-		protected SimpleTestFixture()
+		protected SimpleTestFixtureBase()
 		{
 			_caught = null;
 
