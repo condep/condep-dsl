@@ -66,8 +66,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SlowCheetah">
+      <HintPath>..\..\lib\SlowCheetah\v2.4\SlowCheetah.dll</HintPath>
+    </Reference>
     <Reference Include="SlowCheetah.Tasks">
-      <HintPath>..\lib\SlowCheetah\v2.4\SlowCheetah.Tasks.dll</HintPath>
+      <HintPath>..\..\lib\SlowCheetah\v2.4\SlowCheetah.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
@@ -95,9 +98,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AssemblyVersionInfo.cs">
-      <Link>Properties\AssemblyVersionInfo.cs</Link>
-    </Compile>
     <Compile Include="ApplicationArtifact.cs" />
     <Compile Include="Config\ConDepSettings.cs" />
     <Compile Include="Config\ConfigHandler.cs" />
@@ -326,7 +326,6 @@
     <EmbeddedResource Include="PSScripts\WinService.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
