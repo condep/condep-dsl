@@ -111,12 +111,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AceTests.cs" />
     <Compile Include="CertTests.cs" />
     <Compile Include="CompositeProviders\NServiceBus.cs" />
     <Compile Include="ConDepResourceFilesTests.cs" />
     <Compile Include="ConfigTransformTests.cs" />
-    <Compile Include="Encryption.cs" />
     <Compile Include="ImpersonatorTests.cs" />
     <Compile Include="JsonParsingTests.cs" />
     <Compile Include="LoadBalancerTests.cs" />
