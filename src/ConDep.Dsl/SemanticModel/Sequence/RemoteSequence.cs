@@ -71,7 +71,7 @@ namespace ConDep.Dsl.SemanticModel.Sequence
 
         protected virtual void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            Logger.WithLogSection("Server Operations", () =>
+            Logger.WithLogSection("Deployment", () =>
                 {
                     foreach (var element in _sequence)
                     {

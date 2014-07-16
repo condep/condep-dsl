@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ConDep.Dsl.Logging;
 
 namespace ConDep.Dsl.SemanticModel.WebDeploy
@@ -13,14 +12,6 @@ namespace ConDep.Dsl.SemanticModel.WebDeploy
         {
             _startTime = DateTime.Now;
         }
-
-        //public bool HasErrors
-        //{
-        //    get
-        //    {
-        //        return false;// _summeries.Any(s => s.Errors > 0) || _untrappedExceptions.Count > 0;
-        //    }
-        //}
 
         public DateTime StartTime
         {
