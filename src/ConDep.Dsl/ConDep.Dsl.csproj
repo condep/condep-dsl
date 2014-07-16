@@ -66,11 +66,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SlowCheetah">
-      <HintPath>..\..\lib\SlowCheetah\v2.4\SlowCheetah.dll</HintPath>
-    </Reference>
-    <Reference Include="SlowCheetah.Tasks">
-      <HintPath>..\..\lib\SlowCheetah\v2.4\SlowCheetah.Tasks.dll</HintPath>
+    <Reference Include="SlowCheetah.Tasks, Version=1.0.10727.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SlowCheetah.Tasks.Unofficial.1.0.0\lib\SlowCheetah.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
@@ -99,6 +97,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationArtifact.cs" />
+    <Compile Include="Builders\InfrastructureBuilder.cs" />
+    <Compile Include="Builders\SslInfrastructureBuilder.cs" />
     <Compile Include="Config\ConDepSettings.cs" />
     <Compile Include="Config\ConfigHandler.cs" />
     <Compile Include="Config\DiskInfo.cs" />
@@ -124,7 +124,6 @@
     <Compile Include="Config\LbMode.cs" />
     <Compile Include="IConfigureLocalOperations.cs" />
     <Compile Include="IOfferSslInfrastructure.cs" />
-    <Compile Include="Builders\SslInfrastructureBuilder.cs" />
     <Compile Include="Config\TiersConfig.cs" />
     <Compile Include="IConfigureInfrastructure.cs" />
     <Compile Include="IConfigureRemoteDeployment.cs" />
@@ -180,7 +179,6 @@
     <Compile Include="Operations\Infrastructure\IIS\WebSite\CertLocation.cs" />
     <Compile Include="Operations\LoadBalancer\ILookupLoadBalancer.cs" />
     <Compile Include="Operations\PostRemoteOps.cs" />
-    <Compile Include="Operations\RemoteCompositeInfrastructureOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperationBase.cs" />
     <Compile Include="SemanticModel\DiskHarvester.cs" />
     <Compile Include="SemanticModel\DotNetFrameworkHarvester.cs" />
@@ -220,7 +218,6 @@
     <Compile Include="Operations\Infrastructure\IIS\IisInfrastructureIncludeOptions.cs" />
     <Compile Include="Operations\Infrastructure\IIS\IisInfrastructureOptions.cs" />
     <Compile Include="Operations\Infrastructure\Windows\WindowsFeatureInfrastructureOperation.cs" />
-    <Compile Include="Builders\InfrastructureBuilder.cs" />
     <Compile Include="Operations\Application\Deployment\Certificate\CertificateFromFileOperation.cs" />
     <Compile Include="Operations\Infrastructure\IIS\WebSite\IisWebSiteOptions.cs" />
     <Compile Include="Config\LoadBalancerSuspendMethod.cs" />
@@ -235,25 +232,21 @@
     <Compile Include="Operations\IOperateRemote.cs" />
     <Compile Include="SemanticModel\Sequence\CompositeConditionalSequence.cs" />
     <Compile Include="SemanticModel\Sequence\CompositeSequence.cs" />
-    <Compile Include="SemanticModel\Sequence\ConditionalInfrastructureSequence.cs" />
     <Compile Include="SemanticModel\Sequence\ExecutionSequenceManager.cs" />
     <Compile Include="IOfferRemoteDeployment.cs" />
     <Compile Include="IOfferRemoteCertDeployment.cs" />
     <Compile Include="IOfferRemoteExecution.cs" />
     <Compile Include="IOfferLocalOperations.cs" />
     <Compile Include="IOfferInfrastructure.cs" />
-    <Compile Include="IDependOnInfrastructure.cs" />
     <Compile Include="Config\ConDepConfigurationTypeNotFoundException.cs" />
     <Compile Include="Config\ConDepOptions.cs" />
     <Compile Include="Resources\ConDepResourceNotFoundException.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Config\EnvConfigParser.cs" />
-    <Compile Include="SemanticModel\IManageInfrastructureSequence.cs" />
     <Compile Include="SemanticModel\IManageRemoteSequence.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SemanticModel\IManageSequence.cs" />
-    <Compile Include="SemanticModel\Sequence\InfrastructureSequence.cs" />
     <Compile Include="SemanticModel\Sequence\LoadBalancerExecutorBase.cs" />
     <Compile Include="SemanticModel\Sequence\LocalSequence.cs" />
     <Compile Include="SemanticModel\Sequence\RemoteConditionalSequence.cs" />

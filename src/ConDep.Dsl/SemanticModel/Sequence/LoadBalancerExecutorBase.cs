@@ -2,18 +2,15 @@ using System.Collections.Generic;
 using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.Operations.LoadBalancer;
 
 namespace ConDep.Dsl.SemanticModel.Sequence
 {
     public abstract class LoadBalancerExecutorBase
     {
-        private readonly IManageInfrastructureSequence _infrastructureSequence;
         private readonly List<IExecuteOnServer> _sequence;
 
-        protected LoadBalancerExecutorBase(IManageInfrastructureSequence infrastructureSequence, List<IExecuteOnServer> sequence)
+        protected LoadBalancerExecutorBase(List<IExecuteOnServer> sequence)
         {
-            _infrastructureSequence = infrastructureSequence;
             _sequence = sequence;
         }
 
@@ -56,8 +53,6 @@ namespace ConDep.Dsl.SemanticModel.Sequence
 
         protected virtual void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            _infrastructureSequence.Execute(server, status, settings, token);
-
             Logger.WithLogSection("Deployment", () =>
                 {
                     foreach (var element in _sequence)

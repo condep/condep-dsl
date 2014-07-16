@@ -3,7 +3,7 @@ using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Operations.Infrastructure.IIS.AppPool
 {
-    public class IisAppPoolOperation : RemoteCompositeInfrastructureOperation
+    public class IisAppPoolOperation : RemoteCompositeOperation
     {
         private readonly string _appPoolName;
         private readonly IisAppPoolOptions.IisAppPoolOptionsValues _appPoolOptions;
@@ -29,7 +29,7 @@ namespace ConDep.Dsl.Operations.Infrastructure.IIS.AppPool
             return !string.IsNullOrWhiteSpace(_appPoolName);
         }
 
-        public override void Configure(IOfferRemoteComposition server, IOfferInfrastructure require)
+        public override void Configure(IOfferRemoteComposition server)
         {
             var appPoolOptions = "$appPoolOptions = $null;";
 

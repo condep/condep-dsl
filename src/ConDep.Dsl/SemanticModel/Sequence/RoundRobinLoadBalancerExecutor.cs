@@ -11,7 +11,7 @@ namespace ConDep.Dsl.SemanticModel.Sequence
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ILoadBalance _loadBalancer;
 
-        public RoundRobinLoadBalancerExecutor(IManageInfrastructureSequence infrastructureSequence, List<IExecuteOnServer> sequence, IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer) : base(infrastructureSequence, sequence)
+        public RoundRobinLoadBalancerExecutor(List<IExecuteOnServer> sequence, IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer) : base(sequence)
         {
             _servers = servers;
             _loadBalancer = loadBalancer;

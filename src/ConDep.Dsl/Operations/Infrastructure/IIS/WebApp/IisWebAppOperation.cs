@@ -2,7 +2,7 @@ using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Operations.Infrastructure.IIS.WebApp
 {
-    public class IisWebAppOperation : RemoteCompositeInfrastructureOperation
+    public class IisWebAppOperation : RemoteCompositeOperation
     {
         private readonly string _webAppName;
         private readonly string _webSiteName;
@@ -21,7 +21,7 @@ namespace ConDep.Dsl.Operations.Infrastructure.IIS.WebApp
             _options = options;
         }
 
-        public override void Configure(IOfferRemoteComposition server, IOfferInfrastructure require)
+        public override void Configure(IOfferRemoteComposition server)
         {
             server.ExecuteRemote.PowerShell(string.Format(@"New-ConDepWebApp '{0}' '{1}' {2} {3};"
                 , _webAppName

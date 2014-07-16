@@ -173,27 +173,8 @@ namespace ConDep.Dsl.Execution
             var applications = CreateApplicationArtifacts(conDepSettings);
             foreach (var application in applications)
             {
-                var infrastructureSequence = new InfrastructureSequence();
-
-                var infrastructureBuilder = new InfrastructureBuilder(infrastructureSequence);
-                Configure.InfrastructureOperations = infrastructureBuilder;
-
-                if (HasInfrastructureDefined(application))
-                {
-                    var infrastructureInstances = GetInfrastructureArtifactForApplication(conDepSettings, application);
-                    foreach (var infrastructureInstance in infrastructureInstances)
-                    {
-                        infrastructureInstance.Configure(infrastructureBuilder, conDepSettings);
-                    }
-
-                    if (!infrastructureSequence.IsValid(notification))
-                    {
-                        notification.Throw();
-                    }
-                }
-
                 var localSequence = sequenceManager.NewLocalSequence(application.GetType().Name);
-                var localBuilder = new LocalOperationsBuilder(localSequence, infrastructureSequence, conDepSettings.Config.Servers);
+                var localBuilder = new LocalOperationsBuilder(localSequence, conDepSettings.Config.Servers);
                 Configure.LocalOperations = localBuilder;
 
                 application.Configure(localBuilder, conDepSettings);
@@ -261,28 +242,6 @@ namespace ConDep.Dsl.Execution
             var application = assembly.CreateInstance(type.FullName) as ApplicationArtifact;
             if (application == null) throw new NullReferenceException(string.Format("Instance of application class [{0}] in assembly [{1}] is not found.", type.FullName,assembly.FullName));
             return application;
-        }
-
-        private static bool HasInfrastructureDefined(ApplicationArtifact application)
-        {
-            var typeName = typeof(IDependOnInfrastructure<>).Name;
-            var interfaces = application.GetType().GetInterfaces();
-            return interfaces.Any(x => x.Name == typeName);
-        }
-
-        private static IEnumerable<InfrastructureArtifact> GetInfrastructureArtifactForApplication(ConDepSettings settings, ApplicationArtifact application)
-        {
-            var typeName = typeof (IDependOnInfrastructure<>).Name;
-            var typeInterfaces = application.GetType().GetInterfaces();
-
-            var infraInterfaces = typeInterfaces.Where(x => x.Name == typeName);
-            foreach (var infraInterface in infraInterfaces)
-            {
-                var infrastructureType = infraInterface.GetGenericArguments().Single();
-
-                var infrastructureInstance = settings.Options.Assembly.CreateInstance(infrastructureType.FullName) as InfrastructureArtifact;
-                yield return infrastructureInstance;
-            }
         }
     }
 }

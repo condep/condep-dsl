@@ -12,15 +12,12 @@ namespace ConDep.Dsl.Tests
     {
         private ExecutionSequenceManager _sequenceManager;
         private SequenceTestApp _app;
-        private SequenceTestInfrastructure _infra;
 
         [SetUp]
         public void Setup()
         {
             _sequenceManager = new ExecutionSequenceManager(new DefaultLoadBalancer());
             _app = new SequenceTestApp();
-            _infra = new SequenceTestInfrastructure();
-
         }
 
         [Test]
@@ -33,12 +30,7 @@ namespace ConDep.Dsl.Tests
             var settings = new ConDepSettings();
             settings.Config = config;
 
-            var infrastructureSequence = new InfrastructureSequence();
-
-            var infrastructureBuilder = new InfrastructureBuilder(infrastructureSequence);
-            _infra.Configure(infrastructureBuilder, settings);
-
-            var local = new LocalOperationsBuilder(_sequenceManager.NewLocalSequence("Test"), infrastructureSequence, config.Servers);
+            var local = new LocalOperationsBuilder(_sequenceManager.NewLocalSequence("Test"), config.Servers);
             _app.Configure(local, settings);
 
             var notification = new Notification();
@@ -46,12 +38,20 @@ namespace ConDep.Dsl.Tests
         }
     }
 
-    public class SequenceTestApp : ApplicationArtifact, IDependOnInfrastructure<SequenceTestInfrastructure>
+    public class SequenceTestApp : ApplicationArtifact
     {
         public override void Configure(IOfferLocalOperations local, ConDepSettings settings)
         {
             local.HttpGet("http://www.con-dep.net");
-            local.ToEachServer(server => server.ExecuteRemote.PowerShell("ipconfig"));
+            local.ToEachServer(server =>
+                {
+                    server
+                        .Require.IIS();
+
+                    server
+                        .ExecuteRemote.PowerShell("ipconfig");
+                }
+            );
             local.HttpGet("http://blog.torresdal.net");
         }
     }

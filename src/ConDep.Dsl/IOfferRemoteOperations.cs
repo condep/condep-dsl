@@ -16,6 +16,11 @@ namespace ConDep.Dsl
         IOfferRemoteExecution ExecuteRemote { get; }
 
         /// <summary>
+        /// Provide operations for adding remote infrastructure
+        /// </summary>
+        IOfferInfrastructure Require { get; }
+
+        /// <summary>
         /// Server side condition. Any Operation followed by <see cref="OnlyIf"/> will only execute if the condition is met.
         /// </summary>
         /// <param name="condition">The condition that must be met</param>

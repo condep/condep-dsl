@@ -13,49 +13,50 @@ namespace ConDep.Dsl.Builders
 {
     public class InfrastructureBuilder : IOfferInfrastructure, IConfigureInfrastructure
     {
-        private readonly IManageInfrastructureSequence _infrastructureSequence;
+        private readonly IManageRemoteSequence _remoteSequence;
 
-        public InfrastructureBuilder(IManageInfrastructureSequence infrastructureSequence)
+        public InfrastructureBuilder(IManageRemoteSequence remoteSequence)
         {
-            _infrastructureSequence = infrastructureSequence;
+            _remoteSequence = remoteSequence;
         }
 
         public IOfferInfrastructure IIS(Action<IisInfrastructureOptions> options)
         {
-            var iisOperation = new IisInfrastructureOperation();
-            options(new IisInfrastructureOptions(iisOperation));
-            AddOperation(iisOperation);
+            var op = new IisInfrastructureOperation();
+            options(new IisInfrastructureOptions(op));
+
+            AddOperation(op);
             return this;
         }
 
         public IOfferInfrastructure IIS()
         {
-            var iisOperation = new IisInfrastructureOperation();
-            AddOperation(iisOperation);
+            var op = new IisInfrastructureOperation();
+            AddOperation(op);
             return this;
         }
 
         public IOfferInfrastructure Windows(Action<WindowsInfrastructureOptions> options)
         {
-            var windowsOperation = new WindowsFeatureInfrastructureOperation();
-            options(new WindowsInfrastructureOptions(windowsOperation));
-            AddOperation(windowsOperation);
+            var op = new WindowsFeatureInfrastructureOperation();
+            options(new WindowsInfrastructureOptions(op));
+            AddOperation(op);
             return this;
         }
 
         public IOfferInfrastructure IISWebSite(string name, int id)
         {
-            var webSiteOperation = new IisWebSiteOperation(name, id);
-            AddOperation(webSiteOperation);
+            var op = new IisWebSiteOperation(name, id);
+            AddOperation(op);
             return this;
         }
 
         public IOfferInfrastructure IISWebSite(string name, int id, Action<IOfferIisWebSiteOptions> options)
         {
-            var webSiteOptions = new IisWebSiteOptions();
-            options(webSiteOptions);
-            var webSiteOperation = new IisWebSiteOperation(name, id, webSiteOptions);
-            AddOperation(webSiteOperation);
+            var opt = new IisWebSiteOptions();
+            options(opt);
+            var op = new IisWebSiteOperation(name, id, opt);
+            AddOperation(op);
             return this;
         }
 
@@ -68,12 +69,10 @@ namespace ConDep.Dsl.Builders
 
         public IOfferInfrastructure IISAppPool(string name, Action<IOfferIisAppPoolOptions> options)
         {
-            var appPoolOptions = new IisAppPoolOptions();
-            options(appPoolOptions);
-
-            var appPoolOperation = new IisAppPoolOperation(name, appPoolOptions.Values);
-
-            AddOperation(appPoolOperation);
+            var opt = new IisAppPoolOptions();
+            options(opt);
+            var op = new IisAppPoolOperation(name, opt.Values);
+            AddOperation(op);
             return this;
         }
 
@@ -86,42 +85,21 @@ namespace ConDep.Dsl.Builders
 
         public IOfferInfrastructure IISWebApp(string name, string webSite, Action<IOfferIisWebAppOptions> options)
         {
-            var webAppOptions = new IisWebAppOptions(name);
-            options(webAppOptions);
-
-            var op = new IisWebAppOperation(name, webSite, webAppOptions.Values);
+            var op = new IisWebAppOperation(name, webSite);
             AddOperation(op);
             return this;
         }
 
-        public IOfferSslInfrastructure SslCertificate
-        {
-            get { return new SslInfrastructureBuilder(_infrastructureSequence, this); }
-        }
-
-        public IOfferInfrastructure RemoteExecution(Action<IOfferRemoteExecution> remoteExecution)
-        {
-            remoteExecution(new RemoteExecutionBuilder(_infrastructureSequence));
-            return this;
-        }
-
-        public IOfferInfrastructure RemoteDeployment(Action<IOfferRemoteDeployment> remoteDeployment)
-        {
-            remoteDeployment(new RemoteDeploymentBuilder(_infrastructureSequence));
-            return this;
-        }
-
+        public IOfferSslInfrastructure SslCertificate { get { return new SslInfrastructureBuilder(_remoteSequence, this); } }
 
         public IOfferInfrastructure OnlyIf(Predicate<ServerInfo> condition)
         {
-            var sequence = _infrastructureSequence.NewConditionalInfrastructureSequence(condition);
-            return new InfrastructureBuilder(sequence);
+            return new InfrastructureBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
 
-        public void AddOperation(RemoteCompositeInfrastructureOperation operation)
+        public void AddOperation(RemoteCompositeOperation operation)
         {
-            var infrastructureBuilder = new InfrastructureBuilder(_infrastructureSequence);
-            operation.Configure(new RemoteCompositeBuilder(_infrastructureSequence.NewCompositeSequence(operation)), infrastructureBuilder);
+            operation.Configure(new RemoteCompositeBuilder(_remoteSequence.NewCompositeSequence(operation)));
         }
     }
 }

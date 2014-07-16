@@ -14,11 +14,13 @@ namespace ConDep.Dsl.Builders
 
             Configure.DeploymentOperations = new RemoteDeploymentBuilder(remoteSequence);
             Configure.ExecutionOperations = new RemoteExecutionBuilder(remoteSequence);
+            Configure.InfrastructureOperations = new InfrastructureBuilder(remoteSequence);
 
         }
 
         public IOfferRemoteDeployment Deploy { get { return (RemoteDeploymentBuilder) Configure.DeploymentOperations; } }
         public IOfferRemoteExecution ExecuteRemote { get { return (RemoteExecutionBuilder) Configure.ExecutionOperations; } }
+        public IOfferInfrastructure Require { get { return (InfrastructureBuilder) Configure.InfrastructureOperations; } }
 
         public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)
         {

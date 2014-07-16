@@ -5,7 +5,7 @@ using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Operations.Infrastructure.IIS.WebSite
 {
-    public class IisWebSiteOperation : RemoteCompositeInfrastructureOperation, IRequireCustomConfiguration
+    public class IisWebSiteOperation : RemoteCompositeOperation, IRequireCustomConfiguration
     {
         private readonly string _webSiteName;
         private readonly int _id;
@@ -35,7 +35,7 @@ namespace ConDep.Dsl.Operations.Infrastructure.IIS.WebSite
             return !string.IsNullOrWhiteSpace(_webSiteName);
         }
 
-        public override void Configure(IOfferRemoteComposition server, IOfferInfrastructure require)
+        public override void Configure(IOfferRemoteComposition server)
         {
             var bindings = _options.Values.HttpBindings.Select(httpBinding => string.Format("@{{protocol='http';bindingInformation='{0}:{1}:{2}'}}", httpBinding.Ip, httpBinding.Port, httpBinding.HostName)).ToList();
 
@@ -59,7 +59,7 @@ namespace ConDep.Dsl.Operations.Infrastructure.IIS.WebSite
 
             foreach(var webApp in _options.Values.WebApps)
             {
-                require.IISWebApp(webApp.Item1, _webSiteName, webApp.Item2);
+                server.Require.IISWebApp(webApp.Item1, _webSiteName, webApp.Item2);
             }
         }
     }

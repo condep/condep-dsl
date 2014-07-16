@@ -96,7 +96,7 @@
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SlowCheetah.Tasks">
-      <HintPath>..\lib\SlowCheetah\v2.4\SlowCheetah.Tasks.dll</HintPath>
+      <HintPath>..\packages\SlowCheetah.Tasks.Unofficial.1.0.0\lib\SlowCheetah.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -7,6 +7,6 @@ namespace ConDep.Dsl
     /// </summary>
     public interface IConfigureInfrastructure
     {
-        void AddOperation(RemoteCompositeInfrastructureOperation operation);
+        void AddOperation(RemoteCompositeOperation operation);
     }
 }

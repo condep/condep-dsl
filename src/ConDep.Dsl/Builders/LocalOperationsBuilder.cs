@@ -5,7 +5,6 @@ using ConDep.Dsl.Operations.Application.Local;
 using ConDep.Dsl.Operations.Application.Local.PreCompile;
 using ConDep.Dsl.Operations.Application.Local.TransformConfig;
 using ConDep.Dsl.Operations.Application.Local.WebRequest;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.SemanticModel.Sequence;
 
 namespace ConDep.Dsl.Builders
@@ -13,13 +12,11 @@ namespace ConDep.Dsl.Builders
     public class LocalOperationsBuilder : IOfferLocalOperations, IConfigureLocalOperations
     {
         private readonly LocalSequence _localSequence;
-        private readonly IManageInfrastructureSequence _infrastructureSequence;
         private readonly IEnumerable<ServerConfig> _servers;
 
-        public LocalOperationsBuilder(LocalSequence localSequence, IManageInfrastructureSequence infrastructureSequence, IEnumerable<ServerConfig> servers)
+        public LocalOperationsBuilder(LocalSequence localSequence, IEnumerable<ServerConfig> servers)
         {
             _localSequence = localSequence;
-            _infrastructureSequence = infrastructureSequence;
             _servers = servers;
         }
 
@@ -47,7 +44,7 @@ namespace ConDep.Dsl.Builders
 
         public IOfferLocalOperations ToEachServer(Action<IOfferRemoteOperations> action)
         {
-            var builder = new RemoteOperationsBuilder(_localSequence.NewRemoteSequence(_infrastructureSequence, _servers));
+            var builder = new RemoteOperationsBuilder(_localSequence.NewRemoteSequence(_servers));
             action(builder);
             return this;
         }

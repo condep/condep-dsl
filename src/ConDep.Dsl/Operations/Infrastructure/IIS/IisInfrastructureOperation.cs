@@ -3,7 +3,7 @@ using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Operations.Infrastructure.IIS
 {
-    public class IisInfrastructureOperation : RemoteCompositeInfrastructureOperation
+    public class IisInfrastructureOperation : RemoteCompositeOperation
     {
         private readonly List<string> _featuresToAdd = new List<string>();
         private readonly List<string> _featuresToRemove = new List<string>();
@@ -18,9 +18,9 @@ namespace ConDep.Dsl.Operations.Infrastructure.IIS
             return true;
         }
 
-        public override void Configure(IOfferRemoteComposition server, IOfferInfrastructure require)
+        public override void Configure(IOfferRemoteComposition server)
         {
-            require
+            server.Require
                 .Windows(win =>
                 {
                     win.InstallFeature("Web-Server");

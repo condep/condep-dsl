@@ -3,12 +3,12 @@ using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Operations.Windows
 {
-    public class WindowsFeatureInfrastructureOperation : RemoteCompositeInfrastructureOperation
+    public class WindowsFeatureInfrastructureOperation : RemoteCompositeOperation
     {
         private readonly List<string> _featuresToAdd = new List<string>();
         private readonly List<string> _featuresToRemove = new List<string>();
 
-        public override void Configure(IOfferRemoteComposition server, IOfferInfrastructure require)
+        public override void Configure(IOfferRemoteComposition server)
         {
             var removeFeatures = _featuresToRemove.Count > 0 ? string.Join(",", _featuresToRemove) : "$null";
             var addFeatures = string.Join(",", _featuresToAdd);

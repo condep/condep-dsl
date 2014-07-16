@@ -27,25 +27,6 @@ namespace ConDep.Dsl.SemanticModel.Sequence
             return new CompositeConditionalSequence("Condition", condition, true);
         }
 
-        public CompositeSequence NewCompositeSequence(RemoteCompositeInfrastructureOperation operation)
-        {
-            var sequence = new CompositeSequence(operation.Name);
-            return ConfigureSequence(operation, sequence);
-        }
-
-        public CompositeSequence NewCompositeConditionalSequence(RemoteCompositeInfrastructureOperation operation, Predicate<ServerInfo> condition, bool expectedConditionResult)
-        {
-            var sequence = new CompositeConditionalSequence(operation.Name, condition, expectedConditionResult);
-            return ConfigureSequence(operation, sequence);
-        }
-
-        public InfrastructureSequence NewConditionalInfrastructureSequence(InfrastructureArtifact artifact, Predicate<ServerInfo> condition, bool expectedConditionResult)
-        {
-            var sequence = new ConditionalInfrastructureSequence(artifact.GetType().Name, condition, expectedConditionResult);
-            _sequence.Add(sequence);
-            return sequence;
-        }
-
         private CompositeSequence ConfigureSequence(RemoteCompositeOperationBase operation, CompositeSequence sequence)
         {
             if (operation is IRequireRemotePowerShellScripts)

@@ -32,16 +32,16 @@ namespace ConDep.Dsl.SemanticModel.Sequence
             }
         }
 
-        public RemoteSequence NewRemoteSequence(IManageInfrastructureSequence infrastructureSequence, IEnumerable<ServerConfig> servers)
+        public RemoteSequence NewRemoteSequence(IEnumerable<ServerConfig> servers)
         {
-            var sequence = new RemoteSequence(infrastructureSequence, servers, _loadBalancer);
+            var sequence = new RemoteSequence(servers, _loadBalancer);
             _sequence.Add(sequence);
             return sequence;
         }
 
-        public RemoteSequence NewRemoteConditionalSequence(IManageInfrastructureSequence infrastructureSequence, IEnumerable<ServerConfig> servers, Predicate<ServerInfo> condition, bool expectedConditionResult)
+        public RemoteSequence NewRemoteConditionalSequence(IEnumerable<ServerConfig> servers, Predicate<ServerInfo> condition, bool expectedConditionResult)
         {
-            var sequence = new RemoteConditionalSequence(infrastructureSequence, servers, _loadBalancer, condition, expectedConditionResult);
+            var sequence = new RemoteConditionalSequence(servers, _loadBalancer, condition, expectedConditionResult);
             _sequence.Add(sequence);
             return sequence;
         }

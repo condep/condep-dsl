@@ -12,15 +12,13 @@ namespace ConDep.Dsl.SemanticModel.Sequence
     //Todo: Could need some refactoring...
     public class RemoteSequence : IManageRemoteSequence, IExecute
     {
-        protected readonly IManageInfrastructureSequence _infrastructureSequence;
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ILoadBalance _loadBalancer;
         internal readonly List<IExecuteOnServer> _sequence = new List<IExecuteOnServer>();
         private readonly SequenceFactory _sequenceFactory;
 
-        public RemoteSequence(IManageInfrastructureSequence infrastructureSequence, IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
+        public RemoteSequence(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
         {
-            _infrastructureSequence = infrastructureSequence;
             _servers = servers;
             _loadBalancer = loadBalancer;
             _sequenceFactory = new SequenceFactory(_sequence);
@@ -45,12 +43,12 @@ namespace ConDep.Dsl.SemanticModel.Sequence
             switch (_loadBalancer.Mode)
             {
                 case LbMode.Sticky:
-                    lbExecutor = new StickyLoadBalancerExecutor(_infrastructureSequence, _sequence, _servers, _loadBalancer);
+                    lbExecutor = new StickyLoadBalancerExecutor(_sequence, _servers, _loadBalancer);
                     break;
                     //ExecuteWithSticky(settings, status);
                     //return;
                 case LbMode.RoundRobin:
-                    lbExecutor = new RoundRobinLoadBalancerExecutor(_infrastructureSequence, _sequence, _servers, _loadBalancer);
+                    lbExecutor = new RoundRobinLoadBalancerExecutor(_sequence, _servers, _loadBalancer);
                     break;
                     //ExecuteWithRoundRobin(settings, status);
                     //return;
@@ -73,9 +71,7 @@ namespace ConDep.Dsl.SemanticModel.Sequence
 
         protected virtual void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            _infrastructureSequence.Execute(server, status, settings, token);
-
-            Logger.WithLogSection("Deployment", () =>
+            Logger.WithLogSection("Server Operations", () =>
                 {
                     foreach (var element in _sequence)
                     {
@@ -102,12 +98,10 @@ namespace ConDep.Dsl.SemanticModel.Sequence
 
         public bool IsValid(Notification notification)
         {
-            var isInfrastractureValid = _infrastructureSequence.IsValid(notification);
             var isRemoteOpValid = _sequence.OfType<IOperateRemote>().All(x => x.IsValid(notification));
             var isCompositeSeqValid = _sequence.OfType<CompositeSequence>().All(x => x.IsValid(notification));
 
-            return isInfrastractureValid && isRemoteOpValid && isCompositeSeqValid;
-
+            return isRemoteOpValid && isCompositeSeqValid;
         }
     }
 }

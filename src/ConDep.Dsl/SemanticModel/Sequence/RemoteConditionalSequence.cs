@@ -11,8 +11,8 @@ namespace ConDep.Dsl.SemanticModel.Sequence
         private readonly Predicate<ServerInfo> _condition;
         private readonly bool _expectedConditionResult;
 
-        public RemoteConditionalSequence(IManageInfrastructureSequence infrastructureSequence, IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer, Predicate<ServerInfo> condition, bool expectedConditionResult)
-            : base(infrastructureSequence, servers, loadBalancer)
+        public RemoteConditionalSequence(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer, Predicate<ServerInfo> condition, bool expectedConditionResult)
+            : base(servers, loadBalancer)
         {
             _condition = condition;
             _expectedConditionResult = expectedConditionResult;
@@ -20,8 +20,6 @@ namespace ConDep.Dsl.SemanticModel.Sequence
 
         protected override void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            _infrastructureSequence.Execute(server, status, settings, token);
-
             Logger.WithLogSection("Deployment", () =>
                 {
                     if (_condition(server.GetServerInfo()) == _expectedConditionResult)
