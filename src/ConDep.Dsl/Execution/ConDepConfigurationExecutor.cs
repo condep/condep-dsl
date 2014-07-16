@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -177,7 +178,21 @@ namespace ConDep.Dsl.Execution
                 var localBuilder = new LocalOperationsBuilder(localSequence, conDepSettings.Config.Servers);
                 Configure.LocalOperations = localBuilder;
 
+                PopulateDependencies(conDepSettings, application, localBuilder);
                 application.Configure(localBuilder, conDepSettings);
+            }
+        }
+
+        private static void PopulateDependencies(ConDepSettings conDepSettings, ApplicationArtifact application, LocalOperationsBuilder localBuilder)
+        {
+            var dependencyHandler = new ApplicationDependencyHandler(application);
+            if (dependencyHandler.HasDependenciesDefined())
+            {
+                var dependencies = dependencyHandler.GetDependeciesForApplication(conDepSettings);
+                foreach (var dependency in dependencies)
+                {
+                    dependency.Configure(localBuilder, conDepSettings);
+                }
             }
         }
 

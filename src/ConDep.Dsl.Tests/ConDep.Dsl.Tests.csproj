@@ -111,6 +111,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppDependencyTests.cs" />
     <Compile Include="CertTests.cs" />
     <Compile Include="CompositeProviders\NServiceBus.cs" />
     <Compile Include="ConDepResourceFilesTests.cs" />

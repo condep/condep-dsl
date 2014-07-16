@@ -109,6 +109,8 @@
     <Compile Include="Config\OperatingSystemInfo.cs" />
     <Compile Include="Config\ServerInfo.cs" />
     <Compile Include="Config\WindowsOperatingSystem.cs" />
+    <Compile Include="Execution\ApplicationDependencyHandler.cs" />
+    <Compile Include="IDependOn.cs" />
     <Compile Include="IOfferWindowsInfrastructureOptions.cs" />
     <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="Operations\Application\Deployment\CopyFile\FileInfoList.cs" />
