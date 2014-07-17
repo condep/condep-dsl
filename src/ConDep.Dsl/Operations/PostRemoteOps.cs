@@ -1,10 +1,8 @@
 using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.Operations.Application.Execution.PowerShell;
 using ConDep.Dsl.Remote;
 using ConDep.Dsl.SemanticModel;
-using ConDep.Dsl.SemanticModel.Sequence;
 
 namespace ConDep.Dsl.Operations
 {

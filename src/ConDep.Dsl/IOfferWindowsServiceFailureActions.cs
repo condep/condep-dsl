@@ -1,5 +1,3 @@
-using ConDep.Dsl.Operations.Application.Deployment.WindowsService;
-
 namespace ConDep.Dsl
 {
     public interface IOfferWindowsServiceFailureActions

@@ -136,13 +136,9 @@
     <Compile Include="SimpleTestFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConDep.Console\ConDep.Console.csproj">
-      <Project>{4dc12ef8-6e21-4749-ac5b-15bcbd097a38}</Project>
-      <Name>ConDep.Console</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ConDep.Dsl.LoadBalancer.Ace\ConDep.Dsl.LoadBalancer.Ace.csproj">
-      <Project>{0653515e-ff25-482c-b316-eb5bb045bf1e}</Project>
-      <Name>ConDep.Dsl.LoadBalancer.Ace</Name>
+    <ProjectReference Include="..\ConDep.Dsl.Operations.Core\ConDep.Dsl.Operations.Core.csproj">
+      <Project>{a1ff699a-76ff-440c-8fd2-9fca9ee3b26f}</Project>
+      <Name>ConDep.Dsl.Operations.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\ConDep.Dsl\ConDep.Dsl.csproj">
       <Project>{e7eba0ac-b91d-450f-8a68-5adcf18fe17e}</Project>

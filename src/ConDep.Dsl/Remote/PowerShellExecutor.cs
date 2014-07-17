@@ -9,7 +9,7 @@ using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Remote
 {
-    internal class PowerShellExecutor
+    public class PowerShellExecutor
     {
         private readonly ServerConfig _server;
         private bool _loadConDepModule = true;

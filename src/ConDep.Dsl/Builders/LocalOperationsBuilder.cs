@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Operations.Application.Local;
-using ConDep.Dsl.Operations.Application.Local.PreCompile;
-using ConDep.Dsl.Operations.Application.Local.TransformConfig;
-using ConDep.Dsl.Operations.Application.Local.WebRequest;
 using ConDep.Dsl.SemanticModel.Sequence;
 
 namespace ConDep.Dsl.Builders
@@ -18,28 +15,6 @@ namespace ConDep.Dsl.Builders
         {
             _localSequence = localSequence;
             _servers = servers;
-        }
-
-        public IOfferLocalOperations TransformConfigFile(string configDirPath, string configName, string transformName)
-        {
-            var operation = new TransformConfigOperation(configDirPath, configName, transformName);
-            AddOperation(operation);
-            return this;
-        }
-
-        public IOfferLocalOperations PreCompile(string webApplicationName, string webApplicationPhysicalPath, string preCompileOutputpath)
-        {
-            var operation = new PreCompileOperation(webApplicationName, webApplicationPhysicalPath,
-                                                                          preCompileOutputpath);
-            AddOperation(operation);
-            return this;
-        }
-
-        public IOfferLocalOperations HttpGet(string url)
-        {
-            var operation = new HttpGetOperation(url);
-            AddOperation(operation);
-            return this;
         }
 
         public IOfferLocalOperations ToEachServer(Action<IOfferRemoteOperations> action)

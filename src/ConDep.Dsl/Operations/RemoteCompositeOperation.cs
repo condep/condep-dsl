@@ -1,6 +1,4 @@
-﻿using ConDep.Dsl.Builders;
-
-namespace ConDep.Dsl.Operations
+﻿namespace ConDep.Dsl.Operations
 {
     public abstract class RemoteCompositeOperation : RemoteCompositeOperationBase
     {

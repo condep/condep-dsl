@@ -31,8 +31,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="SlowCheetah.Tasks">
+      <HintPath>..\packages\SlowCheetah.Tasks.Unofficial.1.0.0\lib\SlowCheetah.Tasks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0__31bf3856ad364e35\System.Management.Automation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,7 +51,76 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\Deployment\Certificate\CertificateFromFileOperation.cs" />
+    <Compile Include="Application\Deployment\Certificate\CertificateFromStoreOperation.cs" />
+    <Compile Include="Application\Deployment\CopyDir\CopyDirOperation.cs" />
+    <Compile Include="Application\Deployment\CopyFile\CopyFileOperation.cs" />
+    <Compile Include="Application\Deployment\CopyFile\FileInfoList.cs" />
+    <Compile Include="Application\Deployment\NServiceBus\NServiceBusOperation.cs" />
+    <Compile Include="Application\Deployment\RemoteDeploymentExtensions.cs" />
+    <Compile Include="Application\Deployment\WebApp\WebAppOperation.cs" />
+    <Compile Include="Application\Deployment\WindowsService\WindowsServiceFailureOptions.cs" />
+    <Compile Include="Application\Deployment\WindowsService\WindowsServiceOperation.cs" />
+    <Compile Include="Application\Deployment\WindowsService\WindowsServiceOperationBase.cs" />
+    <Compile Include="Application\Deployment\WindowsService\WindowsServiceOptions.cs" />
+    <Compile Include="Application\Deployment\WindowsService\WindowsServiceWithInstallerOperation.cs" />
+    <Compile Include="Application\Execution\PowerShell\PowerShellOperation.cs" />
+    <Compile Include="Application\Execution\PowerShell\PowerShellOptions.cs" />
+    <Compile Include="Application\Execution\PowerShell\RemotePowerShellHostOperation.cs" />
+    <Compile Include="Application\Execution\RemoteExecutionExtensions.cs" />
+    <Compile Include="Application\Execution\RunCmd\ConDepUntrappedExitCodeException.cs" />
+    <Compile Include="Application\Execution\RunCmd\RunCmdOptions.cs" />
+    <Compile Include="Application\Execution\RunCmd\RunCmdPsOperation.cs" />
+    <Compile Include="Application\Local\PreCompile\ClientBuildManagerWrapper.cs" />
+    <Compile Include="Application\Local\PreCompile\IWrapClientBuildManager.cs" />
+    <Compile Include="Application\Local\PreCompile\PreCompileCallback.cs" />
+    <Compile Include="Application\Local\PreCompile\PreCompileOperation.cs" />
+    <Compile Include="Application\Local\TransformConfig\CondepWebConfigTransformException.cs" />
+    <Compile Include="Application\Local\TransformConfig\TransformConfigBuildEngine.cs" />
+    <Compile Include="Application\Local\LocalOperationsExtensions.cs" />
+    <Compile Include="Application\Local\TransformConfig\TransformConfigOperation.cs" />
+    <Compile Include="Application\Local\WebRequest\HttpGetOperation.cs" />
+    <Compile Include="Builders\RemoteCertDeploymentBuilder.cs" />
+    <Compile Include="Builders\SslInfrastructureBuilder.cs" />
+    <Compile Include="Infrastructure\Certificate\CertificateInfrastructureProvider.cs" />
+    <Compile Include="Infrastructure\Certificate\ConDepCertificateDuplicationException.cs" />
+    <Compile Include="Infrastructure\Certificate\ConDepCertificateNotFoundException.cs" />
+    <Compile Include="Infrastructure\IIS\AppPool\ConDepUnknowNetFrameworkException.cs" />
+    <Compile Include="Infrastructure\IIS\AppPool\IisAppPoolOperation.cs" />
+    <Compile Include="Infrastructure\IIS\AppPool\IisAppPoolOptions.cs" />
+    <Compile Include="Infrastructure\IIS\BindingType.cs" />
+    <Compile Include="Infrastructure\IIS\IisBinding.cs" />
+    <Compile Include="Infrastructure\IIS\IisInfrastructureExcludeOptions.cs" />
+    <Compile Include="Infrastructure\IIS\IisInfrastructureIncludeOptions.cs" />
+    <Compile Include="Infrastructure\IIS\IisInfrastructureOperation.cs" />
+    <Compile Include="Infrastructure\IIS\IisInfrastructureOptions.cs" />
+    <Compile Include="Infrastructure\IIS\ManagedPipeline.cs" />
+    <Compile Include="Infrastructure\IIS\WebApp\IisWebAppOperation.cs" />
+    <Compile Include="Infrastructure\IIS\WebApp\IisWebAppOptions.cs" />
+    <Compile Include="Infrastructure\IIS\WebSite\BindingOptions.cs" />
+    <Compile Include="Infrastructure\IIS\WebSite\CertificateOptions.cs" />
+    <Compile Include="Infrastructure\IIS\WebSite\CertLocation.cs" />
+    <Compile Include="Infrastructure\IIS\WebSite\IisWebSiteOperation.cs" />
+    <Compile Include="Infrastructure\IIS\WebSite\IisWebSiteOptions.cs" />
+    <Compile Include="Infrastructure\InfrastructureExtensions.cs" />
+    <Compile Include="Infrastructure\IOfferIisAppPoolOptions.cs" />
+    <Compile Include="Infrastructure\IOfferSslInfrastructure.cs" />
+    <Compile Include="Infrastructure\Windows\WindowsFeatureInfrastructureOperation.cs" />
+    <Compile Include="Infrastructure\Windows\WindowsInfrastructureOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Application\Deployment\NServiceBus\NServiceBus.ps1" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ConDep.Dsl\ConDep.Dsl.csproj">
+      <Project>{e7eba0ac-b91d-450f-8a68-5adcf18fe17e}</Project>
+      <Name>ConDep.Dsl</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\Deployment\PowerShellScript\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

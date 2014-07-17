@@ -31,6 +31,7 @@ namespace ConDep.Dsl.Tests
             settings.Config = config;
 
             var local = new LocalOperationsBuilder(_sequenceManager.NewLocalSequence("Test"), config.Servers);
+            Configure.LocalOperations = local;
             _app.Configure(local, settings);
 
             var notification = new Notification();
@@ -53,14 +54,6 @@ namespace ConDep.Dsl.Tests
                 }
             );
             local.HttpGet("http://blog.torresdal.net");
-        }
-    }
-
-    public class SequenceTestInfrastructure : InfrastructureArtifact
-    {
-        public override void Configure(IOfferInfrastructure require, ConDepSettings settings)
-        {
-            require.IIS();
         }
     }
 }
