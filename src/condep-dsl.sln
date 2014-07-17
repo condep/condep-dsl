@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConDep.Dsl.Tests", "ConDep.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConDep.Remote", "ConDep.Remote\ConDep.Remote.csproj", "{70370A66-9199-4450-B12E-3EF3E176DAF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConDep.Dsl.Operations.Core", "ConDep.Dsl.Operations.Core\ConDep.Dsl.Operations.Core.csproj", "{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,12 @@ Global
 		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Release|x64.ActiveCfg = Release|x64
 		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Release|x64.Build.0 = Release|x64
+		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
