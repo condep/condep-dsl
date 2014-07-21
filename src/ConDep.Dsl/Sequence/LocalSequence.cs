@@ -15,6 +15,7 @@ namespace ConDep.Dsl.Sequence
         private readonly string _name;
         private readonly ILoadBalance _loadBalancer;
         internal readonly List<IExecute> _sequence = new List<IExecute>();
+        private RemoteSequence _remoteSequence;
 
         public LocalSequence(string name, ILoadBalance loadBalancer)
         {
@@ -34,11 +35,14 @@ namespace ConDep.Dsl.Sequence
             }
         }
 
-        public RemoteSequence NewRemoteSequence(IEnumerable<ServerConfig> servers)
+        public RemoteSequence RemoteSequence(IEnumerable<ServerConfig> servers)
         {
-            var sequence = new RemoteSequence(servers, _loadBalancer);
-            _sequence.Add(sequence);
-            return sequence;
+            if (_remoteSequence == null)
+            {
+                _remoteSequence = new RemoteSequence(servers, _loadBalancer);
+                _sequence.Add(_remoteSequence);
+            }
+            return _remoteSequence;
         }
 
         public RemoteSequence NewRemoteConditionalSequence(IEnumerable<ServerConfig> servers, Predicate<ServerInfo> condition, bool expectedConditionResult)
