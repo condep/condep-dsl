@@ -12,12 +12,12 @@ namespace ConDep.Dsl.SemanticModel.Sequence
     {
         private readonly string _compositeName;
         internal readonly List<IExecuteOnServer> _sequence = new List<IExecuteOnServer>();
-        private SequenceFactory _sequenceFactory;
+        //private SequenceFactory _sequenceFactory;
 
         public CompositeSequence(string compositeName)
         {
             _compositeName = compositeName;
-            _sequenceFactory = new SequenceFactory(_sequence);
+            //_sequenceFactory = new SequenceFactory(_sequence);
         }
 
         public void Add(IOperateRemote operation, bool addFirst = false)
@@ -52,12 +52,23 @@ namespace ConDep.Dsl.SemanticModel.Sequence
 
         public CompositeSequence NewCompositeSequence(RemoteCompositeOperation operation)
         {
-            return _sequenceFactory.NewCompositeSequence(operation);
+            var seq = new CompositeSequence(operation.Name);
+            _sequence.Add(seq);
+            return seq;
+            //return _sequenceFactory.NewCompositeSequence(operation);
         }
 
         public CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition)
         {
             return new CompositeConditionalSequence(Name, condition, true);
+        }
+
+        public void DryRun()
+        {
+            foreach (var item in _sequence)
+            {
+                Logger.WithLogSection(item.Name, () => item.DryRun());
+            }
         }
 
         public bool IsValid(Notification notification)
@@ -68,6 +79,6 @@ namespace ConDep.Dsl.SemanticModel.Sequence
             return isCompSeqValid && isRemoteOpsValid;
         }
 
-        public virtual string Name { get { return "Composite Operation"; } }
+        public virtual string Name { get { return _compositeName; } }
     }
 }

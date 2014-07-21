@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
@@ -42,6 +43,7 @@ namespace ConDep.Dsl.Execution
 
                 if (conDepSettings.Options.DryRun)
                 {
+                    Logger.Warn("Showing execution sequence from dry run:");
                     sequenceManager.DryRun();
                     return new ConDepExecutionResult(true);
                 }
@@ -176,7 +178,7 @@ namespace ConDep.Dsl.Execution
             {
                 var localSequence = sequenceManager.NewLocalSequence(application.GetType().Name);
                 var localBuilder = new LocalOperationsBuilder(localSequence, conDepSettings.Config.Servers);
-                Configure.LocalOperations = localBuilder;
+                //Configure.LocalOperations = localBuilder;
 
                 PopulateDependencies(conDepSettings, application, localBuilder);
                 application.Configure(localBuilder, conDepSettings);

@@ -44,5 +44,9 @@ namespace ConDep.Dsl.Operations.Application.Deployment.CopyDir
         }
 
         public string Name { get { return "Copy Dir"; } }
+        public void DryRun()
+        {
+            Logger.WithLogSection(Name, () => { });
+        }
     }
 }

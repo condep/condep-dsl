@@ -9,5 +9,6 @@ namespace ConDep.Dsl.SemanticModel
     {
         CompositeSequence NewCompositeSequence(RemoteCompositeOperation operation);
         CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition);
+        void DryRun();
     }
 }

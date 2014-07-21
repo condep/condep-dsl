@@ -16,7 +16,7 @@ namespace ConDep.Dsl
         public static IOfferLocalOperations TransformConfigFile(this IOfferLocalOperations local, string configDirPath, string configName, string transformName)
         {
             var operation = new TransformConfigOperation(configDirPath, configName, transformName);
-            Configure.LocalOperations.AddOperation(operation);
+            Configure.Local(local, operation);
             return local;
         }
 
@@ -31,7 +31,7 @@ namespace ConDep.Dsl
         {
             var operation = new PreCompileOperation(webApplicationName, webApplicationPhysicalPath,
                                                                           preCompileOutputpath);
-            Configure.LocalOperations.AddOperation(operation);
+            Configure.Local(local, operation);
             return local;
         }
 
@@ -43,7 +43,7 @@ namespace ConDep.Dsl
         public static IOfferLocalOperations HttpGet(this IOfferLocalOperations local, string url)
         {
             var operation = new HttpGetOperation(url);
-            Configure.LocalOperations.AddOperation(operation);
+            Configure.Local(local, operation);
             return local;
         }
 

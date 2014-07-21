@@ -1,58 +1,20 @@
-using System;
-using System.Security.Cryptography.X509Certificates;
-using ConDep.Dsl.Operations.Application.Deployment.Certificate;
-using ConDep.Dsl.Operations.Infrastructure.IIS.WebSite;
+using System.Runtime.ConstrainedExecution;
 using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Builders
 {
     public class RemoteCertDeploymentBuilder : IOfferRemoteCertDeployment
     {
-        private readonly IManageRemoteSequence _remoteSequence;
-        private readonly IOfferRemoteDeployment _remoteDeploymentBuilder;
+        private readonly IOfferRemoteDeployment _remoteDeployment;
 
-        public RemoteCertDeploymentBuilder(IManageRemoteSequence remoteSequence, IOfferRemoteDeployment remoteDeploymentBuilder)
+        public RemoteCertDeploymentBuilder(IOfferRemoteDeployment remoteDeployment)
         {
-            _remoteSequence = remoteSequence;
-            _remoteDeploymentBuilder = remoteDeploymentBuilder;
+            _remoteDeployment = remoteDeployment;
         }
 
-        public IOfferRemoteDeployment FromStore(X509FindType findType, string findValue)
+        public IOfferRemoteDeployment RemoteDeployment
         {
-            return FromStore(findType, findValue, null);
-        }
-
-        public IOfferRemoteDeployment FromStore(X509FindType findType, string findValue, Action<IOfferCertificateOptions> options)
-        {
-            var certOptions = new CertificateOptions();
-            if (options != null)
-            {
-                options(certOptions);
-            }
-
-            var certOp = new CertificateFromStoreOperation(findType, findValue, certOptions);
-            var compositeSequence = _remoteSequence.NewCompositeSequence(certOp);
-            certOp.Configure(new RemoteCompositeBuilder(compositeSequence));
-            return _remoteDeploymentBuilder;
-        }
-
-        public IOfferRemoteDeployment FromFile(string path, string password)
-        {
-            return FromFile(path, password, null);
-        }
-
-        public IOfferRemoteDeployment FromFile(string path, string password, Action<IOfferCertificateOptions> options)
-        {
-            var certOptions = new CertificateOptions();
-            if (options != null)
-            {
-                options(certOptions);
-            }
-
-            var certOp = new CertificateFromFileOperation(path, password, certOptions);
-            var compositeSequence = _remoteSequence.NewCompositeSequence(certOp);
-            certOp.Configure(new RemoteCompositeBuilder(compositeSequence));
-            return _remoteDeploymentBuilder;
+            get { return _remoteDeployment; }
         }
     }
 }

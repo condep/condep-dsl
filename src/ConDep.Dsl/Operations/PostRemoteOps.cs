@@ -36,5 +36,10 @@ Remove-Item -force -recurse {0}{1}",
         {
             return true;
         }
+
+        public void DryRun()
+        {
+            Logger.WithLogSection(Name, () => {});
+        }
     }
 }

@@ -1,3 +1,7 @@
+using ConDep.Dsl.Builders;
+using ConDep.Dsl.Operations;
+using ConDep.Dsl.Operations.Application.Local;
+
 namespace ConDep.Dsl
 {
     /// <summary>
@@ -5,12 +9,40 @@ namespace ConDep.Dsl
     /// </summary>
     public static class Configure
     {
-        public static IConfigureLocalOperations LocalOperations { get; internal set; }
+        public static void Local(IOfferLocalOperations local, LocalOperation operation)
+        {
+            var seqContainer = local as LocalOperationsBuilder;
+            seqContainer.AddOperation(operation);
+        }
 
-        public static IConfigureRemoteDeployment DeploymentOperations { get; internal set; }
+        public static void Execution(IOfferRemoteExecution executor, RemoteOperation operation)
+        {
+            var seqContainer = executor as RemoteExecutionBuilder;
+            seqContainer.AddOperation(operation);
+        }
 
-        public static IConfigureRemoteExecution ExecutionOperations { get; internal set; }
+        public static void Execution(IOfferRemoteExecution executor, RemoteCompositeOperation operation)
+        {
+            var seqContainer = executor as RemoteExecutionBuilder;
+            seqContainer.AddOperation(operation);
+        }
 
-        public static IConfigureInfrastructure InfrastructureOperations { get; internal set; }
+        public static void Deployment(IOfferRemoteDeployment deployment, RemoteCompositeOperation operation)
+        {
+            var seqContainer = deployment as RemoteDeploymentBuilder;
+            seqContainer.AddOperation(operation);
+        }
+
+        public static void Deployment(IOfferRemoteDeployment deployment, IOperateRemote operation)
+        {
+            var seqContainer = deployment as RemoteDeploymentBuilder;
+            seqContainer.AddOperation(operation);
+        }
+
+        public static void Infrastructure(IOfferInfrastructure infrastructure, RemoteCompositeOperation operation)
+        {
+            var seqContainer = infrastructure as InfrastructureBuilder;
+            seqContainer.AddOperation(operation);
+        }
     }
 }

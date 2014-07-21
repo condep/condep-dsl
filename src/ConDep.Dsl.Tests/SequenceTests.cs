@@ -31,7 +31,7 @@ namespace ConDep.Dsl.Tests
             settings.Config = config;
 
             var local = new LocalOperationsBuilder(_sequenceManager.NewLocalSequence("Test"), config.Servers);
-            Configure.LocalOperations = local;
+            //Configure.LocalOperations = local;
             _app.Configure(local, settings);
 
             var notification = new Notification();

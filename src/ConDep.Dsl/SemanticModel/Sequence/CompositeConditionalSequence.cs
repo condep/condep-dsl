@@ -26,7 +26,7 @@ namespace ConDep.Dsl.SemanticModel.Sequence
                         foreach (var element in _sequence)
                         {
                             IExecuteOnServer elementToExecute = element;
-                            Logger.WithLogSection(element.Name, () => elementToExecute.Execute(server, status, settings, token));
+                            Logger.WithLogSection("Condition True, executing " + element.Name, () => elementToExecute.Execute(server, status, settings, token));
                         }
                     }
                     else
@@ -38,7 +38,7 @@ namespace ConDep.Dsl.SemanticModel.Sequence
 
         public override string Name
         {
-            get { return "Conditional Operation"; }
+            get { return "Condition"; }
         }
     }
 }

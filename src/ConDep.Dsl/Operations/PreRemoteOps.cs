@@ -129,5 +129,9 @@ namespace ConDep.Dsl.Operations
 
         public string Name { get { return "Pre-Operation"; } }
 
+        public void DryRun()
+        {
+            Logger.WithLogSection(Name, () => { });
+        }
     }
 }

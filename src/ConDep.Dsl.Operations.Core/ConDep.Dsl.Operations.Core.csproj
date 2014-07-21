@@ -81,7 +81,9 @@
     <Compile Include="Application\Local\TransformConfig\TransformConfigOperation.cs" />
     <Compile Include="Application\Local\WebRequest\HttpGetOperation.cs" />
     <Compile Include="Builders\RemoteCertDeploymentBuilder.cs" />
+    <Compile Include="Builders\RemoteCertDeploymentExtensions.cs" />
     <Compile Include="Builders\SslInfrastructureBuilder.cs" />
+    <Compile Include="Infrastructure\SslInfrastructureExtensions.cs" />
     <Compile Include="Infrastructure\Certificate\CertificateInfrastructureProvider.cs" />
     <Compile Include="Infrastructure\Certificate\ConDepCertificateDuplicationException.cs" />
     <Compile Include="Infrastructure\Certificate\ConDepCertificateNotFoundException.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using ConDep.Dsl.Builders;
 using ConDep.Dsl.Operations.Infrastructure;
 using ConDep.Dsl.Operations.Infrastructure.IIS;
 using ConDep.Dsl.Operations.Infrastructure.IIS.AppPool;
@@ -20,7 +21,7 @@ namespace ConDep.Dsl
             var op = new IisInfrastructureOperation();
             options(new IisInfrastructureOptions(op));
 
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
@@ -31,7 +32,7 @@ namespace ConDep.Dsl
         public static IOfferInfrastructure IIS(this IOfferInfrastructure infra)
         {
             var op = new IisInfrastructureOperation();
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
@@ -43,7 +44,7 @@ namespace ConDep.Dsl
         {
             var op = new WindowsFeatureInfrastructureOperation();
             options(new WindowsInfrastructureOptions(op));
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
@@ -56,7 +57,7 @@ namespace ConDep.Dsl
         public static IOfferInfrastructure IISWebSite(this IOfferInfrastructure infra, string name, int id)
         {
             var op = new IisWebSiteOperation(name, id);
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
@@ -72,7 +73,7 @@ namespace ConDep.Dsl
             var opt = new IisWebSiteOptions();
             options(opt);
             var op = new IisWebSiteOperation(name, id, opt);
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
@@ -84,7 +85,7 @@ namespace ConDep.Dsl
         public static IOfferInfrastructure IISAppPool(this IOfferInfrastructure infra, string name)
         {
             var op = new IisAppPoolOperation(name);
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
@@ -99,7 +100,7 @@ namespace ConDep.Dsl
             var opt = new IisAppPoolOptions();
             options(opt);
             var op = new IisAppPoolOperation(name, opt.Values);
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
@@ -112,7 +113,7 @@ namespace ConDep.Dsl
         public static IOfferInfrastructure IISWebApp(this IOfferInfrastructure infra, string name, string webSite)
         {
             var op = new IisWebAppOperation(name, webSite);
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
@@ -126,14 +127,14 @@ namespace ConDep.Dsl
         public static IOfferInfrastructure IISWebApp(this IOfferInfrastructure infra, string name, string webSite, Action<IOfferIisWebAppOptions> options)
         {
             var op = new IisWebAppOperation(name, webSite);
-            Configure.InfrastructureOperations.AddOperation(op);
+            Configure.Infrastructure(infra, op);
             return infra;
         }
 
         /// <summary>
         /// Provide operations for installing SSL certificates.
         /// </summary>
-        //public IOfferSslInfrastructure SslCertificate { get { return new SslInfrastructureBuilder(_remoteSequence, this); } }
+        public static IOfferSslInfrastructure SslCertificate(this IOfferInfrastructure infra) { return new SslInfrastructureBuilder(infra); }
 
     }
 }

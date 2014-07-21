@@ -18,27 +18,27 @@ namespace ConDep.Dsl.SemanticModel.Sequence
             _expectedConditionResult = expectedConditionResult;
         }
 
-        protected override void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
-        {
-            Logger.WithLogSection("Deployment", () =>
-                {
-                    if (_condition(server.GetServerInfo()) == _expectedConditionResult)
-                    {
-                        foreach (var element in _sequence)
-                        {
-                            IExecuteOnServer elementToExecute = element;
-                            if (element is CompositeSequence)
-                                elementToExecute.Execute(server, status, settings, token);
-                            else
-                                Logger.WithLogSection(element.Name, () => elementToExecute.Execute(server, status, settings, token));
-                        }
-                    }
-                    else
-                    {
-                        Logger.Info("Condition evaluated to false. Will not execute.");
-                    }
-                });
-        }
+        //protected override void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
+        //{
+        //    Logger.WithLogSection("Deployment", () =>
+        //        {
+        //            if (_condition(server.GetServerInfo()) == _expectedConditionResult)
+        //            {
+        //                foreach (var element in _sequence)
+        //                {
+        //                    IExecuteOnServer elementToExecute = element;
+        //                    if (element is CompositeSequence)
+        //                        elementToExecute.Execute(server, status, settings, token);
+        //                    else
+        //                        Logger.WithLogSection(element.Name, () => elementToExecute.Execute(server, status, settings, token));
+        //                }
+        //            }
+        //            else
+        //            {
+        //                Logger.Info("Condition evaluated to false. Will not execute.");
+        //            }
+        //        });
+        //}
 
         public override string Name
         {

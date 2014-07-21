@@ -11,7 +11,7 @@ namespace ConDep.Dsl.Operations.Application.Local
         public abstract string Name { get; }
         public void DryRun()
         {
-            Logger.Info(Name);
+            Logger.WithLogSection(Name, () => {});
         }
 
         public abstract bool IsValid(Notification notification);

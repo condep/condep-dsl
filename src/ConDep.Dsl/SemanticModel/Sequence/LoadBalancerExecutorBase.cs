@@ -5,7 +5,7 @@ using ConDep.Dsl.Logging;
 
 namespace ConDep.Dsl.SemanticModel.Sequence
 {
-    public abstract class LoadBalancerExecutorBase
+    public abstract class LoadBalancerExecutorBase : IExecute
     {
         private readonly List<IExecuteOnServer> _sequence;
 
@@ -15,6 +15,7 @@ namespace ConDep.Dsl.SemanticModel.Sequence
         }
 
         public abstract void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token);
+        public string Name { get; private set; }
 
         protected void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, bool bringServerOfflineBeforeExecution, bool bringServerOnlineAfterExecution, CancellationToken token)
         {
@@ -69,5 +70,12 @@ namespace ConDep.Dsl.SemanticModel.Sequence
         }
 
 
+        public void DryRun()
+        {
+            foreach (var item in _sequence)
+            {
+                Logger.WithLogSection(item.Name, () => { item.DryRun(); });
+            }
+        }
     }
 }

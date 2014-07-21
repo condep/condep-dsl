@@ -47,58 +47,60 @@ namespace ConDep.Dsl.Remote
             {
                 runspace.Open();
 
-                Logger.Info("Executing command/script...");
-                Logger.Verbose(commandOrScript);
-                var ps = PowerShell.Create();
-                ps.Runspace = runspace;
-
-                using (var pipeline = ps.Runspace.CreatePipeline("set-executionpolicy remotesigned -force"))
+                return Logger.WithLogSection("Executing command/script...", () =>
                 {
-                    if (_loadConDepModule)
-                    {
-                        var conDepModule = string.Format(@"Import-Module $env:windir\temp\ConDep\{0}\PSScripts\ConDep;", ConDepGlobals.ExecId);
-                        pipeline.Commands.AddScript(conDepModule);
-                    }
+                    Logger.Verbose(commandOrScript);
+                    var ps = PowerShell.Create();
+                    ps.Runspace = runspace;
 
-                    if(_loadConDepDotNetLibrary)
+                    using (var pipeline = ps.Runspace.CreatePipeline("set-executionpolicy remotesigned -force"))
                     {
-                        var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}\ConDep.Remote.dll"";", _server.GetServerInfo().TempFolderPowerShell);
-                        pipeline.Commands.AddScript(netLibraryCmd);
-                    }
-
-                    if(parameters != null)
-                    {
-                        var cmd = new Command(commandOrScript, true);
-                        foreach(var param in parameters)
+                        if (_loadConDepModule)
                         {
-                            cmd.Parameters.Add(param);
+                            var conDepModule = string.Format(@"Import-Module $env:windir\temp\ConDep\{0}\PSScripts\ConDep;", ConDepGlobals.ExecId);
+                            pipeline.Commands.AddScript(conDepModule);
                         }
-                        pipeline.Commands.Add(cmd);
-                    }
-                    else
-                    {
-                        pipeline.Commands.AddScript(commandOrScript);
-                    }
 
-                    var result = pipeline.Invoke();
-
-                    if (pipeline.Error.Count > 0)
-                    {
-                        var errorCollection = new PowerShellErrors();
-                        foreach (var exception in pipeline.Error.NonBlockingRead().OfType<ErrorRecord>())
+                        if (_loadConDepDotNetLibrary)
                         {
-                            errorCollection.Add(exception.Exception);
+                            var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}\ConDep.Remote.dll"";", _server.GetServerInfo().TempFolderPowerShell);
+                            pipeline.Commands.AddScript(netLibraryCmd);
                         }
-                        throw errorCollection;
-                    }
 
-                    foreach (var psObject in result.Where(psObject => logOutput))
-                    {
-                        Logger.Info(psObject.ToString());
+                        if (parameters != null)
+                        {
+                            var cmd = new Command(commandOrScript, true);
+                            foreach (var param in parameters)
+                            {
+                                cmd.Parameters.Add(param);
+                            }
+                            pipeline.Commands.Add(cmd);
+                        }
+                        else
+                        {
+                            pipeline.Commands.AddScript(commandOrScript);
+                        }
+
+                        var result = pipeline.Invoke();
+
+                        if (pipeline.Error.Count > 0)
+                        {
+                            var errorCollection = new PowerShellErrors();
+                            foreach (var exception in pipeline.Error.NonBlockingRead().OfType<ErrorRecord>())
+                            {
+                                errorCollection.Add(exception.Exception);
+                            }
+                            throw errorCollection;
+                        }
+
+                        foreach (var psObject in result.Where(psObject => logOutput))
+                        {
+                            Logger.Info(psObject.ToString());
+                        }
+
+                        return result;
                     }
-                    
-                    return result;
-                }
+                });
             }
 
         }

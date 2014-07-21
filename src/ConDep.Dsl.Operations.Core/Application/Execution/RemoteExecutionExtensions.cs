@@ -15,7 +15,7 @@ namespace ConDep.Dsl
         public static IOfferRemoteExecution DosCommand(this IOfferRemoteExecution execute, string cmd)
         {
             var runCmdOperation = new RunCmdPsOperation(cmd);
-            Configure.ExecutionOperations.AddOperation(runCmdOperation);
+            Configure.Execution(execute, runCmdOperation);
             return execute;
         }
 
@@ -30,7 +30,7 @@ namespace ConDep.Dsl
             var options = new RunCmdOptions();
             runCmdOptions(options);
             var runCmdOperation = new RunCmdPsOperation(cmd, options.Values);
-            Configure.ExecutionOperations.AddOperation(runCmdOperation);
+            Configure.Execution(execute, runCmdOperation);
             return execute;
         }
 
@@ -42,7 +42,7 @@ namespace ConDep.Dsl
         public static IOfferRemoteExecution PowerShell(this IOfferRemoteExecution execute, string command)
         {
             var psProvider = new RemotePowerShellHostOperation(command);
-            Configure.ExecutionOperations.AddOperation(psProvider);
+            Configure.Execution(execute, psProvider);
             return execute;
         }
 
@@ -55,7 +55,7 @@ namespace ConDep.Dsl
         public static IOfferRemoteExecution PowerShell(this IOfferRemoteExecution execute, FileInfo scriptFile)
         {
             var psProvider = new RemotePowerShellHostOperation(scriptFile);
-            Configure.ExecutionOperations.AddOperation(psProvider);
+            Configure.Execution(execute, psProvider);
             return execute;
         }
 
@@ -69,7 +69,7 @@ namespace ConDep.Dsl
             var options = new PowerShellOptions();
             powerShellOptions(options);
             var operation = new RemotePowerShellHostOperation(command, options.Values);
-            Configure.ExecutionOperations.AddOperation(operation);
+            Configure.Execution(execute, operation);
             return execute;
         }
 
@@ -84,7 +84,7 @@ namespace ConDep.Dsl
             var options = new PowerShellOptions();
             powerShellOptions(options);
             var operation = new RemotePowerShellHostOperation(scriptFile, options.Values);
-            Configure.ExecutionOperations.AddOperation(operation);
+            Configure.Execution(execute, operation);
             return execute;
         }
     

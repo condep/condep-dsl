@@ -44,8 +44,7 @@ namespace ConDep.Dsl.SemanticModel.Sequence
         {
             foreach (var item in _sequence)
             {
-                Logger.Info(item.Name);
-                item.DryRun();
+                Logger.WithLogSection(item.Name, () => { item.DryRun(); });
             }
         }
     }

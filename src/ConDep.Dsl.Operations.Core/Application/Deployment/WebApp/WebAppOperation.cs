@@ -48,5 +48,9 @@ namespace ConDep.Dsl.Operations.Application.Deployment.WebApp
         }
 
         public string Name { get { return "Web Application"; } }
+        public void DryRun()
+        {
+            Logger.WithLogSection(Name, () => { });
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace ConDep.Dsl.SemanticModel
     {
         void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
         string Name { get; }
+        void DryRun();
     }
 }
