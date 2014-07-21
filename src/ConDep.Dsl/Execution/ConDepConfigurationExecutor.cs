@@ -8,12 +8,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using ConDep.Dsl.Builders;
 using ConDep.Dsl.Config;
+using ConDep.Dsl.Harvesters;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Operations;
 using ConDep.Dsl.Operations.LoadBalancer;
 using ConDep.Dsl.Remote;
 using ConDep.Dsl.SemanticModel;
-using ConDep.Dsl.SemanticModel.Sequence;
+using ConDep.Dsl.Sequence;
+using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Execution
 {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Operations.Application.Local;
-using ConDep.Dsl.SemanticModel.Sequence;
+using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {

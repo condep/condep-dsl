@@ -6,6 +6,7 @@ using ConDep.Dsl.Builders;
 using ConDep.Dsl.Operations.Infrastructure.Certificate;
 using ConDep.Dsl.Operations.Infrastructure.IIS.WebSite;
 using ConDep.Dsl.SemanticModel;
+using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations.Application.Deployment.Certificate
 {

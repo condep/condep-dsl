@@ -5,7 +5,8 @@ using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Operations.Application.Local.TransformConfig;
-using ConDep.Dsl.SemanticModel.WebDeploy;
+using ConDep.Dsl.SemanticModel;
+using ConDep.Dsl.Validation;
 using NUnit.Framework;
 
 namespace ConDep.Dsl.Tests
@@ -66,7 +67,7 @@ namespace ConDep.Dsl.Tests
             var expectedResultFile = WriteTextToTempFile(Consts.Result01);
 
             var trans = new TransformConfigOperation(Path.GetDirectoryName(source), Path.GetFileName(source), Path.GetFileName(transform));
-            var webDepStatus = new ConDepStatus();
+            var webDepStatus = new StatusReporter();
             trans.Execute(webDepStatus, _settingsDefault, _token);
 
             //Assert.That(webDepStatus.HasErrors, Is.False);

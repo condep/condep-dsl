@@ -81,7 +81,7 @@
     <Compile Include="Application\Local\TransformConfig\TransformConfigOperation.cs" />
     <Compile Include="Application\Local\WebRequest\HttpGetOperation.cs" />
     <Compile Include="Builders\RemoteCertDeploymentBuilder.cs" />
-    <Compile Include="Builders\RemoteCertDeploymentExtensions.cs" />
+    <Compile Include="Application\Deployment\RemoteCertDeploymentExtensions.cs" />
     <Compile Include="Builders\SslInfrastructureBuilder.cs" />
     <Compile Include="Infrastructure\SslInfrastructureExtensions.cs" />
     <Compile Include="Infrastructure\Certificate\CertificateInfrastructureProvider.cs" />
@@ -109,6 +109,21 @@
     <Compile Include="Infrastructure\IOfferSslInfrastructure.cs" />
     <Compile Include="Infrastructure\Windows\WindowsFeatureInfrastructureOperation.cs" />
     <Compile Include="Infrastructure\Windows\WindowsInfrastructureOptions.cs" />
+    <Compile Include="IOfferBindingOptions.cs" />
+    <Compile Include="IOfferCertificateOptions.cs" />
+    <Compile Include="IOfferFileInfo.cs" />
+    <Compile Include="IOfferIisInfrastructureOptions.cs" />
+    <Compile Include="IOfferIisInfrastructureRoleOptions.cs" />
+    <Compile Include="IOfferIisWebAppOptions.cs" />
+    <Compile Include="IOfferIisWebSiteOptions.cs" />
+    <Compile Include="IOfferPowerShellOptions.cs" />
+    <Compile Include="IOfferRemoteCertDeployment.cs" />
+    <Compile Include="IOfferRunCmdOptions.cs" />
+    <Compile Include="IOfferWindowsInfrastructureOptions.cs" />
+    <Compile Include="IOfferWindowsServiceFailureActions.cs" />
+    <Compile Include="IOfferWindowsServiceFailureOptions.cs" />
+    <Compile Include="IOfferWindowsServiceOptions.cs" />
+    <Compile Include="NetFrameworkVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

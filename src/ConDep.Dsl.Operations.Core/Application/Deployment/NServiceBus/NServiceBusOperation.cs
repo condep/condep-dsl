@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.SemanticModel;
+using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations.Application.Deployment.NServiceBus
 {

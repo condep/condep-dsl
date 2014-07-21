@@ -2,7 +2,8 @@
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Operations.LoadBalancer;
 using ConDep.Dsl.SemanticModel;
-using ConDep.Dsl.SemanticModel.Sequence;
+using ConDep.Dsl.Sequence;
+using ConDep.Dsl.Validation;
 using NUnit.Framework;
 
 namespace ConDep.Dsl.Tests

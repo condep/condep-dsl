@@ -10,6 +10,7 @@ using ConDep.Dsl.PSScripts;
 using ConDep.Dsl.Remote;
 using ConDep.Dsl.Resources;
 using ConDep.Dsl.SemanticModel;
+using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations
 {

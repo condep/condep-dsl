@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ConDep.Dsl.SemanticModel;
+using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations.Windows
 {
