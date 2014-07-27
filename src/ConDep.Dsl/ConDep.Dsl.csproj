@@ -115,14 +115,12 @@
     <Compile Include="Config\WindowsOperatingSystem.cs" />
     <Compile Include="Execution\ApplicationDependencyHandler.cs" />
     <Compile Include="IDependOn.cs" />
-    <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="Config\LbMode.cs" />
     <Compile Include="IConfigureLocalOperations.cs" />
     <Compile Include="Config\TiersConfig.cs" />
     <Compile Include="IConfigureInfrastructure.cs" />
     <Compile Include="IConfigureRemoteDeployment.cs" />
     <Compile Include="IConfigureRemoteExecution.cs" />
-    <Compile Include="Logging\TeamCityMessageStatus.cs" />
     <Compile Include="Config\ConDepAssemblyHandler.cs" />
     <Compile Include="Config\ConDepAssemblyNotFoundException.cs" />
     <Compile Include="Operations\IOfferInfrastructure.cs" />
@@ -197,7 +195,6 @@
     <Compile Include="Config\ConDepConfigurationTypeNotFoundException.cs" />
     <Compile Include="Config\ConDepOptions.cs" />
     <Compile Include="Resources\ConDepResourceNotFoundException.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Config\EnvConfigParser.cs" />
     <Compile Include="Sequence\IManageRemoteSequence.cs">
       <SubType>Code</SubType>
@@ -214,13 +211,10 @@
     <Compile Include="Harvesters\ServerInfoHarvester.cs" />
     <Compile Include="Validation\StatusReporter.cs" />
     <Compile Include="Config\IRequireCustomConfiguration.cs" />
-    <Compile Include="Logging\ILogForCondep.cs" />
     <Compile Include="ILoadBalance.cs" />
     <Compile Include="Operations\LoadBalancer\DefaultLoadBalancer.cs" />
     <Compile Include="Operations\LoadBalancer\LoadBalancerLookup.cs" />
     <Compile Include="Operations\LoadBalancer\LoadBalanceState.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\Log4NetLoggerBase.cs" />
     <Compile Include="Config\ConDepEnvConfig.cs" />
     <Compile Include="Config\CustomProviderConfig.cs" />
     <Compile Include="Config\DeploymentUserConfig.cs" />
@@ -231,7 +225,6 @@
     <Compile Include="Config\WebSiteBindingConfig.cs" />
     <Compile Include="Config\WebSiteConfig.cs" />
     <Compile Include="Validation\ConDepInvalidSetupException.cs" />
-    <Compile Include="Logging\TeamCityLogger.cs" />
     <Compile Include="Resources\ConDepResourceFiles.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Execution\ConDepConfigurationExecutor.cs" />
@@ -248,7 +241,12 @@
     <EmbeddedResource Include="PSScripts\Iis.ps1" />
     <EmbeddedResource Include="PSScripts\WinService.ps1" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ConDep.Logging\ConDep.Logging.csproj">
+      <Project>{2a82094f-11e6-4841-a976-1a496dad585f}</Project>
+      <Name>ConDep.Logging</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
