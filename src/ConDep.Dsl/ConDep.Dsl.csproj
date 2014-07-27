@@ -123,6 +123,13 @@
     <Compile Include="IConfigureRemoteExecution.cs" />
     <Compile Include="Config\ConDepAssemblyHandler.cs" />
     <Compile Include="Config\ConDepAssemblyNotFoundException.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\ILogForCondep.cs" />
+    <Compile Include="Logging\Log4NetLoggerBase.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LoggerBase.cs" />
+    <Compile Include="Logging\TeamCityLogger.cs" />
+    <Compile Include="Logging\TeamCityMessageStatus.cs" />
     <Compile Include="Operations\IOfferInfrastructure.cs" />
     <Compile Include="Operations\PowerShellScriptDeployOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperation.cs" />
@@ -240,12 +247,6 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="PSScripts\Iis.ps1" />
     <EmbeddedResource Include="PSScripts\WinService.ps1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ConDep.Logging\ConDep.Logging.csproj">
-      <Project>{2a82094f-11e6-4841-a976-1a496dad585f}</Project>
-      <Name>ConDep.Logging</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

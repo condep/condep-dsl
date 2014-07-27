@@ -144,10 +144,6 @@
       <Project>{e7eba0ac-b91d-450f-8a68-5adcf18fe17e}</Project>
       <Name>ConDep.Dsl</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ConDep.Logging\ConDep.Logging.csproj">
-      <Project>{2a82094f-11e6-4841-a976-1a496dad585f}</Project>
-      <Name>ConDep.Logging</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
