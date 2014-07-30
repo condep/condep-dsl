@@ -136,9 +136,9 @@
     <Compile Include="SimpleTestFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConDep.Dsl.Operations.Core\ConDep.Dsl.Operations.Core.csproj">
+    <ProjectReference Include="..\ConDep.Dsl.Operations\ConDep.Dsl.Operations.csproj">
       <Project>{a1ff699a-76ff-440c-8fd2-9fca9ee3b26f}</Project>
-      <Name>ConDep.Dsl.Operations.Core</Name>
+      <Name>ConDep.Dsl.Operations</Name>
     </ProjectReference>
     <ProjectReference Include="..\ConDep.Dsl\ConDep.Dsl.csproj">
       <Project>{e7eba0ac-b91d-450f-8a68-5adcf18fe17e}</Project>
