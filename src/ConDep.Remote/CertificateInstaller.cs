@@ -5,7 +5,7 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace ConDep.Remote
+namespace ConDep.Dsl.Remote.Resources
 {
     public static class CertificateInstaller
     {

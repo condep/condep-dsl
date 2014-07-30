@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConDep.Dsl", "ConDep.Dsl\ConDep.Dsl.csproj", "{E7EBA0AC-B91D-450F-8A68-5ADCF18FE17E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConDep.Remote", "ConDep.Remote\ConDep.Remote.csproj", "{70370A66-9199-4450-B12E-3EF3E176DAF2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConDep.Dsl.Operations", "ConDep.Dsl.Operations\ConDep.Dsl.Operations.csproj", "{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConDep.Dsl.Tests", "ConDep.Dsl.Tests\ConDep.Dsl.Tests.csproj", "{1A131274-45B3-47EE-A48D-8310FDB3C332}"
@@ -27,14 +25,6 @@ Global
 		{E7EBA0AC-B91D-450F-8A68-5ADCF18FE17E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E7EBA0AC-B91D-450F-8A68-5ADCF18FE17E}.Release|x64.ActiveCfg = Release|x64
 		{E7EBA0AC-B91D-450F-8A68-5ADCF18FE17E}.Release|x64.Build.0 = Release|x64
-		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Debug|x64.ActiveCfg = Debug|x64
-		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Debug|x64.Build.0 = Debug|x64
-		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Release|x64.ActiveCfg = Release|x64
-		{70370A66-9199-4450-B12E-3EF3E176DAF2}.Release|x64.Build.0 = Release|x64
 		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1FF699A-76FF-440C-8FD2-9FCA9EE3B26F}.Debug|x64.ActiveCfg = Debug|Any CPU

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Principal;
 
-namespace ConDep.Remote
+namespace ConDep.Dsl.Remote.Resources
 {
 
     [StructLayout(LayoutKind.Sequential)]

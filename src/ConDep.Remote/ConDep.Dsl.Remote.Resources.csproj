@@ -7,8 +7,8 @@
     <ProjectGuid>{70370A66-9199-4450-B12E-3EF3E176DAF2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConDep.Remote</RootNamespace>
-    <AssemblyName>ConDep.Remote</AssemblyName>
+    <RootNamespace>ConDep.Dsl.Remote.Resources</RootNamespace>
+    <AssemblyName>ConDep.Dsl.Remote.Resources</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
