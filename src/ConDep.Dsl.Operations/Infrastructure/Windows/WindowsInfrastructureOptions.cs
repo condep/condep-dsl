@@ -1,6 +1,4 @@
-using ConDep.Dsl.Operations.Windows;
-
-namespace ConDep.Dsl.Operations.Infrastructure
+namespace ConDep.Dsl.Operations.Infrastructure.Windows
 {
     public class WindowsInfrastructureOptions : IOfferWindowsInfrastructureOptions
     {

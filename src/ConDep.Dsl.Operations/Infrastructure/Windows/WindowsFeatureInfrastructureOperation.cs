@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Validation;
 
-namespace ConDep.Dsl.Operations.Windows
+namespace ConDep.Dsl.Operations.Infrastructure.Windows
 {
     public class WindowsFeatureInfrastructureOperation : RemoteCompositeOperation
     {

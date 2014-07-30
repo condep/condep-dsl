@@ -1,6 +1,4 @@
-using ConDep.Dsl.SemanticModel;
-
-namespace ConDep.Dsl.Builders
+namespace ConDep.Dsl.Operations.Builders
 {
     public class SslInfrastructureBuilder : IOfferSslInfrastructure
     {

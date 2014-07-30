@@ -1,7 +1,4 @@
-using System.Runtime.ConstrainedExecution;
-using ConDep.Dsl.SemanticModel;
-
-namespace ConDep.Dsl.Builders
+namespace ConDep.Dsl.Operations.Builders
 {
     public class RemoteCertDeploymentBuilder : IOfferRemoteCertDeployment
     {

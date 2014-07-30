@@ -1,11 +1,12 @@
 ﻿using System;
 using ConDep.Dsl.Builders;
+using ConDep.Dsl.Operations.Builders;
 using ConDep.Dsl.Operations.Infrastructure;
 using ConDep.Dsl.Operations.Infrastructure.IIS;
 using ConDep.Dsl.Operations.Infrastructure.IIS.AppPool;
 using ConDep.Dsl.Operations.Infrastructure.IIS.WebApp;
 using ConDep.Dsl.Operations.Infrastructure.IIS.WebSite;
-using ConDep.Dsl.Operations.Windows;
+using ConDep.Dsl.Operations.Infrastructure.Windows;
 
 namespace ConDep.Dsl
 {

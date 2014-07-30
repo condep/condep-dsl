@@ -7,8 +7,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ConDep.Dsl.Operations.Core")]
 [assembly: AssemblyCopyright("Copyright © ConDep 2014")]
-[assembly: AssemblyVersion("3.0.0.*")]
-[assembly: AssemblyFileVersion("3.0.0.*")]
+[assembly: AssemblyVersion("3.0.1.*")]
+[assembly: AssemblyFileVersion("3.0.1.*")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
