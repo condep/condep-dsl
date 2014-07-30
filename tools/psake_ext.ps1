@@ -34,7 +34,6 @@ function Generate-Nuspec-File
 {
 param(
 	[string]$version,
-	[string]$preString,
 	[string]$id,
 	[string]$title,
 	[string]$licenseUrl,
@@ -52,7 +51,7 @@ param(
 <package>
   <metadata>
     <id>$id</id>
-    <version>$version$preString</version>
+    <version>$version</version>
     <title>$title</title>
     <authors>Jon Arild Torresdal</authors>
     <owners>Jon Arild Torresdal</owners>
@@ -62,17 +61,17 @@ param(
     <description>$description</description>
     <iconUrl>$iconUrl</iconUrl>
     <releaseNotes>$releaseNotes</releaseNotes>
-    <copyright>Copyright 2012</copyright>
+    <copyright>Copyright ConDep $(Get-Date -format "yyyy")</copyright>
     <tags>$tags</tags>
     "
   if($dependencies -ne $null) {
-    $nuspec += "    <dependencies>
+    $nuspec += "<dependencies>
 "
     	$dependencies | foreach {
-      $nuspec += "<dependency id=""" + $_.Name + """ version=""" + $_.Version + """  />
-      "
+      $nuspec += "      <dependency id=""" + $_.Name + """ version=""" + $_.Version + """  />
+"
       }
-    $nuspec += "</dependencies>"
+    $nuspec += "    </dependencies>"
     }
 
   if($frameworkAssemblies -ne $null) {
@@ -86,19 +85,20 @@ param(
     }
 
 
-  $nuspec += "</metadata>
+  $nuspec += "
+  </metadata>
   "
   if($files -ne $null) {
-    $nuspec += "  <files>
-    "
+    $nuspec += "<files>
+"
   	$files | foreach {
   	$exclude = ""
 	if($_.Exclude -ne $null) { $exclude = " exclude=""" + $_.Exclude + """"}
-    $nuspec += "<file src=""" + $_.Path + """" + $exclude + " target=""" + $_.Target + """ />"
+    $nuspec += "    <file src=""" + $_.Path + """" + $exclude + " target=""" + $_.Target + """ />
+"
     }
-  $nuspec += "
-  </files>
-  "
+  $nuspec += "  </files>
+"
   }
 
 $nuspec += "</package>"
