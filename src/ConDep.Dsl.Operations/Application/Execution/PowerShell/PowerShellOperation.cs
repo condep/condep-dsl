@@ -39,8 +39,8 @@ namespace ConDep.Dsl.Operations.Application.Execution.PowerShell
 
             if(RequireRemoteLib)
             {
-                server.Deploy.File(Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "ConDep.Remote.dll"), @"%temp%\ConDep.Remote.dll");
-                libImport = "Add-Type -Path \"" + @"%temp%\ConDep.Remote.dll" + "\";";
+                server.Deploy.File(Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "ConDep.Dsl.Remote.Resources.dll"), @"%temp%\ConDep.Remote.dll");
+                libImport = "Add-Type -Path \"" + @"%temp%\ConDep.Dsl.Remote.Resources.dll" + "\";";
             }
             //elseif($Error.Count -gt 0) {{ Write-Error $Error[0]; exit 1; }} 
             server.ExecuteRemote.DosCommand(string.Format(@"powershell.exe -noprofile -InputFormat none -Command ""& {{ set-executionpolicy remotesigned -force; $ErrorActionPreference='stop'; Import-Module $env:windir\temp\ConDep\{0}\PSScripts\ConDep; {1}{2}; if(!$?) {{ exit 1; }} else {{ exit $LASTEXITCODE; }} }}""", ConDepGlobals.ExecId, libImport, _command), o => o.ContinueOnError(ContinueOnError));
@@ -85,7 +85,7 @@ namespace ConDep.Dsl.Operations.Application.Execution.PowerShell
             //var remoteLibExist = true;
             //if(RequireRemoteLib)
             //{
-            //    remoteLibExist = File.Exists(Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "ConDep.Remote.dll"));
+            //    remoteLibExist = File.Exists(Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "ConDep.Dsl.Remote.Resources.dll"));
             //}
             //return string.IsNullOrWhiteSpace(_command) && !string.IsNullOrWhiteSpace(DestinationPath) && remoteLibExist;
         }

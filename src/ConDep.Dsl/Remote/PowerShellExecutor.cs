@@ -63,7 +63,7 @@ namespace ConDep.Dsl.Remote
 
                         if (_loadConDepDotNetLibrary)
                         {
-                            var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}\ConDep.Remote.dll"";", _server.GetServerInfo().TempFolderPowerShell);
+                            var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}\ConDep.Dsl.Remote.Resources.dll"";", _server.GetServerInfo().TempFolderPowerShell);
                             pipeline.Commands.AddScript(netLibraryCmd);
                         }
 

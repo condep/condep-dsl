@@ -38,12 +38,12 @@ namespace ConDep.Dsl.Operations.Application.Deployment.Certificate
 
                 var destPath = string.Format(@"{0}\temp\{1}.pfx", "%windir%", Guid.NewGuid());
                 server.Deploy.File(path, destPath);
-                server.ExecuteRemote.PowerShell("$path=\"" + destPath + "\"; $password='" + _password + "'; $privateKeyUsers = " + psUserArray + "; [ConDep.Remote.CertificateInstaller]::InstallPfx($path, $password, $privateKeyUsers);", opt => opt.RequireRemoteLib());
+                server.ExecuteRemote.PowerShell("$path=\"" + destPath + "\"; $password='" + _password + "'; $privateKeyUsers = " + psUserArray + "; [ConDep.Dsl.Remote.Resources.CertificateInstaller]::InstallPfx($path, $password, $privateKeyUsers);", opt => opt.RequireRemoteLib());
             }
             else
             {
                 var base64Cert = Convert.ToBase64String(cert.RawData);
-                server.ExecuteRemote.PowerShell(string.Format("[ConDep.Remote.CertificateInstaller]::InstallCertFromBase64('{0}');", base64Cert), opt => opt.RequireRemoteLib());
+                server.ExecuteRemote.PowerShell(string.Format("[ConDep.Dsl.Remote.Resources.CertificateInstaller]::InstallCertFromBase64('{0}');", base64Cert), opt => opt.RequireRemoteLib());
             }
         }
 
