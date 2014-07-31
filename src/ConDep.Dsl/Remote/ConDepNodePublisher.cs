@@ -54,6 +54,9 @@ namespace ConDep.Dsl.Remote
         write-host 'ConDepNode deleted'
     }}
 
+    write-host 'Adding firewall rule for ConDepNode'
+    netsh advfirewall firewall delete rule name='ConDepNode'
+    netsh advfirewall firewall add rule name='ConDepNode' protocol=TCP localport=80 action=allow dir=IN
     write-host 'Creating new ConDepNode...'
     New-Service -Name ConDepNode -BinaryPathName ""$remFile {0}"" -StartupType Manual
     write-host 'ConDepNode created'

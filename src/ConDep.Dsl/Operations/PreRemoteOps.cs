@@ -120,7 +120,7 @@ namespace ConDep.Dsl.Operations
                     nodePublisher.Execute(server);
                     if (!nodePublisher.ValidateNode(string.Format(NODE_LISTEN_URL, server.Name), server.DeploymentUser.UserName, server.DeploymentUser.Password))
                     {
-                        throw new ConDepNodeValidationException("Unable to make contact witstring.Format(listenUrl, server.Name)h ConDep Node or return content from API.");
+                        throw new ConDepNodeValidationException("Unable to make contact with ConDep Node or return content from API.");
                     }
 
                     Logger.Info(string.Format("ConDep Node successfully deployed to {0}", server.Name));
