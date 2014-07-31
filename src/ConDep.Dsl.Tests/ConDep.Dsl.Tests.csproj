@@ -115,14 +115,11 @@
     <Compile Include="CertTests.cs" />
     <Compile Include="CompositeProviders\NServiceBus.cs" />
     <Compile Include="ConDepResourceFilesTests.cs" />
-    <Compile Include="ConfigTransformTests.cs" />
     <Compile Include="ImpersonatorTests.cs" />
     <Compile Include="JsonParsingTests.cs" />
     <Compile Include="LoadBalancerTests.cs" />
     <Compile Include="LoggerTests.cs" />
     <Compile Include="MockLoadBalancer.cs" />
-    <Compile Include="Operations\BasicProviderTests.cs" />
-    <Compile Include="Operations\Local\PreCompileTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -130,17 +127,11 @@
     </Compile>
     <Compile Include="CompositeProviders\PowerShell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SequenceTests.cs" />
     <Compile Include="TeamCityLoggerTests.cs" />
-    <Compile Include="OnlyIfTests.cs" />
     <Compile Include="UnitTestLogger.cs" />
     <Compile Include="SimpleTestFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConDep.Dsl.Operations\ConDep.Dsl.Operations.csproj">
-      <Project>{a1ff699a-76ff-440c-8fd2-9fca9ee3b26f}</Project>
-      <Name>ConDep.Dsl.Operations</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ConDep.Dsl\ConDep.Dsl.csproj">
       <Project>{e7eba0ac-b91d-450f-8a68-5adcf18fe17e}</Project>
       <Name>ConDep.Dsl</Name>
