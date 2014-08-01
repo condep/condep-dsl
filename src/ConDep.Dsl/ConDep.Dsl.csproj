@@ -57,9 +57,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ConDep.Dsl.Remote.Resources">
-      <HintPath>..\packages\ConDep.Dsl.Remote.Resources.3.0.2-beta\lib\net20\ConDep.Dsl.Remote.Resources.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
