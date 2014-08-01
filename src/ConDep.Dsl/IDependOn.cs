@@ -1,6 +1,6 @@
 ﻿namespace ConDep.Dsl
 {
-    public interface IDependOn<T> where T : ApplicationArtifact
+    public interface IDependOn<T> where T : IProvideArtifact
     {
          
     }

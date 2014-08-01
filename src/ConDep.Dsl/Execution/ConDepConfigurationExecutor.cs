@@ -175,28 +175,46 @@ namespace ConDep.Dsl.Execution
         private static void PopulateExecutionSequence(ConDepSettings conDepSettings, Notification notification,
                                                ExecutionSequenceManager sequenceManager)
         {
-            var applications = CreateApplicationArtifacts(conDepSettings);
-            foreach (var application in applications)
+            var artifacts = CreateApplicationArtifacts(conDepSettings);
+            foreach (var artifact in artifacts)
             {
-                var localSequence = sequenceManager.NewLocalSequence(application.GetType().Name);
+                var localSequence = sequenceManager.NewLocalSequence(artifact.GetType().Name);
                 var localBuilder = new LocalOperationsBuilder(localSequence, conDepSettings.Config.Servers);
-                //Configure.LocalOperations = localBuilder;
 
-                PopulateDependencies(conDepSettings, application, localBuilder);
-                application.Configure(localBuilder, conDepSettings);
+                PopulateDependencies(conDepSettings, localSequence, artifact, localBuilder);
+                ConfigureArtifact(conDepSettings, localSequence, localBuilder, artifact);
             }
         }
 
-        private static void PopulateDependencies(ConDepSettings conDepSettings, ApplicationArtifact application, LocalOperationsBuilder localBuilder)
+        private static void PopulateDependencies(ConDepSettings conDepSettings, LocalSequence localSequence, IProvideArtifact application, LocalOperationsBuilder localBuilder)
         {
-            var dependencyHandler = new ApplicationDependencyHandler(application);
+            var dependencyHandler = new ArtifactDependencyHandler(application);
             if (dependencyHandler.HasDependenciesDefined())
             {
-                var dependencies = dependencyHandler.GetDependeciesForApplication(conDepSettings);
+                var dependencies = dependencyHandler.GetDependeciesForArtifact(conDepSettings);
                 foreach (var dependency in dependencies)
                 {
-                    dependency.Configure(localBuilder, conDepSettings);
+                    ConfigureArtifact(conDepSettings, localSequence, localBuilder, dependency);
                 }
+            }
+        }
+
+        private static void ConfigureArtifact(ConDepSettings conDepSettings, LocalSequence localSequence,
+            LocalOperationsBuilder localBuilder, IProvideArtifact dependency)
+        {
+            if (dependency is ApplicationArtifact)
+            {
+                ((ApplicationArtifact) dependency).Configure(localBuilder, conDepSettings);
+            }
+            else if (dependency is Artifact.Local)
+            {
+                ((Artifact.Local) dependency).Configure(localBuilder, conDepSettings);
+            }
+            else if (dependency is Artifact.Remote)
+            {
+                var remoteSequence = localSequence.RemoteSequence(conDepSettings.Config.Servers);
+                var remoteBuilder = new RemoteOperationsBuilder(remoteSequence);
+                ((Artifact.Remote) dependency).Configure(remoteBuilder, conDepSettings);
             }
         }
 
@@ -234,12 +252,12 @@ namespace ConDep.Dsl.Execution
             }
         }
 
-        private static IEnumerable<ApplicationArtifact> CreateApplicationArtifacts(ConDepSettings settings)
+        private static IEnumerable<IProvideArtifact> CreateApplicationArtifacts(ConDepSettings settings)
         {
             var assembly = settings.Options.Assembly;
             if (settings.Options.HasApplicationDefined())
             {
-                var type = assembly.GetTypes().SingleOrDefault(t => typeof (ApplicationArtifact).IsAssignableFrom(t) && t.Name == settings.Options.Application);
+                var type = assembly.GetTypes().SingleOrDefault(t => typeof (IProvideArtifact).IsAssignableFrom(t) && t.Name == settings.Options.Application);
                 if (type == null)
                 {
                     throw new ConDepConfigurationTypeNotFoundException(string.Format("A class inheriting from [{0}] must be present in assembly [{1}] for ConDep to work. No calss with name [{2}] found in assembly. ",typeof (ApplicationArtifact).FullName, assembly.FullName, settings.Options.Application));
@@ -248,7 +266,7 @@ namespace ConDep.Dsl.Execution
             }
             else
             {
-                var types = assembly.GetTypes().Where(t => typeof(ApplicationArtifact).IsAssignableFrom(t));
+                var types = assembly.GetTypes().Where(t => typeof(IProvideArtifact).IsAssignableFrom(t));
                 foreach (var type in types)
                 {
                     yield return CreateApplicationArtifact(assembly, type);
@@ -256,9 +274,9 @@ namespace ConDep.Dsl.Execution
             }
         }
 
-        private static ApplicationArtifact CreateApplicationArtifact(Assembly assembly, Type type)
+        private static IProvideArtifact CreateApplicationArtifact(Assembly assembly, Type type)
         {
-            var application = assembly.CreateInstance(type.FullName) as ApplicationArtifact;
+            var application = assembly.CreateInstance(type.FullName) as IProvideArtifact;
             if (application == null) throw new NullReferenceException(string.Format("Instance of application class [{0}] in assembly [{1}] is not found.", type.FullName,assembly.FullName));
             return application;
         }
