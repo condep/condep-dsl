@@ -60,8 +60,8 @@ namespace ConDep.Dsl.Operations
             {
                 CopyFile(path, server, settings);
             }
-            var src = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "ConDep.Dsl.Remote.Resources.dll");
-            var dst = string.Format(@"{0}\{1}", server.GetServerInfo().TempFolderDos, "ConDep.Dsl.Remote.Resources.dll");
+            var src = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "ConDep.Dsl.Remote.Helpers.dll");
+            var dst = string.Format(@"{0}\{1}", server.GetServerInfo().TempFolderDos, "ConDep.Dsl.Remote.Helpers.dll");
             CopyFile(src, dst, server, settings);
         }
 
