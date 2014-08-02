@@ -22,18 +22,22 @@ $osInfo.SystemType = $compSystem.SystemType
 $osInfo.Name = $os.Caption
 $osInfo.Version = $os.Version
 $osInfo.BuildNumber = $os.BuildNumber
+$osInfo.ProgramFilesFolder = ${Env:ProgramFiles}
+$osInfo.ProgramFilesX86Folder = ${Env:ProgramFiles(x86)}
 
 return $osInfo
 ";
 
             var osInfoResult = psExecutor.Execute(osInfo, logOutput: false).FirstOrDefault();
             Logger.Verbose("Output from harvester:");
-            Logger.Verbose("BuildNumber  : " + osInfoResult.BuildNumber);
-            Logger.Verbose("Name         : " + osInfoResult.Name);
-            Logger.Verbose("HostName     : " + osInfoResult.HostName);
-            Logger.Verbose("SystemType   : " + osInfoResult.SystemType);
-            Logger.Verbose("SystemUpTime : " + osInfoResult.SystemUpTime);
-            Logger.Verbose("Version      : " + osInfoResult.Version);
+            Logger.Verbose("BuildNumber     : " + osInfoResult.BuildNumber);
+            Logger.Verbose("Name            : " + osInfoResult.Name);
+            Logger.Verbose("HostName        : " + osInfoResult.HostName);
+            Logger.Verbose("SystemType      : " + osInfoResult.SystemType);
+            Logger.Verbose("SystemUpTime    : " + osInfoResult.SystemUpTime);
+            Logger.Verbose("Version         : " + osInfoResult.Version);
+            Logger.Verbose("ProgramFiles    : " + osInfoResult.ProgramFilesFolder);
+            Logger.Verbose("ProgramFilesX86 : " + osInfoResult.ProgramFilesX86Folder);
 
             if (osInfoResult != null)
             {
@@ -44,7 +48,9 @@ return $osInfo
                                                             HostName = osInfoResult.HostName,
                                                             SystemType = osInfoResult.SystemType,
                                                             SystemUpTime = TimeSpan.FromSeconds(Convert.ToDouble(osInfoResult.SystemUpTime)),
-                                                            Version = osInfoResult.Version
+                                                            Version = osInfoResult.Version,
+                                                            ProgramFilesFolder = osInfoResult.ProgramFilesFolder,
+                                                            ProgramFilesX86Folder = osInfoResult.ProgramFilesX86Folder
                                                         };
             }
 

@@ -12,27 +12,17 @@ namespace ConDep.Dsl.Remote
     public class PowerShellExecutor
     {
         private readonly ServerConfig _server;
-        private bool _loadConDepModule = true;
-        private bool _loadConDepDotNetLibrary = false;
 
         private const string SHELL_URI = "http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
 
         public PowerShellExecutor(ServerConfig server)
         {
             _server = server;
+            LoadConDepModule = true;
         }
 
-        public bool LoadConDepModule
-        {
-            get { return _loadConDepModule; }
-            set { _loadConDepModule = value; }
-        }
-
-        public bool LoadConDepDotNetLibrary
-        {
-            get { return _loadConDepDotNetLibrary; }
-            set { _loadConDepDotNetLibrary = value; }
-        }
+        public bool LoadConDepModule { get; set; }
+        public bool LoadConDepDotNetLibrary { get; set; }
 
         public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
@@ -47,60 +37,57 @@ namespace ConDep.Dsl.Remote
             {
                 runspace.Open();
 
-                return Logger.WithLogSection("Executing command/script...", () =>
+                Logger.Verbose(commandOrScript);
+                var ps = PowerShell.Create();
+                ps.Runspace = runspace;
+
+                using (var pipeline = ps.Runspace.CreatePipeline("set-executionpolicy remotesigned -force"))
                 {
-                    Logger.Verbose(commandOrScript);
-                    var ps = PowerShell.Create();
-                    ps.Runspace = runspace;
-
-                    using (var pipeline = ps.Runspace.CreatePipeline("set-executionpolicy remotesigned -force"))
+                    if (LoadConDepModule)
                     {
-                        if (_loadConDepModule)
-                        {
-                            var conDepModule = string.Format(@"Import-Module $env:windir\temp\ConDep\{0}\PSScripts\ConDep;", ConDepGlobals.ExecId);
-                            pipeline.Commands.AddScript(conDepModule);
-                        }
-
-                        if (_loadConDepDotNetLibrary)
-                        {
-                            var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}\ConDep.Dsl.Remote.Helpers.dll"";", _server.GetServerInfo().TempFolderPowerShell);
-                            pipeline.Commands.AddScript(netLibraryCmd);
-                        }
-
-                        if (parameters != null)
-                        {
-                            var cmd = new Command(commandOrScript, true);
-                            foreach (var param in parameters)
-                            {
-                                cmd.Parameters.Add(param);
-                            }
-                            pipeline.Commands.Add(cmd);
-                        }
-                        else
-                        {
-                            pipeline.Commands.AddScript(commandOrScript);
-                        }
-
-                        var result = pipeline.Invoke();
-
-                        if (pipeline.Error.Count > 0)
-                        {
-                            var errorCollection = new PowerShellErrors();
-                            foreach (var exception in pipeline.Error.NonBlockingRead().OfType<ErrorRecord>())
-                            {
-                                errorCollection.Add(exception.Exception);
-                            }
-                            throw errorCollection;
-                        }
-
-                        foreach (var psObject in result.Where(psObject => logOutput))
-                        {
-                            Logger.Info(psObject.ToString());
-                        }
-
-                        return result;
+                        var conDepModule = string.Format(@"Import-Module $env:windir\temp\ConDep\{0}\PSScripts\ConDep;", ConDepGlobals.ExecId);
+                        pipeline.Commands.AddScript(conDepModule);
                     }
-                });
+
+                    if (LoadConDepDotNetLibrary)
+                    {
+                        var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}\ConDep.Dsl.Remote.Helpers.dll"";", _server.GetServerInfo().TempFolderPowerShell);
+                        pipeline.Commands.AddScript(netLibraryCmd);
+                    }
+
+                    if (parameters != null)
+                    {
+                        var cmd = new Command(commandOrScript, true);
+                        foreach (var param in parameters)
+                        {
+                            cmd.Parameters.Add(param);
+                        }
+                        pipeline.Commands.Add(cmd);
+                    }
+                    else
+                    {
+                        pipeline.Commands.AddScript(commandOrScript);
+                    }
+
+                    var result = pipeline.Invoke();
+
+                    if (pipeline.Error.Count > 0)
+                    {
+                        var errorCollection = new PowerShellErrors();
+                        foreach (var exception in pipeline.Error.NonBlockingRead().OfType<ErrorRecord>())
+                        {
+                            errorCollection.Add(exception.Exception);
+                        }
+                        throw errorCollection;
+                    }
+
+                    foreach (var psObject in result.Where(psObject => logOutput))
+                    {
+                        Logger.Info(psObject.ToString());
+                    }
+
+                    return result;
+                }
             }
 
         }

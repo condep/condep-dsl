@@ -13,22 +13,18 @@ namespace ConDep.Dsl.Operations
         {
             token.ThrowIfCancellationRequested();
 
-            Logger.WithLogSection("Removing ConDepNode from server...", () =>
+            Logger.WithLogSection(string.Format("Stopping ConDepNode on server {0}", server.Name), () =>
                 {
-                    var script = string.Format(@"add-type -AssemblyName System.ServiceProcess
+                    var script = @"add-type -AssemblyName System.ServiceProcess
 $service = get-service condepnode
 
 if($service) {{ 
     $service.Stop()
     $service.WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Stopped)
-    $wmiService = Get-WmiObject -Class Win32_Service -Filter ""Name='condepnode'"" 
-    $wmiService.Delete() | Out-Null
 }} 
-
-Remove-Item -force -recurse {0}{1}",
-                            @"$env:windir\temp\ConDep\", ConDepGlobals.ExecId);
+";
             var executor = new PowerShellExecutor(server) {LoadConDepModule = false};
-                    executor.Execute(script);
+                    executor.Execute(script, logOutput: false);
                 });
         }
 

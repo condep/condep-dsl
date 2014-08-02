@@ -9,11 +9,13 @@ namespace ConDep.Dsl.Harvesters
     public class ServerInfoHarvester
     {
         private readonly ConDepSettings _settings;
+        private readonly IEnumerable<Type> _mandatoryHarversters;
         private List<IHarvestServerInfo> _harvesters;
 
-        public ServerInfoHarvester(ConDepSettings settings)
+        public ServerInfoHarvester(ConDepSettings settings, IEnumerable<Type> mandatoryHarversters)
         {
             _settings = settings;
+            _mandatoryHarversters = mandatoryHarversters;
         }
 
         public void Harvest(ServerConfig server)
@@ -28,6 +30,11 @@ namespace ConDep.Dsl.Harvesters
 
         private IEnumerable<IHarvestServerInfo> GetHarvesters(ConDepSettings settings)
         {
+            if (settings.Options.SkipHarvesting)
+            {
+                return GetMandatoryHarvesters(GetType().Assembly.GetTypes());
+            }
+
             var internalHarvesters = GetHarvesters(GetType().Assembly.GetTypes());
             if (settings.Options.Assembly == null)
             {
@@ -41,6 +48,12 @@ namespace ConDep.Dsl.Harvesters
         private IEnumerable<IHarvestServerInfo> GetHarvesters(IEnumerable<Type> types)
         {
             return types.Where(t => t.GetInterfaces().Contains(typeof(IHarvestServerInfo)))
+                .Select(t => Activator.CreateInstance(t) as IHarvestServerInfo);
+        }
+
+        private IEnumerable<IHarvestServerInfo> GetMandatoryHarvesters(IEnumerable<Type> types)
+        {
+            return types.Where(t => _mandatoryHarversters.Any(x => x == t))
                 .Select(t => Activator.CreateInstance(t) as IHarvestServerInfo);
         } 
 

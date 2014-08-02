@@ -214,6 +214,7 @@ namespace ConDep.Dsl.Remote.Node
         {
             try
             {
+                Logger.Info("Validating connection to node...");
                 var availableApiResourcesResponse = _client.GetAsync("api").Result;
                 if (availableApiResourcesResponse == null)
                 {

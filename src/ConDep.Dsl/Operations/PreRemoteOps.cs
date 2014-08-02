@@ -95,7 +95,7 @@ namespace ConDep.Dsl.Operations
 
         private void TempInstallConDepNode(ServerConfig server, ConDepSettings settings)
         {
-            Logger.WithLogSection("Deploying ConDep Node", () =>
+            Logger.WithLogSection("Validating ConDepNode", () =>
                 {
                     string path;
 
@@ -116,14 +116,14 @@ namespace ConDep.Dsl.Operations
                     }
 
                     var byteArray = File.ReadAllBytes(path);
-                    var nodePublisher = new ConDepNodePublisher(byteArray, Path.Combine(server.GetServerInfo().TempFolderPowerShell, Path.GetFileName(path)), string.Format(NODE_LISTEN_URL, "localhost"), settings);
+                    var nodePublisher = new ConDepNodePublisher(byteArray, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), "", string.Format(NODE_LISTEN_URL, "localhost"), settings);
                     nodePublisher.Execute(server);
                     if (!nodePublisher.ValidateNode(string.Format(NODE_LISTEN_URL, server.Name), server.DeploymentUser.UserName, server.DeploymentUser.Password))
                     {
                         throw new ConDepNodeValidationException("Unable to make contact with ConDep Node or return content from API.");
                     }
 
-                    Logger.Info(string.Format("ConDep Node successfully deployed to {0}", server.Name));
+                    Logger.Info(string.Format("ConDep Node successfully validated on {0}", server.Name));
                     Logger.Info(string.Format("Node listening on {0}", string.Format(NODE_LISTEN_URL, server.Name)));
                 });
         }

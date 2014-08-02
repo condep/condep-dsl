@@ -12,6 +12,8 @@ namespace ConDep.Dsl.Config
         public string Name { get; set; }
         public string Version { get; set; }
         public int BuildNumber { get; set; }
+        public string ProgramFilesFolder { get; set; }
+        public string ProgramFilesX86Folder { get; set; }
 
         public WindowsOperatingSystem OsAsEnum()
         {

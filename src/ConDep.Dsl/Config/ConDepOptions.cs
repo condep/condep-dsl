@@ -8,6 +8,11 @@ namespace ConDep.Dsl.Config
     [Serializable]
     public class ConDepOptions
     {
+        public ConDepOptions()
+        {
+            SkipHarvesting = true;
+        }
+
         public string Application { get; set; }
         public bool DeployOnly { get; set; }
         public bool StopAfterMarkedServer { get; set; }
@@ -25,6 +30,7 @@ namespace ConDep.Dsl.Config
         public string CryptoKey { get; set; }
         public bool DryRun { get; set; }
         public int ApiTimout { get; set; }
+        public bool SkipHarvesting { get; set; }
 
         public bool HasApplicationDefined()
         {

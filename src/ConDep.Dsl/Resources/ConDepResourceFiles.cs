@@ -1,11 +1,28 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace ConDep.Dsl.Resources
 {
     public class ConDepResourceFiles
     {
+        public static string ExtractPowerShellFileFromResource(Assembly assembly, string resource)
+        {
+            var regex = new Regex(@".+\.(.+\.(ps1|psm1))");
+            var match = regex.Match(resource);
+            if (match.Success)
+            {
+                var resourceName = match.Groups[1].Value;
+                if (!string.IsNullOrWhiteSpace(resourceName))
+                {
+                    var resourceNamespace = resource.Replace("." + resourceName, "");
+                    return GetFilePath(assembly, resourceNamespace, resourceName, true);
+                }
+            }
+            return null;
+        }
+
         public static string GetFilePath(Assembly assembly, string resourceNamespace, string resourceName, bool keepOriginalFileName = false)
         {
             //Todo: not thread safe

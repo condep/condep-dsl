@@ -33,7 +33,7 @@ namespace ConDep.Dsl.Execution
 
                 var clientValidator = new ClientValidator();
 
-                var serverInfoHarvester = new ServerInfoHarvester(conDepSettings);
+                var serverInfoHarvester = new ServerInfoHarvester(conDepSettings, new[] {typeof(OperatingSystemHarvester), typeof(DotNetFrameworkHarvester)});
                 var serverValidator = new RemoteServerValidator(conDepSettings.Config.Servers,
                                                                 serverInfoHarvester);
 
