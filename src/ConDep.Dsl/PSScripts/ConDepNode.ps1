@@ -1,4 +1,4 @@
-﻿function Get-ConDepNode([string]$remFile, $deplNodeVersion = "3.0.1") {
+﻿function Get-ConDepNode([string]$remFile, $deplNodeVersion) {
 	$remFile = $ExecutionContext.InvokeCommand.ExpandString($remFile)
     $nodeVersion = ""
 

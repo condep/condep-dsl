@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Security;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Remote
 {
@@ -45,13 +45,13 @@ namespace ConDep.Dsl.Remote
                 {
                     if (LoadConDepModule)
                     {
-                        var conDepModule = string.Format(@"Import-Module $env:windir\temp\ConDep\{0}\PSScripts\ConDep;", ConDepGlobals.ExecId);
+                        var conDepModule = string.Format(@"Import-Module {0};", _server.GetServerInfo().ConDepScriptsFolder);
                         pipeline.Commands.AddScript(conDepModule);
                     }
 
                     if (LoadConDepDotNetLibrary)
                     {
-                        var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}\ConDep.Dsl.Remote.Helpers.dll"";", _server.GetServerInfo().TempFolderPowerShell);
+                        var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}"";", Path.Combine(_server.GetServerInfo().TempFolderPowerShell, "ConDep.Dsl.Remote.Helpers.dll"));
                         pipeline.Commands.AddScript(netLibraryCmd);
                     }
 

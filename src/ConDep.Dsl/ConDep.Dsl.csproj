@@ -158,6 +158,7 @@
     <Compile Include="Remote\ConDepNodePublisher.cs" />
     <Compile Include="Operations\LoadBalancer\ConDepLoadBalancerException.cs" />
     <EmbeddedResource Include="PSScripts\Windows.ps1" />
+    <Compile Include="Remote\PowerShellScriptPublisher.cs" />
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />
     <Compile Include="Security\JsonPasswordCrypto.cs" />

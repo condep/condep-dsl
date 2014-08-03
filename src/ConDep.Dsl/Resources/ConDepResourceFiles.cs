@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -23,9 +24,15 @@ namespace ConDep.Dsl.Resources
             return null;
         }
 
-        public static string GetFilePath(Assembly assembly, string resourceNamespace, string resourceName, bool keepOriginalFileName = false)
+        public static string GetFilePath(Assembly assembly, string resourceNamespace, string resourceName, bool keepOriginalFileName = false, bool versionFileName = false)
         {
             //Todo: not thread safe
+            string version = "";
+            if (versionFileName)
+            {
+                var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                version = string.Format("v{0}_{1}_{2}", versionInfo.FileMajorPart, versionInfo.FileMinorPart, versionInfo.FileBuildPart);
+            }
             var tempFolder = Path.GetTempPath();
             var filePath = Path.Combine(tempFolder, resourceName + (keepOriginalFileName ? "" : ".condep"));
 
