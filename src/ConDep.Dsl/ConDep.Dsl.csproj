@@ -97,7 +97,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationArtifact.cs" />
+    <Compile Include="IConfigureRemoteInstallation.cs" />
     <Compile Include="Builders\InfrastructureBuilder.cs" />
+    <Compile Include="Builders\RemoteInstallationBuilder.cs" />
     <Compile Include="Builders\LocalOperationsBuilder.cs" />
     <Compile Include="Builders\RemoteCompositeBuilder.cs" />
     <Compile Include="Builders\RemoteDeploymentBuilder.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="IConfigureRemoteExecution.cs" />
     <Compile Include="Config\ConDepAssemblyHandler.cs" />
     <Compile Include="Config\ConDepAssemblyNotFoundException.cs" />
+    <Compile Include="IOfferRemoteInstallation.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogForCondep.cs" />
     <Compile Include="Logging\Log4NetLoggerBase.cs" />

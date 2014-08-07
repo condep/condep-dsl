@@ -11,16 +11,12 @@ namespace ConDep.Dsl.Builders
         public RemoteOperationsBuilder(RemoteSequence remoteSequence)
         {
             _remoteSequence = remoteSequence;
-
-            //Configure.DeploymentOperations = new RemoteDeploymentBuilder(remoteSequence);
-            //Configure.ExecutionOperations = new RemoteExecutionBuilder(remoteSequence);
-            //Configure.InfrastructureOperations = new InfrastructureBuilder(remoteSequence);
-
         }
 
         public IOfferRemoteDeployment Deploy { get { return new RemoteDeploymentBuilder(_remoteSequence); } }
         public IOfferRemoteExecution ExecuteRemote { get { return new RemoteExecutionBuilder(_remoteSequence); } }
         public IOfferInfrastructure Require { get { return new InfrastructureBuilder(_remoteSequence);  } }
+        public IOfferRemoteInstallation Install { get { return new RemoteInstallationBuilder(_remoteSequence); } }
 
         public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)
         {
