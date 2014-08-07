@@ -262,22 +262,22 @@ namespace ConDep.Dsl.Execution
                 {
                     throw new ConDepConfigurationTypeNotFoundException(string.Format("A class inheriting from [{0}] must be present in assembly [{1}] for ConDep to work. No calss with name [{2}] found in assembly. ",typeof (ApplicationArtifact).FullName, assembly.FullName, settings.Options.Application));
                 }
-                yield return CreateApplicationArtifact(assembly, type);
+                yield return CreateApplicationArtifact(type);
             }
             else
             {
                 var types = assembly.GetTypes().Where(t => typeof(IProvideArtifact).IsAssignableFrom(t));
                 foreach (var type in types)
                 {
-                    yield return CreateApplicationArtifact(assembly, type);
+                    yield return CreateApplicationArtifact(type);
                 }
             }
         }
 
-        private static IProvideArtifact CreateApplicationArtifact(Assembly assembly, Type type)
+        private static IProvideArtifact CreateApplicationArtifact(Type type)
         {
-            var application = assembly.CreateInstance(type.FullName) as IProvideArtifact;
-            if (application == null) throw new NullReferenceException(string.Format("Instance of application class [{0}] in assembly [{1}] is not found.", type.FullName,assembly.FullName));
+            var application = Activator.CreateInstance(type) as IProvideArtifact;
+            if (application == null) throw new NullReferenceException(string.Format("Instance of application class [{0}] not found.", type.FullName));
             return application;
         }
     }

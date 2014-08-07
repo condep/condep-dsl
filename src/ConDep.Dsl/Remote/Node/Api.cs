@@ -55,7 +55,7 @@ namespace ConDep.Dsl.Remote.Node
             if (syncResponse.IsSuccessStatusCode)
             {
                 var webAppInfo = syncResponse.Content.ReadAsAsync<WebAppInfo>().Result;
-                if (!string.IsNullOrWhiteSpace(dstPath) && webAppInfo.Exist && webAppInfo.PhysicalPath != dstPath)
+                if (!string.IsNullOrWhiteSpace(dstPath) && webAppInfo.Exist && !string.Equals(webAppInfo.PhysicalPath, dstPath, StringComparison.OrdinalIgnoreCase))
                 {
                     throw new ArgumentException(string.Format("Web app {0} already exist and physical path differs from path provided.", webAppName));
                 }
