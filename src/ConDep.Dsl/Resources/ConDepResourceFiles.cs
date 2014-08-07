@@ -18,24 +18,22 @@ namespace ConDep.Dsl.Resources
                 if (!string.IsNullOrWhiteSpace(resourceName))
                 {
                     var resourceNamespace = resource.Replace("." + resourceName, "");
-                    return GetFilePath(assembly, resourceNamespace, resourceName, true);
+                    return GetFilePath(assembly, resourceNamespace, resourceName, keepOriginalFileName: true);
                 }
             }
             return null;
         }
 
-        public static string GetFilePath(Assembly assembly, string resourceNamespace, string resourceName, bool keepOriginalFileName = false, bool versionFileName = false)
+        public static string GetFilePath(Assembly assembly, string resourceNamespace, string resourceName, string dirPath = "", bool keepOriginalFileName = false)
         {
             //Todo: not thread safe
-            string version = "";
-            if (versionFileName)
-            {
-                var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-                version = string.Format("v{0}_{1}_{2}", versionInfo.FileMajorPart, versionInfo.FileMinorPart, versionInfo.FileBuildPart);
-            }
-            var tempFolder = Path.GetTempPath();
+            var tempFolder = string.IsNullOrWhiteSpace(dirPath) ? Path.GetTempPath() : dirPath;
             var filePath = Path.Combine(tempFolder, resourceName + (keepOriginalFileName ? "" : ".condep"));
 
+            if (!Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
             try
             {
                 using (var stream = assembly.GetManifestResourceStream(resourceNamespace + "." + resourceName))
@@ -60,7 +58,7 @@ namespace ConDep.Dsl.Resources
 
         internal static string GetFilePath(string resourceNamespace, string resourceName, bool keepOriginalFileName = false)
         {
-            return GetFilePath(Assembly.GetExecutingAssembly(), resourceNamespace, resourceName, keepOriginalFileName);
+            return GetFilePath(Assembly.GetExecutingAssembly(), resourceNamespace, resourceName, keepOriginalFileName: keepOriginalFileName);
         }
     }
 }

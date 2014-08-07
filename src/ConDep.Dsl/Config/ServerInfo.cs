@@ -8,6 +8,7 @@ namespace ConDep.Dsl.Config
     public class ServerInfo
     {
         private const string RELATIVE_CONDEP_SCRIPTS_FOLDER = @"PSScripts\ConDep";
+        private const string RELATIVE_CONDEPNODE_SCRIPTS_FOLDER = @"PSScripts\ConDepNode";
 
         private readonly DotNetFrameworks _dotNetFrameworks = new DotNetFrameworks();
         private readonly IList<NetworkInfo> _network = new List<NetworkInfo>();
@@ -20,12 +21,28 @@ namespace ConDep.Dsl.Config
 
         public string TempFolderDos { get; set; }
 
-        public string ConDepScriptsFolder 
-        { 
+        public string ConDepScriptsFolder
+        {
             get
             {
                 return Path.Combine(TempFolderPowerShell, RELATIVE_CONDEP_SCRIPTS_FOLDER);
-            } 
+            }
+        }
+
+        public string ConDepScriptsFolderDos
+        {
+            get
+            {
+                return Path.Combine(TempFolderDos, RELATIVE_CONDEP_SCRIPTS_FOLDER);
+            }
+        }
+
+        public string ConDepNodeScriptsFolder
+        {
+            get
+            {
+                return Path.Combine(TempFolderPowerShell, RELATIVE_CONDEPNODE_SCRIPTS_FOLDER);
+            }
         }
 
         public IList<NetworkInfo> Network

@@ -135,11 +135,14 @@
     <Compile Include="Operations\RemoteCompositeOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperationBase.cs" />
     <Compile Include="Operations\RemoteOperation.cs" />
+    <Compile Include="PSScripts\ConDepNode\ConDepNodeResources.cs" />
+    <Compile Include="PSScripts\ConDep\ConDepResources.cs" />
     <Compile Include="Remote\ConDepNodeValidationException.cs" />
     <Compile Include="Remote\ConDepPSHost.cs" />
     <Compile Include="Remote\ConDepPsHostRawUI.cs" />
     <Compile Include="Remote\ConDepPSHostUI.cs" />
     <Compile Include="Remote\FilePublisher.cs" />
+    <Compile Include="Remote\FileHashGenerator.cs" />
     <Compile Include="Remote\Node\Api.cs" />
     <Compile Include="Remote\Node\Model\DirectoryInfoExtensions.cs" />
     <Compile Include="Remote\Node\Model\Link.cs" />
@@ -157,7 +160,6 @@
     <Compile Include="Remote\PowerShellExecutor.cs" />
     <Compile Include="Remote\ConDepNodePublisher.cs" />
     <Compile Include="Operations\LoadBalancer\ConDepLoadBalancerException.cs" />
-    <EmbeddedResource Include="PSScripts\Windows.ps1" />
     <Compile Include="Remote\PowerShellScriptPublisher.cs" />
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />
@@ -244,11 +246,12 @@
     <Compile Include="Validation\ValidationErrorType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PSScripts\ConDep.psm1" />
-    <None Include="packages.config" />
-    <EmbeddedResource Include="PSScripts\Iis.ps1" />
-    <EmbeddedResource Include="PSScripts\WinService.ps1" />
-    <EmbeddedResource Include="PSScripts\ConDepNode.ps1" />
+    <EmbeddedResource Include="PSScripts\ConDep\ConDep.psm1" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="PSScripts\ConDepNode.ps1" />
+    <EmbeddedResource Include="PSScripts\ConDepNode\ConDepNode.psm1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

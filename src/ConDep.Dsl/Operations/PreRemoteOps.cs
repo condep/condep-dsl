@@ -1,15 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.PSScripts;
 using ConDep.Dsl.Remote;
-using ConDep.Dsl.Resources;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations
@@ -31,12 +25,16 @@ namespace ConDep.Dsl.Operations
                     server.GetServerInfo().TempFolderPowerShell = string.Format(TMP_FOLDER, "$env:windir");
                     Logger.Info(string.Format("PowerShell temp folder is {0}", server.GetServerInfo().TempFolderPowerShell));
 
-                    Logger.WithLogSection("Copying PowerShell Scripts", () => CopyResourceFiles(Assembly.GetExecutingAssembly(), PowerShellResources.PowerShellScriptResources, server, settings));
+                    //var scriptPublisher = new PowerShellScriptPublisher(settings);
+                    //Logger.WithLogSection("Copying internal ConDep scripts", () => scriptPublisher.PublishDslScripts(server));
 
                     TempInstallConDepNode(server, settings);
 
+                    var scriptPublisher = new PowerShellScriptPublisher(settings);
+                    Logger.WithLogSection("Copying external scripts", () => scriptPublisher.PublishScripts(server));
+                    Logger.WithLogSection("Copying remote helper assembly", () => scriptPublisher.PublishRemoteHelperAssembly(server));
+                    //Logger.WithLogSection("Copying external scripts", () => scriptPublisher.PublishExternalScripts(server));
                 });
-
         }
 
         public bool IsValid(Notification notification)
@@ -44,17 +42,13 @@ namespace ConDep.Dsl.Operations
             return true;
         }
 
-        private void CopyResourceFiles(Assembly assembly, IEnumerable<string> resources, ServerConfig server, ConDepSettings settings)
-        {
-            if (resources == null || assembly == null) return;
+        //private void CopyResourceFiles(Assembly assembly, IEnumerable<string> resources, ServerConfig server, ConDepSettings settings)
+        //{
+        //    if (resources == null || assembly == null) return;
 
-            var scriptPublisher = new PowerShellScriptPublisher(settings);
-            scriptPublisher.PublishDslScripts(server);
-
-            var src = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "ConDep.Dsl.Remote.Helpers.dll");
-            var dst = string.Format(@"{0}\{1}", server.GetServerInfo().TempFolderPowerShell, "ConDep.Dsl.Remote.Helpers.dll");
-            scriptPublisher.PublishFile(src, dst, server);
-        }
+        //    var scriptPublisher = new PowerShellScriptPublisher(settings);
+        //    scriptPublisher.PublishDslScripts(server);
+        //}
 
         private void TempInstallConDepNode(ServerConfig server, ConDepSettings settings)
         {
@@ -78,8 +72,7 @@ namespace ConDep.Dsl.Operations
                         path = executionPath;
                     }
 
-                    var byteArray = File.ReadAllBytes(path);
-                    var nodePublisher = new ConDepNodePublisher(byteArray, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), string.Format(NODE_LISTEN_URL, "localhost"), settings);
+                    var nodePublisher = new ConDepNodePublisher(path, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), string.Format(NODE_LISTEN_URL, "localhost"), settings);
                     nodePublisher.Execute(server);
                     if (!nodePublisher.ValidateNode(string.Format(NODE_LISTEN_URL, server.Name), server.DeploymentUser.UserName, server.DeploymentUser.Password))
                     {

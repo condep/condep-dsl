@@ -1,4 +1,6 @@
-﻿function Get-ConDepNodeState([string]$path, $hash) {
+﻿Set-StrictMode -Version 3
+
+function Get-ConDepNodeState([string]$path, $hash) {
 	$path = $ExecutionContext.InvokeCommand.ExpandString($path)
 
     $conDepReturnValues = New-Object PSObject -Property @{         
@@ -141,3 +143,5 @@ function Get-ConDepFileHash($path) {
         return ""
     }
 }
+
+Export-ModuleMember -Function *-*

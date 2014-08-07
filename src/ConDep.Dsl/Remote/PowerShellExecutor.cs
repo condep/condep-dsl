@@ -22,6 +22,7 @@ namespace ConDep.Dsl.Remote
         }
 
         public bool LoadConDepModule { get; set; }
+        public bool LoadConDepNodeModule { get; set; }
         public bool LoadConDepDotNetLibrary { get; set; }
 
         public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
@@ -47,6 +48,12 @@ namespace ConDep.Dsl.Remote
                     {
                         var conDepModule = string.Format(@"Import-Module {0};", _server.GetServerInfo().ConDepScriptsFolder);
                         pipeline.Commands.AddScript(conDepModule);
+                    }
+
+                    if (LoadConDepNodeModule)
+                    {
+                        var conDepNodeModule = string.Format(@"Import-Module {0};", _server.GetServerInfo().ConDepNodeScriptsFolder);
+                        pipeline.Commands.AddScript(conDepNodeModule);
                     }
 
                     if (LoadConDepDotNetLibrary)

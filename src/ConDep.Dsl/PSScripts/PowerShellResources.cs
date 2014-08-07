@@ -16,6 +16,6 @@ namespace ConDep.Dsl.PSScripts
                 var regex = new Regex(pattern);
                 return resources.Where(psPath => regex.Match(psPath).Success);
             }
-        } 
+        }
     }
 }
