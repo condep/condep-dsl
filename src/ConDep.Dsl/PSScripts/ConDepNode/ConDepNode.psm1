@@ -100,8 +100,9 @@ function Add-ConDepNode([string]$path, $data, $url) {
 
 	Remove-ConDepNodeService
     
-	write-host 'Deploying node to $dir'
+	write-host "Deploying node to $dir"
     $dirInfo = [IO.Directory]::CreateDirectory($dir)
+
 	if(Test-Path $path) {
 		[IO.File]::Delete($path)
 	}

@@ -44,7 +44,7 @@ namespace ConDep.Dsl.Remote
                 var parameters = new List<CommandParameter>
                                  {
                                      new CommandParameter("path", _destPath),
-                                     new CommandParameter("hash", byteArray)
+                                     new CommandParameter("data", byteArray)
                                  };
 
                 var executor = new PowerShellExecutor(server) { LoadConDepNodeModule = true, LoadConDepModule = false };
