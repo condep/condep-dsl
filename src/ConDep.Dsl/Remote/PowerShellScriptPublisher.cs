@@ -1,16 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.Logging;
 using ConDep.Dsl.PSScripts.ConDep;
-using ConDep.Dsl.Remote.Node.Model;
 using ConDep.Dsl.Resources;
 
 namespace ConDep.Dsl.Remote
@@ -39,34 +34,6 @@ namespace ConDep.Dsl.Remote
             SaveExecutionPathScriptsToFolder(localTargetPath);
 
             SyncDir(localTargetPath, server.GetServerInfo().ConDepScriptsFolderDos, server, _settings);
-            //foreach (var srcPath in scriptFiles)
-            //{
-            //    Logger.Verbose("Found script {0} in assembly {1}", srcPath, GetType().Assembly.FullName);
-            //    var dstPath = Path.Combine(server.GetServerInfo().ConDepScriptsFolder, Path.GetFileName(srcPath)); 
-            //    CopyFile(srcPath, dstPath, server, _settings);
-            //}
-        }
-
-        private void SaveConDepScriptModuleResourceToFolder(string localTargetPath)
-        {
-            var resource = ConDepResources.ConDepModule;
-            GetFilePathForConDepScriptModule(resource, localTargetPath);
-        }
-
-        private string GetFilePathForConDepScriptModule(string resource, string localTargetPath)
-        {
-            var regex = new Regex(@".+\.(.+\.(ps1|psm1))");
-            var match = regex.Match(resource);
-            if (match.Success)
-            {
-                var resourceName = match.Groups[1].Value;
-                if (!string.IsNullOrWhiteSpace(resourceName))
-                {
-                    var resourceNamespace = resource.Replace("." + resourceName, "");
-                    return ConDepResourceFiles.GetFilePath(GetType().Assembly, resourceNamespace, resourceName, dirPath: localTargetPath, keepOriginalFileName: true);
-                }
-            }
-            return null;
         }
 
         public void SyncDir(string srcDir, string dstDir, ServerConfig server, ConDepSettings settings)
@@ -75,20 +42,27 @@ namespace ConDep.Dsl.Remote
             filePublisher.PublishDirectory(srcDir, dstDir, server, settings);
         }
 
-        //public void PublishExternalScripts(ServerConfig server)
-        //{
-        //    var files = SaveExecutionPathScriptsToFolder();
-        //    foreach (var file in files)
-        //    {
-        //        var dstPath = string.Format(@"{0}\PSScripts\ConDep\{1}", server.GetServerInfo().TempFolderDos, Path.GetFileName(file));
-        //        CopyFile(file, dstPath, server, _settings);
-        //    }
-        //}
-
         public void PublishRemoteHelperAssembly(ServerConfig server)
         {
             var src = Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), "ConDep.Dsl.Remote.Helpers.dll");
             CopyFile(src, server, _settings);
+        }
+
+        private void SaveConDepScriptModuleResourceToFolder(string localTargetPath)
+        {
+            var resource = ConDepResources.ConDepModule;
+            
+            var regex = new Regex(@".+\.(.+\.(ps1|psm1))");
+            var match = regex.Match(resource);
+            if (match.Success)
+            {
+                var resourceName = match.Groups[1].Value;
+                if (!string.IsNullOrWhiteSpace(resourceName))
+                {
+                    var resourceNamespace = resource.Replace("." + resourceName, "");
+                    ConDepResourceFiles.GetFilePath(GetType().Assembly, resourceNamespace, resourceName, dirPath: localTargetPath, keepOriginalFileName: true);
+                }
+            }
         }
 
         private void CopyFile(string srcPath, ServerConfig server, ConDepSettings settings)
@@ -163,34 +137,6 @@ namespace ConDep.Dsl.Remote
                 }
             }
             return null;
-        }
-
-        public void PublishFile(string srcPath, string dstPath, ServerConfig server)
-        {
-            const string publishScript = @"Param([string]$path, $data)
-    $path = $ExecutionContext.InvokeCommand.ExpandString($path)
-    $dir = Split-Path $path
-
-    $dirInfo = [IO.Directory]::CreateDirectory($dir)
-    if(Test-Path $path) {
-        [IO.File]::Delete($path)
-    }
-
-    [IO.FileStream]$filestream = [IO.File]::OpenWrite( $path )
-    $filestream.Write( $data, 0, $data.Length )
-    $filestream.Close()
-    write-host ""File $path created""
-";
-
-            var scriptByteArray = File.ReadAllBytes(srcPath);
-
-            var scriptParameters = new List<CommandParameter>
-            {
-                new CommandParameter("path", dstPath),
-                new CommandParameter("data", scriptByteArray)
-            };
-            var scriptExecutor = new PowerShellExecutor(server) { LoadConDepModule = false };
-            scriptExecutor.Execute(publishScript, parameters: scriptParameters, logOutput: false);
         }
     }
 }

@@ -5,12 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.PSScripts;
 using ConDep.Dsl.PSScripts.ConDepNode;
 using ConDep.Dsl.Resources;
 
@@ -21,6 +19,7 @@ namespace ConDep.Dsl.Remote
         private readonly string _srcPath;
         private readonly string _destPath;
         private readonly string _listenUrl;
+
         private readonly ConDepSettings _settings;
 
         public ConDepNodePublisher(string srcPath, string destPath, string listenUrl, ConDepSettings settings)
@@ -58,6 +57,17 @@ namespace ConDep.Dsl.Remote
             }
         }
 
+        public bool ValidateNode(string nodeListenUrl, string userName, string password)
+        {
+            var api = new Node.Api(nodeListenUrl, userName, password, _settings.Options.ApiTimout);
+            if (!api.Validate())
+            {
+                Thread.Sleep(1000);
+                return api.Validate();
+            }
+            return true;
+        }
+
         private void DeployNodeScript(ServerConfig server)
         {
             var resource = ConDepNodeResources.ConDepNodeModule;
@@ -69,7 +79,6 @@ namespace ConDep.Dsl.Remote
                 var dstPath = Path.Combine(server.GetServerInfo().ConDepNodeScriptsFolder, Path.GetFileName(localModulePath));
                 PublishFile(localModulePath, dstPath, server);
             }
-
         }
 
         private void PublishFile(string srcPath, string dstPath, ServerConfig server)
@@ -172,17 +181,6 @@ return $conDepReturnValues
             return null;
         }
 
-
-        public bool ValidateNode(string nodeListenUrl, string userName, string password)
-        {
-            var api = new Node.Api(nodeListenUrl, userName, password, _settings.Options.ApiTimout);
-            if (!api.Validate())
-            {
-                Thread.Sleep(1000);
-                return api.Validate();
-            }
-            return true;
-        }
 
         public void Dispose()
         {
