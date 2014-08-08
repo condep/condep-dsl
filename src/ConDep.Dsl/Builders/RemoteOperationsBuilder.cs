@@ -1,5 +1,6 @@
 using System;
 using ConDep.Dsl.Config;
+using ConDep.Dsl.Operations;
 using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
@@ -22,5 +23,11 @@ namespace ConDep.Dsl.Builders
         {
             return new RemoteCompositeBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
+
+        public void AddOperation(IOperateRemote operation)
+        {
+            _remoteSequence.Add(operation);
+        }
+
     }
 }

@@ -39,6 +39,18 @@ namespace ConDep.Dsl
             seqContainer.AddOperation(operation);
         }
 
+        public static void Remote(IOfferRemoteOperations remote, RemoteOperation operation)
+        {
+            var seqContainer = remote as RemoteOperationsBuilder;
+            seqContainer.AddOperation(operation);
+        }
+
+        public static void Installation(IOfferRemoteInstallation installation, RemoteCompositeOperation operation)
+        {
+            var seqContainer = installation as RemoteInstallationBuilder;
+            seqContainer.AddOperation(operation);
+        }
+
         public static void Infrastructure(IOfferInfrastructure infrastructure, RemoteCompositeOperation operation)
         {
             var seqContainer = infrastructure as InfrastructureBuilder;
