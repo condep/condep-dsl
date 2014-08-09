@@ -52,9 +52,14 @@ namespace ConDep.Dsl.Remote
             }
             else if (!conDepResult.IsNodeServiceRunning)
             {
-                var startServiceExecutor = new PowerShellExecutor(server);
-                startServiceExecutor.Execute(string.Format("Start-ConDepNode \"{0}\" \"{1}\"", _destPath, _listenUrl), logOutput: false);
+                StartConDepNode(server);
             }
+        }
+
+        public static void StartConDepNode(ServerConfig server)
+        {
+            var startServiceExecutor = new PowerShellExecutor(server) { LoadConDepNodeModule = true, LoadConDepModule = false };
+            startServiceExecutor.Execute("Start-ConDepNode", logOutput: false);
         }
 
         public bool ValidateNode(string nodeListenUrl, string userName, string password)

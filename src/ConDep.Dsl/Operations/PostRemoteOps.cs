@@ -2,7 +2,6 @@ using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Remote;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations
@@ -14,18 +13,10 @@ namespace ConDep.Dsl.Operations
             token.ThrowIfCancellationRequested();
 
             Logger.WithLogSection(string.Format("Stopping ConDepNode on server {0}", server.Name), () =>
-                {
-                    var script = @"add-type -AssemblyName System.ServiceProcess
-$service = get-service condepnode
-
-if($service) {{ 
-    $service.Stop()
-    $service.WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Stopped)
-}} 
-";
-            var executor = new PowerShellExecutor(server) {LoadConDepModule = false};
-                    executor.Execute(script, logOutput: false);
-                });
+            {
+                var executor = new PowerShellExecutor(server) {LoadConDepModule = false, LoadConDepNodeModule = true};
+                executor.Execute("Stop-ConDepNode", logOutput: false);
+            });
         }
 
         public string Name { get { return "Post Remote Operation"; } }
