@@ -92,6 +92,16 @@ namespace ConDep.Dsl.Logging
             _log.Verbose(message, ex, formatArgs);
         }
 
+        public static void Progress(string message, params object[] formatArgs)
+        {
+            _log.Progress(message, formatArgs);
+        }
+
+        public static void ProgressEnd()
+        {
+            _log.ProgressEnd();
+        }
+
         public static void Log(string message, TraceLevel traceLevel, params object[] formatArgs)
         {
             _log.Log(message, traceLevel, formatArgs);

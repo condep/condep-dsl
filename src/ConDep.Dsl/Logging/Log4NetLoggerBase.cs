@@ -60,7 +60,6 @@ namespace ConDep.Dsl.Logging
             {
                 _log4netLog.Logger.Log(typeof(Logger), level, inlineMessage, ex);
             }
-
         }
 
         private static Level GetLog4NetLevel(TraceLevel traceLevel)

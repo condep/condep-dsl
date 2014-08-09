@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Security;
@@ -56,7 +57,27 @@ namespace ConDep.Dsl.Remote
 
         public override void WriteProgress(long sourceId, ProgressRecord record)
         {
-            //
+            if (record.RecordType == ProgressRecordType.Completed)
+            {
+                Logger.ProgressEnd();
+            }
+            if (record.RecordType == ProgressRecordType.Processing)
+            {
+                if (record.PercentComplete > -1)
+                {
+                    var myStr = new String('>', record.PercentComplete/5);
+                    var myStr2 = new string(' ', 20 - myStr.Length);
+                    Logger.Progress("Progress: [" + myStr + myStr2 + "]");
+                }
+                else if (record.StatusDescription.Length > 10)
+                {
+                    Logger.Progress(record.StatusDescription);
+                }
+                else
+                {
+                    Logger.Progress("Progress: " + record.StatusDescription);
+                }
+            }
         }
 
         public override void WriteVerboseLine(string message)

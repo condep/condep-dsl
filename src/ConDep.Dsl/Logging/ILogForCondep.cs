@@ -15,6 +15,8 @@ namespace ConDep.Dsl.Logging
         void Log(string message, Exception ex, TraceLevel traceLevel, params object[] formatArgs);
         void Error(string message, params object[] formatArgs);
         void Error(string message, Exception ex, params object[] formatArgs);
+        void Progress(string message, params object[] formatArgs);
+        void ProgressEnd();
         void LogSectionStart(string name);
         void LogSectionEnd(string name);
         TraceLevel TraceLevel { get; set; }

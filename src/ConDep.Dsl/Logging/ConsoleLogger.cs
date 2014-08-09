@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using log4net;
 
 namespace ConDep.Dsl.Logging
@@ -42,6 +43,18 @@ namespace ConDep.Dsl.Logging
             Log(message, null, traceLevel, formatArgs);
         }
 
+        public override void Progress(string message, params object[] formatArgs)
+        {
+            var prefix = GetSectionPrefix();
+            var messageFormatted = TrimProgressMessage("\r               " + prefix + message + "              ", "");
+            Console.Write(messageFormatted);
+        }
+
+        public override void ProgressEnd()
+        {
+            Console.WriteLine();
+        }
+
         public override void Log(string message, Exception ex, TraceLevel traceLevel, params object[] formatArgs)
         {
             var lines = message.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
@@ -68,6 +81,19 @@ namespace ConDep.Dsl.Logging
             }
 
             return Chunk(message, chunkSize);
+        }
+
+        private string TrimProgressMessage(string message, string prefix)
+        {
+            if (!_isConsole) return message;
+
+            var chunkSize = Console.BufferWidth - prefix.Length;
+            if (message.Length <= chunkSize)
+            {
+                return message;
+            }
+
+            return Chunk(message, chunkSize).First();
         }
 
         static IEnumerable<string> Chunk(string str, int chunkSize)

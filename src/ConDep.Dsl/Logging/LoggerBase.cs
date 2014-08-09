@@ -45,6 +45,9 @@ namespace ConDep.Dsl.Logging
             Log(message, ex, TraceLevel.Error, formatArgs);
         }
 
+        public abstract void Progress(string message, params object[] formatArgs);
+        public abstract void ProgressEnd();
+
         public virtual void Log(string message, TraceLevel traceLevel, params object[] formatArgs)
         {
             Log(message, null, traceLevel, formatArgs);

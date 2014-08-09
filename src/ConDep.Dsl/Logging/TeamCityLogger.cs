@@ -36,6 +36,15 @@ namespace ConDep.Dsl.Logging
             TeamCityMessage(message, ex, TeamCityMessageStatus.ERROR, formatArgs);
         }
 
+        public override void Progress(string message, params object[] formatArgs)
+        {
+            
+        }
+
+        public override void ProgressEnd()
+        {
+        }
+
         public override void LogSectionStart(string name)
         {
             TeamCityBlockStart(name);
