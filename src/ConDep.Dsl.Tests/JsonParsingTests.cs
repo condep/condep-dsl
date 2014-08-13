@@ -64,25 +64,19 @@ namespace ConDep.Dsl.Tests
         ""UserName"": ""torresdal\\condepuser"",
         ""Password"": ""verySecureP@ssw0rd""
     },
-    ""CustomProviderConfig"":
-    [
+    ""OperationsConfig"":
+    {
+        ""NServiceBusOperation"": 
         {
-            ""ProviderName"" : ""NServiceBusProvider"",
-            ""ProviderConfig"": 
-            {
-                ""ServiceUserName"": ""torresdal\\nservicebususer"",
-                ""ServicePassword"": ""verySecureP@ssw0rd""
-            }
+            ""ServiceUserName"": ""torresdal\\nservicebususer"",
+            ""ServicePassword"": ""verySecureP@ssw0rd""
         },
+        ""SomeOtherOperation"":
         {
-            ""ProviderName"" : ""SomeOtherProvider"",
-            ""ProviderConfig"":
-            {
-                ""SomeOtherSetting1"": ""asdfasdf"",
-                ""SomeOtherSetting2"": ""34tsdfg""
-            }
+            ""SomeOtherSetting1"": ""asdfasdf"",
+            ""SomeOtherSetting2"": ""34tsdfg""
         }
-    ]
+    }
 }";
 
         private string _json =
@@ -178,25 +172,19 @@ namespace ConDep.Dsl.Tests
         ""UserName"": ""torresdal\\condepuser"",
         ""Password"": ""verySecureP@ssw0rd""
     },
-    ""CustomProviderConfig"":
-    [
+    ""OperationsConfig"":
+    {
+        ""NServiceBusOperation"": 
         {
-            ""ProviderName"" : ""NServiceBusProvider"",
-            ""ProviderConfig"": 
-            {
-                ""ServiceUserName"": ""torresdal\\nservicebususer"",
-                ""ServicePassword"": ""verySecureP@ssw0rd""
-            }
+            ""ServiceUserName"": ""torresdal\\nservicebususer"",
+            ""ServicePassword"": ""verySecureP@ssw0rd""
         },
+        ""SomeOtherOperation"":
         {
-            ""ProviderName"" : ""SomeOtherProvider"",
-            ""ProviderConfig"":
-            {
-                ""SomeOtherSetting1"": ""asdfasdf"",
-                ""SomeOtherSetting2"": ""34tsdfg""
-            }
+            ""SomeOtherSetting1"": ""asdfasdf"",
+            ""SomeOtherSetting2"": ""34tsdfg""
         }
-    ]
+    }
 }";
 
         private ConDepEnvConfig _config;
@@ -246,38 +234,21 @@ namespace ConDep.Dsl.Tests
         }
 
         [Test]
-        public void TestThatCustomProviderConfigExist()
+        public void TestThatOperationsConfigExist()
         {
-            Assert.That(_config.CustomProviderConfig, Is.Not.Null.Or.Empty);
+            Assert.That(_config.OperationsConfig, Is.Not.Null.Or.Empty);
         }
 
         [Test]
-        public void TestThatCustomProviderHasExactlyTwoProviders()
+        public void TestThatNServiceBusOperationHasValues()
         {
-            Assert.That(_config.CustomProviderConfig.Count, Is.EqualTo(2));
+            Assert.That(_config.OperationsConfig.NServiceBusOperation, Is.Not.Null);
         }
 
         [Test]
-        public void TestThatCustomProvidersHasValues()
+        public void TestThatSomeOtherProviderHasValues()
         {
-            foreach(var provider in _config.CustomProviderConfig)
-            {
-                Assert.That(provider.ProviderConfig, Is.Not.Null.Or.Empty);
-                Assert.That(provider.ProviderName, Is.Not.Null.Or.Empty);
-            }
-        }
-
-        [Test]
-        public void TestThatCustomProvidersHasProviderConfigValues()
-        {
-            foreach (var provider in _config.CustomProviderConfig)
-            {
-                foreach(var config in provider.ProviderConfig)
-                {
-                    Assert.That(config.Key, Is.Not.Null.Or.Empty);
-                    Assert.That(config.Value, Is.Not.Null.Or.Empty);
-                }
-            }
+            Assert.That(_config.OperationsConfig.SomeOtherOperation, Is.Not.Null);
         }
 
         [Test]

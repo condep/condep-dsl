@@ -11,6 +11,6 @@ namespace ConDep.Dsl.Config
         public IList<ServerConfig> Servers { get; set; }
         public IList<TiersConfig> Tiers { get; set; }
         public DeploymentUserConfig DeploymentUser { get; set; }
-        public IList<CustomProviderConfig> CustomProviderConfig { get; set; }
+        public dynamic OperationsConfig { get; set; }
     }
 }

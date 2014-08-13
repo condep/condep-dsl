@@ -229,7 +229,7 @@
     <Compile Include="Operations\LoadBalancer\LoadBalancerLookup.cs" />
     <Compile Include="Operations\LoadBalancer\LoadBalanceState.cs" />
     <Compile Include="Config\ConDepEnvConfig.cs" />
-    <Compile Include="Config\CustomProviderConfig.cs" />
+    <Compile Include="Config\OperationsConfig.cs" />
     <Compile Include="Config\DeploymentUserConfig.cs" />
     <Compile Include="Config\LoadBalancerConfig.cs" />
     <Compile Include="Config\ConDepNoServersFoundException.cs" />
