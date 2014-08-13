@@ -44,11 +44,12 @@ namespace ConDep.Dsl.Remote
                 var parameters = new List<CommandParameter>
                                  {
                                      new CommandParameter("path", _destPath),
-                                     new CommandParameter("data", byteArray)
+                                     new CommandParameter("data", byteArray),
+                                     new CommandParameter("url", _listenUrl)
                                  };
 
                 var executor = new PowerShellExecutor(server) { LoadConDepNodeModule = true, LoadConDepModule = false };
-                executor.Execute("Param([string]$path, $data)\n  Add-ConDepNode $path $data", parameters: parameters, logOutput: false);
+                executor.Execute("Param([string]$path, $data, $url)\n  Add-ConDepNode $path $data $url", parameters: parameters, logOutput: false);
             }
             else if (!conDepResult.IsNodeServiceRunning)
             {

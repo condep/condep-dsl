@@ -6,7 +6,7 @@ function Get-ConDepNodeState([string]$path, $hash) {
     $conDepReturnValues = New-Object PSObject -Property @{         
         ConDepResult    = New-Object PSObject -Property @{
 			IsNodeServiceRunning = $false
-			NeedNodeDeployment = $false
+			NeedNodeDeployment = $true
         }                 
     }                     
 
