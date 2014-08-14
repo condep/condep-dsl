@@ -59,15 +59,15 @@ namespace ConDep.Dsl.Remote
         {
             if (record.RecordType == ProgressRecordType.Completed)
             {
-                Logger.ProgressEnd();
+                CompleteProgress(record);
             }
             if (record.RecordType == ProgressRecordType.Processing)
             {
                 if (record.PercentComplete > -1)
                 {
-                    var myStr = new String('>', record.PercentComplete/5);
-                    var myStr2 = new string(' ', 20 - myStr.Length);
-                    Logger.Progress("Progress: [" + myStr + myStr2 + "]");
+                    var progressIndicator = new String('>', record.PercentComplete/5);
+                    var progressRemaining = new string(' ', 20 - progressIndicator.Length);
+                    Logger.Progress("Progress: [" + progressIndicator + progressRemaining + "]");
                 }
                 else if (record.StatusDescription.Length > 10)
                 {
@@ -78,6 +78,16 @@ namespace ConDep.Dsl.Remote
                     Logger.Progress("Progress: " + record.StatusDescription);
                 }
             }
+        }
+
+        private static void CompleteProgress(ProgressRecord record)
+        {
+            if (record.PercentComplete > -1)
+            {
+                var progressIndicator = new String('>', 20);
+                Logger.Progress("Progress: [" + progressIndicator + "]");
+            }
+            Logger.ProgressEnd();
         }
 
         public override void WriteVerboseLine(string message)

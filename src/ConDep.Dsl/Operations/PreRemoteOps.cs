@@ -28,7 +28,7 @@ namespace ConDep.Dsl.Operations
                     //var scriptPublisher = new PowerShellScriptPublisher(settings);
                     //Logger.WithLogSection("Copying internal ConDep scripts", () => scriptPublisher.PublishDslScripts(server));
 
-                    TempInstallConDepNode(server, settings);
+                    PublishConDepNode(server, settings);
 
                     var scriptPublisher = new PowerShellScriptPublisher(settings);
                     Logger.WithLogSection("Copying external scripts", () => scriptPublisher.PublishScripts(server));
@@ -50,7 +50,7 @@ namespace ConDep.Dsl.Operations
         //    scriptPublisher.PublishDslScripts(server);
         //}
 
-        private void TempInstallConDepNode(ServerConfig server, ConDepSettings settings)
+        private void PublishConDepNode(ServerConfig server, ConDepSettings settings)
         {
             Logger.WithLogSection("Validating ConDepNode", () =>
                 {

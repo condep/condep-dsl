@@ -41,19 +41,17 @@ function Start-ConDepNode() {
 	$wmiService = Get-WmiObject -Class Win32_Service -Filter "Name='condepnode'"
 
 	if($wmiService) {
-		write-host "ConDepNode Windows service is $($wmiService.State)"
 		if($wmiService.State -eq "Stopped") {
-			write-host 'Starting ConDepNode Windows service'
     		$service = Get-Service condepnode -ErrorAction Stop
 			$service.Start()
-		
-			write-host 'Waiting for ConDepNode to start...'
 			$service.WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Running)
-			write-host 'ConDepNode Windows service started'
+		}
+		else {
+			throw "Failed to start ConDepNode Windows service, because it's not stopped. The current state of the service is $($wmiService.State)."
 		}
 	}
 	else {
-		throw "ConDepNode Windows service does not exist"
+		throw "ConDepNode Windows service does not exist, and therefore cannot be started."
 	}
 }
 
@@ -63,17 +61,16 @@ function Stop-ConDepNode() {
 
 	if($wmiService) {
 		if($wmiService.State -eq "Running") {
-			write-host 'Stopping ConDepNode Windows service'
     		$service = Get-Service condepnode -ErrorAction Stop
 			$service.Stop()
-		
-			write-host 'Waiting for ConDepNode to stop...'
 			$service.WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Stopped)
-			write-host 'ConDepNode Windows service stopped'
+		}
+		else {
+			throw "Failed to stop ConDepNode Windows service, because it's not running. The current state of the service is $($wmiService.State)."
 		}
 	}
 	else {
-		throw "ConDepNode Windows service does not exist"
+		throw "ConDepNode Windows service does not exist, and therefore cannot be stopped."
 	}
 }
 

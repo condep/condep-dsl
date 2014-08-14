@@ -14,7 +14,7 @@ using ConDep.Dsl.Resources;
 
 namespace ConDep.Dsl.Remote
 {
-    public class ConDepNodePublisher : IDisposable
+    public class ConDepNodePublisher
     {
         private readonly string _srcPath;
         private readonly string _destPath;
@@ -32,32 +32,46 @@ namespace ConDep.Dsl.Remote
 
         public void Execute(ServerConfig server)
         {
-            DeployNodeScript(server);
-            var nodeCheckExecutor = new PowerShellExecutor(server) { LoadConDepModule = false, LoadConDepNodeModule = true };
-            var nodeCheckResult = nodeCheckExecutor.Execute(string.Format("Get-ConDepNodeState \"{0}\" \"{1}\"", _destPath, FileHashGenerator.GetFileHash(_srcPath)), logOutput: false);
+            DeployNodeModuleScript(server);
+            var nodeState = GetNodeState(server);
 
-            var conDepResult = nodeCheckResult.Single(psObject => psObject.ConDepResult != null).ConDepResult;
-
-            if(conDepResult.NeedNodeDeployment)
+            if(nodeState.NeedNodeDeployment)
             {
-                var byteArray = File.ReadAllBytes(_srcPath);
-                var parameters = new List<CommandParameter>
-                                 {
-                                     new CommandParameter("path", _destPath),
-                                     new CommandParameter("data", byteArray),
-                                     new CommandParameter("url", _listenUrl)
-                                 };
-
-                var executor = new PowerShellExecutor(server) { LoadConDepNodeModule = true, LoadConDepModule = false };
-                executor.Execute("Param([string]$path, $data, $url)\n  Add-ConDepNode $path $data $url", parameters: parameters, logOutput: false);
+                DeployNode(server);
             }
-            else if (!conDepResult.IsNodeServiceRunning)
+            else if (!nodeState.IsNodeServiceRunning)
             {
-                StartConDepNode(server);
+                StartNode(server);
             }
         }
 
-        public static void StartConDepNode(ServerConfig server)
+        private void DeployNode(ServerConfig server)
+        {
+            var byteArray = File.ReadAllBytes(_srcPath);
+            var parameters = new List<CommandParameter>
+            {
+                new CommandParameter("path", _destPath),
+                new CommandParameter("data", byteArray),
+                new CommandParameter("url", _listenUrl)
+            };
+
+            var executor = new PowerShellExecutor(server) {LoadConDepNodeModule = true, LoadConDepModule = false};
+            executor.Execute("Param([string]$path, $data, $url)\n  Add-ConDepNode $path $data $url", parameters: parameters,
+                logOutput: false);
+        }
+
+        private dynamic GetNodeState(ServerConfig server)
+        {
+            var nodeCheckExecutor = new PowerShellExecutor(server) {LoadConDepModule = false, LoadConDepNodeModule = true};
+            var nodeCheckResult =
+                nodeCheckExecutor.Execute(
+                    string.Format("Get-ConDepNodeState \"{0}\" \"{1}\"", _destPath, FileHashGenerator.GetFileHash(_srcPath)),
+                    logOutput: false);
+
+            return nodeCheckResult.Single(psObject => psObject.ConDepResult != null).ConDepResult;
+        }
+
+        public static void StartNode(ServerConfig server)
         {
             var startServiceExecutor = new PowerShellExecutor(server) { LoadConDepNodeModule = true, LoadConDepModule = false };
             startServiceExecutor.Execute("Start-ConDepNode", logOutput: false);
@@ -74,7 +88,7 @@ namespace ConDep.Dsl.Remote
             return true;
         }
 
-        private void DeployNodeScript(ServerConfig server)
+        private void DeployNodeModuleScript(ServerConfig server)
         {
             var resource = ConDepNodeResources.ConDepNodeModule;
 
@@ -185,12 +199,6 @@ return $conDepReturnValues
                 }
             }
             return null;
-        }
-
-
-        public void Dispose()
-        {
-            Logger.Info("Disposing!!!");            
         }
     }
 }
