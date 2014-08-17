@@ -62,7 +62,9 @@ namespace ConDep.Dsl.Sequence
 
         public CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition)
         {
-            return new CompositeConditionalSequence(Name, condition, true);
+            var sequence = new CompositeConditionalSequence(Name, condition, true);
+            _sequence.Add(sequence);
+            return sequence;
         }
 
         public void DryRun()

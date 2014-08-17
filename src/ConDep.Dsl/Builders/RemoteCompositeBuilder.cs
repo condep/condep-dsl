@@ -24,8 +24,7 @@ namespace ConDep.Dsl.Builders
 
         public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)
         {
-            var sequence = _compositeSequence.NewConditionalCompositeSequence(condition);
-            return new RemoteCompositeBuilder(sequence);
+            return new RemoteCompositeBuilder(_compositeSequence.NewConditionalCompositeSequence(condition));
         }
     }
 }
