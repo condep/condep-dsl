@@ -5,6 +5,6 @@ namespace ConDep.Dsl.Operations
 {
     public interface IOperateRemote : IExecuteOnServer
     {
-        bool IsValid(Notification notification);
+        //bool IsValid(Notification notification);
     }
 }

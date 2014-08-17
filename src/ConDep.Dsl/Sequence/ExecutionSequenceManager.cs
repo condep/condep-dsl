@@ -8,7 +8,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence
 {
-    public class ExecutionSequenceManager
+    public class ExecutionSequenceManager : IValidate
     {
         private readonly ILoadBalance _loadBalancer;
         internal readonly List<LocalSequence> _sequence = new List<LocalSequence>();
