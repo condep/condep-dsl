@@ -216,6 +216,8 @@ namespace ConDep.Dsl.Config
                 }
             }
 
+            if(config.Servers == null) config.Servers = new List<ServerConfig>();
+
             if (config.Tiers == null)
             {
                 foreach (var server in config.Servers.Where(server => !server.DeploymentUser.IsDefined()))

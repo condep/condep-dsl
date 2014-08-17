@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationArtifact.cs" />
+    <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
     <Compile Include="Builders\InfrastructureBuilder.cs" />
     <Compile Include="Builders\RemoteInstallationBuilder.cs" />

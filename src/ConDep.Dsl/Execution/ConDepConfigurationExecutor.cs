@@ -33,7 +33,7 @@ namespace ConDep.Dsl.Execution
 
                 var clientValidator = new ClientValidator();
 
-                var serverInfoHarvester = new ServerInfoHarvester(conDepSettings, new[] {typeof(OperatingSystemHarvester), typeof(DotNetFrameworkHarvester)});
+                var serverInfoHarvester = HarvesterFactory.GetHarvester(conDepSettings);
                 var serverValidator = new RemoteServerValidator(conDepSettings.Config.Servers,
                                                                 serverInfoHarvester);
 
@@ -218,7 +218,7 @@ namespace ConDep.Dsl.Execution
             }
         }
 
-        private static void ExecutePreOps(ConDepSettings conDepSettings, IReportStatus status, CancellationToken token)
+        public static void ExecutePreOps(ConDepSettings conDepSettings, IReportStatus status, CancellationToken token)
         {
             Logger.WithLogSection("Executing pre-operations", () =>
                 {
