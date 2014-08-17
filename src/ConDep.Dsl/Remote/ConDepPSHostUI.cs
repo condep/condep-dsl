@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Security;
@@ -103,33 +102,6 @@ namespace ConDep.Dsl.Remote
         public override Dictionary<string, PSObject> Prompt(string caption, string message, Collection<FieldDescription> descriptions)
         {
             return null;
-
-            //Dictionary<string, PSObject> ret = new Dictionary<string, PSObject>();
-
-            //foreach (FieldDescription desc in descriptions)
-            //{
-            //    if (this.promptInput.Count != 0)
-            //    {
-            //        ret[desc.Name] = new PSObject(this.promptInput[desc.Name] + "\r\n");
-            //    }
-            //    else if (this.lineInput != null && this.currentLineInput >= 0 && this.currentLineInput < this.lineInput.Length)
-            //    {
-            //        ret[desc.Name] = new PSObject(this.lineInput[this.currentLineInput++] + "\r\n");
-            //    }
-            //    else
-            //    {
-            //        if (desc.DefaultValue == null)
-            //        {
-            //            ret[desc.Name] = new PSObject("\r\n");
-            //        }
-            //        else
-            //        {
-            //            ret[desc.Name] = new PSObject(desc.DefaultValue);
-            //        }
-            //    }
-            //}
-
-            //return ret;
         }
 
         public override PSCredential PromptForCredential(string caption, string message, string userName, string targetName)
