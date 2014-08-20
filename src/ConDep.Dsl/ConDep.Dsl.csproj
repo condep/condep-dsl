@@ -136,8 +136,10 @@
     <Compile Include="Logging\TeamCityMessageStatus.cs" />
     <Compile Include="Operations\IOfferInfrastructure.cs" />
     <Compile Include="Operations\PowerShellScriptDeployOperation.cs" />
+    <Compile Include="Operations\RealRemoteOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperationBase.cs" />
+    <Compile Include="Logging\RemotePowerShellLogger.cs" />
     <Compile Include="Operations\RemoteOperation.cs" />
     <Compile Include="PSScripts\ConDepNode\ConDepNodeResources.cs" />
     <Compile Include="PSScripts\ConDep\ConDepResources.cs" />

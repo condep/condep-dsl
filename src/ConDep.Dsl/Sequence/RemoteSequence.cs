@@ -37,6 +37,11 @@ namespace ConDep.Dsl.Sequence
             }
         }
 
+        public void Add(RealRemoteOperation operation)
+        {
+            _sequence.Add(operation);
+        }
+
         public virtual void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
             LoadBalancerExecutorBase lbExecutor;
