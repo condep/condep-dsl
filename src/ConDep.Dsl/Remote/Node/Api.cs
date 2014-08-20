@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Remote.Node.Model;
 using ConDep.Dsl.Resources;
@@ -176,7 +177,7 @@ namespace ConDep.Dsl.Remote.Node
 
                 Logger.Verbose(string.Format("File {0} is missing or changed on server. Adding to upload queue.", file.RelativePath));
                 var fileInfo = new FileInfo(file.Path);
-                var fileStream = new FileStream(fileInfo.FullName, FileMode.Open);
+                var fileStream = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read);
                 content.Add(new StreamContent(fileStream), "file", file.RelativePath, fileInfo.Attributes, fileInfo.LastWriteTimeUtc);
             }
 
