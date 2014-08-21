@@ -40,8 +40,7 @@ namespace ConDep.Dsl.Execution
                 var lbLookup = new LoadBalancerLookup(conDepSettings.Config.LoadBalancer);
                 var sequenceManager = new ExecutionSequenceManager(lbLookup.GetLoadBalancer());
 
-                var notification = new Notification();
-                PopulateExecutionSequence(conDepSettings, notification, sequenceManager);
+                PopulateExecutionSequence(conDepSettings, sequenceManager);
 
                 if (conDepSettings.Options.DryRun)
                 {
@@ -172,8 +171,7 @@ namespace ConDep.Dsl.Execution
             }
         }
 
-        private static void PopulateExecutionSequence(ConDepSettings conDepSettings, Notification notification,
-                                               ExecutionSequenceManager sequenceManager)
+        private static void PopulateExecutionSequence(ConDepSettings conDepSettings, ExecutionSequenceManager sequenceManager)
         {
             var artifacts = CreateApplicationArtifacts(conDepSettings);
             foreach (var artifact in artifacts)

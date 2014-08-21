@@ -15,7 +15,7 @@ namespace ConDep.Dsl
             seqContainer.AddOperation(operation);
         }
 
-        public static void Execution(IOfferRemoteExecution executor, RemoteOperation operation)
+        public static void Execution(IOfferRemoteExecution executor, ForEachServerOperation operation)
         {
             var seqContainer = executor as RemoteExecutionBuilder;
             seqContainer.AddOperation(operation);
@@ -39,13 +39,13 @@ namespace ConDep.Dsl
             seqContainer.AddOperation(operation);
         }
 
-        public static void Remote(IOfferRemoteOperations remote, RemoteOperation operation)
+        public static void Remote(IOfferRemoteOperations remote, ForEachServerOperation operation)
         {
             var seqContainer = remote as RemoteOperationsBuilder;
             seqContainer.AddOperation(operation);
         }
 
-        public static void Remote(IOfferRemoteOperations remote, RealRemoteOperation operation)
+        public static void Remote(IOfferRemoteOperations remote, RemoteServerOperation operation)
         {
             var seqContainer = remote as RemoteOperationsBuilder;
             seqContainer.AddOperation(operation);

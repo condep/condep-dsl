@@ -136,11 +136,11 @@
     <Compile Include="Logging\TeamCityMessageStatus.cs" />
     <Compile Include="Operations\IOfferInfrastructure.cs" />
     <Compile Include="Operations\PowerShellScriptDeployOperation.cs" />
-    <Compile Include="Operations\RealRemoteOperation.cs" />
+    <Compile Include="Operations\RemoteServerOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperationBase.cs" />
     <Compile Include="Logging\RemotePowerShellLogger.cs" />
-    <Compile Include="Operations\RemoteOperation.cs" />
+    <Compile Include="Operations\ForEachServerOperation.cs" />
     <Compile Include="PSScripts\ConDepNode\ConDepNodeResources.cs" />
     <Compile Include="PSScripts\ConDep\ConDepResources.cs" />
     <Compile Include="Remote\ConDepNodeValidationException.cs" />
@@ -248,7 +248,7 @@
     <Compile Include="Validation\IValidate.cs" />
     <Compile Include="Validation\Notification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validation\SemanticValidationError.cs" />
+    <Compile Include="Validation\ValidationError.cs" />
     <Compile Include="Validation\ValidationErrorType.cs" />
   </ItemGroup>
   <ItemGroup>

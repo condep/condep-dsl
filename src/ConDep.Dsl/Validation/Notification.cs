@@ -6,28 +6,23 @@ namespace ConDep.Dsl.Validation
 {
 	public class Notification
 	{
-		private readonly List<SemanticValidationError> _validationErrors = new List<SemanticValidationError>();
+		private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
 		public bool HasErrors
 		{
 			get { return _validationErrors.Count > 0; }
 		}
 
-		public void AddError(SemanticValidationError error)
+		public void AddError(ValidationError error)
 		{
 			_validationErrors.Add(error);
-		}
-
-		public bool HasErrorOfType(ValidationErrorType errorType)
-		{
-			return _validationErrors.Any(e => e.ErrorType == errorType);
 		}
 
 	    public void Throw()
 	    {
 	        if(_validationErrors.Count > 0)
             {
-                throw _validationErrors.Aggregate<SemanticValidationError, Exception>(null, (current, error) => new ConDepInvalidSetupException(error.Message, current));
+                throw _validationErrors.Aggregate<ValidationError, Exception>(null, (current, error) => new ConDepInvalidSetupException(error.Message, current));
             }
 	        throw new ConDepInvalidSetupException("Validation failed for unknown reason");
 	    }

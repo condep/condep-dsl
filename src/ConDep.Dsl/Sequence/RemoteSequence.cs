@@ -37,7 +37,7 @@ namespace ConDep.Dsl.Sequence
             }
         }
 
-        public void Add(RealRemoteOperation operation)
+        public void Add(RemoteServerOperation operation)
         {
             _sequence.Add(operation);
         }
