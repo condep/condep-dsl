@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Sequence
 {
@@ -37,10 +36,7 @@ namespace ConDep.Dsl.Sequence
                 servers.Remove(manuelTestServer);
             }
 
-            foreach (var server in servers)
-            {
-                ExecuteOnServer(server, status, settings, _loadBalancer, true, true, token);
-            }
+            servers.ForEach(server => ExecuteOnServer(server, status, settings, _loadBalancer, true, true, token));
         }
     }
 }

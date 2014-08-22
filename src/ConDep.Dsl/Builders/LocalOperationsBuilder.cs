@@ -24,6 +24,13 @@ namespace ConDep.Dsl.Builders
             return this;
         }
 
+        public IOfferLocalOperations ToEachServerInParalell(Action<IOfferRemoteOperations> action)
+        {
+            var builder = new RemoteOperationsBuilder(_localSequence.RemoteSequence(_servers, true));
+            action(builder);
+            return this;
+        }
+
         public void AddOperation(LocalOperation operation)
         {
             _localSequence.Add(operation);

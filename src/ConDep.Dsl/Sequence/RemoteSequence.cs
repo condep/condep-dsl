@@ -10,19 +10,18 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence
 {
-    //Todo: Could need some refactoring...
     public class RemoteSequence : IManageRemoteSequence, IExecute
     {
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ILoadBalance _loadBalancer;
+        private readonly bool _paralell;
         internal readonly List<IExecuteOnServer> _sequence = new List<IExecuteOnServer>();
-        //private readonly SequenceFactory _sequenceFactory;
 
-        public RemoteSequence(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
+        public RemoteSequence(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer, bool paralell = false)
         {
             _servers = servers;
             _loadBalancer = loadBalancer;
-            //_sequenceFactory = new SequenceFactory(_sequence);
+            _paralell = paralell;
         }
 
         public void Add(IOperateRemote operation, bool addFirst = false)
@@ -44,74 +43,40 @@ namespace ConDep.Dsl.Sequence
 
         public virtual void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            LoadBalancerExecutorBase lbExecutor;
- 
+            GetExecutor().Execute(status, settings, token);
+        }
+
+        private LoadBalancerExecutorBase GetExecutor()
+        {
+            if (_paralell)
+            {
+                return new ParalellRemoteExecutor(_sequence, _servers);
+            }
+
             switch (_loadBalancer.Mode)
             {
                 case LbMode.Sticky:
-                    lbExecutor = new StickyLoadBalancerExecutor(_sequence, _servers, _loadBalancer);
-                    break;
-                    //ExecuteWithSticky(settings, status);
-                    //return;
+                    return new StickyLoadBalancerExecutor(_sequence, _servers, _loadBalancer);
                 case LbMode.RoundRobin:
-                    lbExecutor = new RoundRobinLoadBalancerExecutor(_sequence, _servers, _loadBalancer);
-                    break;
-                    //ExecuteWithRoundRobin(settings, status);
-                    //return;
+                    return new RoundRobinLoadBalancerExecutor(_sequence, _servers, _loadBalancer);
                 default:
                     throw new ConDepLoadBalancerException(string.Format("Load Balancer mode [{0}] not supported.",
                                                                     _loadBalancer.Mode));
             }
-
-            lbExecutor.Execute(status, settings, token);
         }
 
         public virtual string Name { get { return "Remote Operations"; } }
+
         public void DryRun()
         {
-            LoadBalancerExecutorBase lbExecutor;
-
-            switch (_loadBalancer.Mode)
-            {
-                case LbMode.Sticky:
-                    lbExecutor = new StickyLoadBalancerExecutor(_sequence, _servers, _loadBalancer);
-                    break;
-                //ExecuteWithSticky(settings, status);
-                //return;
-                case LbMode.RoundRobin:
-                    lbExecutor = new RoundRobinLoadBalancerExecutor(_sequence, _servers, _loadBalancer);
-                    break;
-                //ExecuteWithRoundRobin(settings, status);
-                //return;
-                default:
-                    throw new ConDepLoadBalancerException(string.Format("Load Balancer mode [{0}] not supported.",
-                                                                    _loadBalancer.Mode));
-            }
-
-            lbExecutor.DryRun();
+            GetExecutor().DryRun();
         }
-
-        //protected virtual void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
-        //{
-        //    Logger.WithLogSection("Deployment", () =>
-        //        {
-        //            foreach (var element in _sequence)
-        //            {
-        //                IExecuteOnServer elementToExecute = element;
-        //                if (element is CompositeSequence)
-        //                    elementToExecute.Execute(server, status, settings, token);
-        //                else
-        //                    Logger.WithLogSection(element.Name, () => elementToExecute.Execute(server, status, settings, token));
-        //            }
-        //        });
-        //}
 
         public CompositeSequence NewCompositeSequence(RemoteCompositeOperation operation)
         {
             var seq = new CompositeSequence(operation.Name);
             _sequence.Add(seq);
             return seq;
-            //return _sequenceFactory.NewCompositeSequence(operation);
         }
 
         public CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition)

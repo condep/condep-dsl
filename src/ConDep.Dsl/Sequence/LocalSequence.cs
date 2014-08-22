@@ -34,19 +34,19 @@ namespace ConDep.Dsl.Sequence
             }
         }
 
-        public RemoteSequence RemoteSequence(IEnumerable<ServerConfig> servers)
+        public RemoteSequence RemoteSequence(IEnumerable<ServerConfig> servers, bool paralell = false)
         {
-            var remoteSequence = new RemoteSequence(servers, _loadBalancer);
+            var remoteSequence = new RemoteSequence(servers, _loadBalancer, paralell);
             _sequence.Add(remoteSequence);
             return remoteSequence;
         }
 
-        public RemoteSequence NewRemoteConditionalSequence(IEnumerable<ServerConfig> servers, Predicate<ServerInfo> condition, bool expectedConditionResult)
-        {
-            var sequence = new RemoteConditionalSequence(servers, _loadBalancer, condition, expectedConditionResult);
-            _sequence.Add(sequence);
-            return sequence;
-        }
+        //public RemoteSequence NewRemoteConditionalSequence(IEnumerable<ServerConfig> servers, Predicate<ServerInfo> condition, bool expectedConditionResult, bool paralell)
+        //{
+        //    var sequence = new RemoteConditionalSequence(servers, _loadBalancer, condition, expectedConditionResult, paralell);
+        //    _sequence.Add(sequence);
+        //    return sequence;
+        //}
 
         public void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
         {

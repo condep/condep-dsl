@@ -9,8 +9,8 @@ namespace ConDep.Dsl.Sequence
         private readonly Predicate<ServerInfo> _condition;
         private readonly bool _expectedConditionResult;
 
-        public RemoteConditionalSequence(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer, Predicate<ServerInfo> condition, bool expectedConditionResult)
-            : base(servers, loadBalancer)
+        public RemoteConditionalSequence(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer, Predicate<ServerInfo> condition, bool expectedConditionResult, bool paralell)
+            : base(servers, loadBalancer, paralell)
         {
             _condition = condition;
             _expectedConditionResult = expectedConditionResult;
