@@ -96,7 +96,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationArtifact.cs" />
+    <Compile Include="Artifact.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
     <Compile Include="Builders\RemoteConfigurationBuilder.cs" />
@@ -116,7 +116,7 @@
     <Compile Include="Config\OperatingSystemInfo.cs" />
     <Compile Include="Config\ServerInfo.cs" />
     <Compile Include="Config\WindowsOperatingSystem.cs" />
-    <Compile Include="Execution\ApplicationDependencyHandler.cs" />
+    <Compile Include="Execution\ArtifactDependencyHandler.cs" />
     <Compile Include="IDependOn.cs" />
     <Compile Include="Config\LbMode.cs" />
     <Compile Include="IConfigureLocalOperations.cs" />
@@ -127,6 +127,7 @@
     <Compile Include="Config\ConDepAssemblyHandler.cs" />
     <Compile Include="Config\ConDepAssemblyNotFoundException.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
+    <Compile Include="IProvideArtifact.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogForCondep.cs" />
     <Compile Include="Logging\Log4NetLoggerBase.cs" />

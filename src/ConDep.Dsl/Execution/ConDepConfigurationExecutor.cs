@@ -200,11 +200,7 @@ namespace ConDep.Dsl.Execution
         private static void ConfigureArtifact(ConDepSettings conDepSettings, LocalSequence localSequence,
             LocalOperationsBuilder localBuilder, IProvideArtifact dependency)
         {
-            if (dependency is ApplicationArtifact)
-            {
-                ((ApplicationArtifact) dependency).Configure(localBuilder, conDepSettings);
-            }
-            else if (dependency is Artifact.Local)
+            if (dependency is Artifact.Local)
             {
                 ((Artifact.Local) dependency).Configure(localBuilder, conDepSettings);
             }
@@ -258,7 +254,7 @@ namespace ConDep.Dsl.Execution
                 var type = assembly.GetTypes().SingleOrDefault(t => typeof (IProvideArtifact).IsAssignableFrom(t) && t.Name == settings.Options.Application);
                 if (type == null)
                 {
-                    throw new ConDepConfigurationTypeNotFoundException(string.Format("A class inheriting from [{0}] must be present in assembly [{1}] for ConDep to work. No calss with name [{2}] found in assembly. ",typeof (ApplicationArtifact).FullName, assembly.FullName, settings.Options.Application));
+                    throw new ConDepConfigurationTypeNotFoundException(string.Format("A class inheriting from [{0}] or [{1}] must be present in assembly [{2}] for ConDep to work. No calss with name [{3}] found in assembly. ",typeof (Artifact.Local).FullName, typeof(Artifact.Remote).FullName, assembly.FullName, settings.Options.Application));
                 }
                 yield return CreateApplicationArtifact(type);
             }
