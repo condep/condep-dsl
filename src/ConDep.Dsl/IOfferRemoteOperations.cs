@@ -13,12 +13,12 @@ namespace ConDep.Dsl
         /// <summary>
         /// Provide operations for remote execution.
         /// </summary>
-        IOfferRemoteExecution ExecuteRemote { get; }
+        IOfferRemoteExecution Execute { get; }
 
         /// <summary>
         /// Provide operations for adding remote infrastructure
         /// </summary>
-        IOfferInfrastructure Require { get; }
+        IOfferRemoteConfiguration Configure { get; }
 
         /// <summary>
         /// Provide operations for remote installation

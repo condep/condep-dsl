@@ -12,14 +12,14 @@ namespace ConDep.Dsl.Builders
         {
             _compositeSequence = compositeSequence;
             Deploy = new RemoteDeploymentBuilder(compositeSequence);
-            ExecuteRemote = new RemoteExecutionBuilder(compositeSequence);
-            Require = new InfrastructureBuilder(compositeSequence);
+            Execute = new RemoteExecutionBuilder(compositeSequence);
+            Configure = new RemoteConfigurationBuilder(compositeSequence);
             Install = new RemoteInstallationBuilder(compositeSequence);
         }
 
         public IOfferRemoteDeployment Deploy { get; private set; }
-        public IOfferRemoteExecution ExecuteRemote { get; private set; }
-        public IOfferInfrastructure Require { get; private set; }
+        public IOfferRemoteExecution Execute { get; private set; }
+        public IOfferRemoteConfiguration Configure { get; private set; }
         public IOfferRemoteInstallation Install { get; private set; }
 
         public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)

@@ -3,7 +3,7 @@ using ConDep.Dsl.Config;
 
 namespace ConDep.Dsl
 {
-    public interface IOfferInfrastructure
+    public interface IOfferRemoteConfiguration
     {
 
         /// <summary>
@@ -11,6 +11,6 @@ namespace ConDep.Dsl
         /// </summary>
         /// <param name="condition">The condition that must be met</param>
         /// <returns></returns>
-        IOfferInfrastructure OnlyIf(Predicate<ServerInfo> condition);
+        IOfferRemoteConfiguration OnlyIf(Predicate<ServerInfo> condition);
     }
 }

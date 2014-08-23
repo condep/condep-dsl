@@ -99,7 +99,7 @@
     <Compile Include="ApplicationArtifact.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
-    <Compile Include="Builders\InfrastructureBuilder.cs" />
+    <Compile Include="Builders\RemoteConfigurationBuilder.cs" />
     <Compile Include="Builders\RemoteInstallationBuilder.cs" />
     <Compile Include="Builders\LocalOperationsBuilder.cs" />
     <Compile Include="Builders\RemoteCompositeBuilder.cs" />
@@ -134,7 +134,7 @@
     <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="Logging\TeamCityLogger.cs" />
     <Compile Include="Logging\TeamCityMessageStatus.cs" />
-    <Compile Include="Operations\IOfferInfrastructure.cs" />
+    <Compile Include="Operations\IOfferRemoteConfiguration.cs" />
     <Compile Include="Operations\PowerShellScriptDeployOperation.cs" />
     <Compile Include="Operations\RemoteServerOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperation.cs" />
@@ -202,7 +202,6 @@
     <Compile Include="Remote\Impersonator.cs" />
     <Compile Include="Config\LoadBalancerSuspendMethod.cs" />
     <Compile Include="IOfferRemoteOperations.cs" />
-    <Compile Include="Operations\IOperateRemote.cs" />
     <Compile Include="Sequence\CompositeConditionalSequence.cs" />
     <Compile Include="Sequence\CompositeSequence.cs" />
     <Compile Include="Sequence\ExecutionSequenceManager.cs" />

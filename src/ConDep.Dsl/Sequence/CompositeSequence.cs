@@ -22,7 +22,7 @@ namespace ConDep.Dsl.Sequence
             //_sequenceFactory = new SequenceFactory(_sequence);
         }
 
-        public void Add(IOperateRemote operation, bool addFirst = false)
+        public void Add(IExecuteOnServer operation, bool addFirst = false)
         {
             if (addFirst)
             {
@@ -77,7 +77,7 @@ namespace ConDep.Dsl.Sequence
 
         public bool IsValid(Notification notification)
         {
-            var isRemoteOpsValid = _sequence.OfType<IOperateRemote>().All(x => x.IsValid(notification));
+            var isRemoteOpsValid = _sequence.OfType<IExecuteOnServer>().All(x => x.IsValid(notification));
             var isCompSeqValid = _sequence.OfType<CompositeSequence>().All(x => x.IsValid(notification));
 
             return isCompSeqValid && isRemoteOpsValid;

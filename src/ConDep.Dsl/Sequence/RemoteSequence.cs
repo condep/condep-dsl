@@ -24,7 +24,7 @@ namespace ConDep.Dsl.Sequence
             _paralell = paralell;
         }
 
-        public void Add(IOperateRemote operation, bool addFirst = false)
+        public void Add(IExecuteOnServer operation, bool addFirst = false)
         {
             if (addFirst)
             {
@@ -34,11 +34,6 @@ namespace ConDep.Dsl.Sequence
             {
                 _sequence.Add(operation);
             }
-        }
-
-        public void Add(RemoteServerOperation operation)
-        {
-            _sequence.Add(operation);
         }
 
         public virtual void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
@@ -88,7 +83,7 @@ namespace ConDep.Dsl.Sequence
 
         public bool IsValid(Notification notification)
         {
-            var isRemoteOpValid = _sequence.OfType<IOperateRemote>().All(x => x.IsValid(notification));
+            var isRemoteOpValid = _sequence.OfType<IExecuteOnServer>().All(x => x.IsValid(notification));
             var isCompositeSeqValid = _sequence.OfType<CompositeSequence>().All(x => x.IsValid(notification));
 
             return isRemoteOpValid && isCompositeSeqValid;

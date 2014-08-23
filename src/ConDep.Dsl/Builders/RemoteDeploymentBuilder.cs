@@ -12,7 +12,7 @@ namespace ConDep.Dsl.Builders
             _remoteSequence = remoteSequence;
         }
 
-        public void AddOperation(IOperateRemote operation)
+        public void AddOperation(IExecuteOnServer operation)
         {
             _remoteSequence.Add(operation);    
         }

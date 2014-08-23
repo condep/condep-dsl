@@ -1,22 +1,21 @@
 using System;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.Operations;
-using ConDep.Dsl.Sequence;
+using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Builders
 {
     public class RemoteOperationsBuilder : IOfferRemoteOperations
     {
-        private readonly RemoteSequence _remoteSequence;
+        private readonly IManageRemoteSequence _remoteSequence;
 
-        public RemoteOperationsBuilder(RemoteSequence remoteSequence)
+        public RemoteOperationsBuilder(IManageRemoteSequence remoteSequence)
         {
             _remoteSequence = remoteSequence;
         }
 
         public IOfferRemoteDeployment Deploy { get { return new RemoteDeploymentBuilder(_remoteSequence); } }
-        public IOfferRemoteExecution ExecuteRemote { get { return new RemoteExecutionBuilder(_remoteSequence); } }
-        public IOfferInfrastructure Require { get { return new InfrastructureBuilder(_remoteSequence);  } }
+        public IOfferRemoteExecution Execute { get { return new RemoteExecutionBuilder(_remoteSequence); } }
+        public IOfferRemoteConfiguration Configure { get { return new RemoteConfigurationBuilder(_remoteSequence);  } }
         public IOfferRemoteInstallation Install { get { return new RemoteInstallationBuilder(_remoteSequence); } }
 
         public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)
@@ -24,15 +23,9 @@ namespace ConDep.Dsl.Builders
             return new RemoteCompositeBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
 
-        public void AddOperation(IOperateRemote operation)
+        public void AddOperation(IExecuteOnServer operation)
         {
             _remoteSequence.Add(operation);
         }
-
-        public void AddOperation(RemoteServerOperation operation)
-        {
-            _remoteSequence.Add(operation);
-        }
-
     }
 }

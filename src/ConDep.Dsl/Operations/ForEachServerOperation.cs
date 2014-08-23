@@ -4,7 +4,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations
 {
-    public abstract class ForEachServerOperation : IOperateRemote
+    public abstract class ForEachServerOperation : IExecuteOnServer
     {
         public abstract void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
         public abstract string Name { get; }
