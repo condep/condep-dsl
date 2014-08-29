@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
-using System.Text.RegularExpressions;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Remote.Node.Model;
 using ConDep.Dsl.Resources;
@@ -77,6 +76,99 @@ namespace ConDep.Dsl.Remote.Node
                 }
             }
             throw new ConDepResourceNotFoundException(string.Format("Unable to sync Web Application using {0}. Returned status code was {1}.", url2, syncResponse.StatusCode));
+        }
+
+        public void InstallMsi(string packageName, Uri location)
+        {
+            var url = DiscoverUrl("http://www.con-dep.net/rels/install/msi_template");
+            var url2 = url.Replace("{packageName}", packageName);
+
+            var getResponse = _client.GetAsync(url2).Result;
+            if (getResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                var downloadInfo = getResponse.Content.ReadAsAsync<InstallResponse>().Result;
+                foreach (var link in downloadInfo.Links)
+                {
+                    if (link.Rel == "http://www.con-dep.net/rels/install/msi_uri_template")
+                    {
+                        var message = new HttpRequestMessage { Method = link.HttpMethod, RequestUri = new Uri(string.Format(link.Href, location)) };
+
+                        var installResponse = _client.SendAsync(message).Result;
+
+                    }
+                }
+            }
+
+        }
+
+        public InstallationResult InstallCustom(string packageName, Uri location, string parameters)
+        {
+            var url = DiscoverUrl("http://www.con-dep.net/rels/install/custom_template");
+            var url2 = url.Replace("{packageName}", packageName);
+
+            var getResponse = _client.GetAsync(url2).Result;
+            if (getResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                var downloadInfo = getResponse.Content.ReadAsAsync<InstallResponse>().Result;
+                foreach (var link in downloadInfo.Links)
+                {
+                    if (link.Rel == "http://www.con-dep.net/rels/install/custom_uri_template")
+                    {
+                        var message = new HttpRequestMessage { Method = link.HttpMethod, RequestUri = new Uri(string.Format(link.Href, location, parameters)) };
+
+                        var installResponse = _client.SendAsync(message).Result;
+                        return installResponse.Content.ReadAsAsync<InstallationResult>().Result;
+                    }
+                }
+            }
+            else
+            {
+                return new InstallationResult { Success = true, AllreadyInstalled = true };
+            }
+            return new InstallationResult { Success = false };
+        }
+
+        public InstallationResult InstallCustom(string packageName, string fileLocation, string parameters)
+        {
+            var url = DiscoverUrl("http://www.con-dep.net/rels/install/custom_template");
+            var url2 = url.Replace("{packageName}", packageName);
+
+            var getResponse = _client.GetAsync(url2).Result;
+            if (getResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                var downloadInfo = getResponse.Content.ReadAsAsync<InstallResponse>().Result;
+                if (downloadInfo == null)
+                {
+                    throw new Exception("No content found when getting install info from server. downloadInfo is null");
+                }
+                var destFile = Path.Combine(downloadInfo.TempDirForUpload,
+                    Guid.NewGuid() + Path.GetExtension(fileLocation));
+                
+                Logger.Verbose("Src path: " + fileLocation);
+                Logger.Verbose("Dst file: " + destFile);
+
+                SyncFile(fileLocation, destFile);
+
+                foreach (var link in downloadInfo.Links)
+                {
+                    if (link.Rel == "http://www.con-dep.net/rels/install/custom_file_template")
+                    {
+                        var message = new HttpRequestMessage
+                        {
+                            Method = link.HttpMethod,
+                            RequestUri = new Uri(string.Format(link.Href, destFile, parameters))
+                        };
+
+                        var installResponse = _client.SendAsync(message).Result;
+                        return installResponse.Content.ReadAsAsync<InstallationResult>().Result;
+                    }
+                }
+            }
+            else
+            {
+                return new InstallationResult {Success = true, AllreadyInstalled = true};
+            }
+            return new InstallationResult {Success = false};
         }
 
         private SyncResult SyncDirByUrl(string srcPath, string url)
@@ -230,7 +322,7 @@ namespace ConDep.Dsl.Remote.Node
                     return false;
                 }
 
-                if (availableApiResourcesContent.Count() == 0)
+                if (!availableApiResourcesContent.Any())
                 {
                     Logger.Verbose(string.Format("No content retreived from ConDep Node when reading content from {0}/{1}", _client.BaseAddress, "api"));
                     return false;

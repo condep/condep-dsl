@@ -152,6 +152,7 @@
     <Compile Include="Remote\FileHashGenerator.cs" />
     <Compile Include="Remote\Node\Api.cs" />
     <Compile Include="Remote\Node\Model\DirectoryInfoExtensions.cs" />
+    <Compile Include="Remote\Node\Model\InstallResponse.cs" />
     <Compile Include="Remote\Node\Model\Link.cs" />
     <Compile Include="Remote\Node\Model\SyncDirContainer.cs" />
     <Compile Include="Remote\Node\Model\SyncDirDiff.cs" />
