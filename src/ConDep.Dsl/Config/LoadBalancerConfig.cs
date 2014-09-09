@@ -7,13 +7,21 @@ namespace ConDep.Dsl.Config
     [Serializable]
     public class LoadBalancerConfig
     {
+        private int _timeoutInSeconds = 60;
+
         public string Name { get; set; }
         public string Provider { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string SuspendMode { get; set; }
         public string Mode { get; set; }
- 
+
+        public int TimeoutInSeconds
+        {
+            get { return _timeoutInSeconds; }
+            set { _timeoutInSeconds = value; }
+        }
+
         public LbMode GetModeAsEnum()
         {
             switch (Mode.ToLower())
