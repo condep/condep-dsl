@@ -41,13 +41,6 @@ namespace ConDep.Dsl.Config
             }
         }
 
-        public List<CustomValue> CustomValues { get; set; } 
-    }
-
-    [Serializable]
-    public class CustomValue
-    {
-        public string Key { get; set; }
-        public string Value { get; set; }
+        public dynamic CustomConfig { get; set; }
     }
 }
