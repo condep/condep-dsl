@@ -11,4 +11,11 @@ namespace ConDep.Dsl.SemanticModel
         CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition);
         void DryRun();
     }
+
+    public interface IManageRemoteServersSequence : IManageSequence<IExecuteOnServer>
+    {
+        CompositeServersSequence NewCompositeServersSequence(RemoteCompositeOperation operation);
+        CompositeServersSequence NewConditionalCompositeServersSequence(Predicate<ServerInfo> condition);
+        void DryRun();
+    }
 }

@@ -10,8 +10,7 @@ namespace ConDep.Dsl.Sequence
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ILoadBalance _loadBalancer;
 
-        public StickyLoadBalancerExecutor(List<IExecuteOnServer> sequence, IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
-            : base(sequence)
+        public StickyLoadBalancerExecutor(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
         {
             _servers = servers;
             _loadBalancer = loadBalancer;

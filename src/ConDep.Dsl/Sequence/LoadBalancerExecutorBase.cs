@@ -6,17 +6,9 @@ using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Sequence
 {
-    public abstract class LoadBalancerExecutorBase : IExecute
+    public abstract class LoadBalancerExecutorBase
     {
-        private readonly List<IExecuteOnServer> _sequence;
-
-        protected LoadBalancerExecutorBase(List<IExecuteOnServer> sequence)
-        {
-            _sequence = sequence;
-        }
-
         public abstract void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token);
-        public string Name { get; private set; }
 
         protected void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, bool bringServerOfflineBeforeExecution, bool bringServerOnlineAfterExecution, CancellationToken token)
         {
@@ -33,7 +25,7 @@ namespace ConDep.Dsl.Sequence
                                                       LoadBalancerSuspendMethod.Suspend, status);
                         }
 
-                        ExecuteOnServer(server, status, settings, token);
+                        //ExecuteOnServer(server, status, settings, token);
                     }
                     catch
                     {
@@ -53,30 +45,12 @@ namespace ConDep.Dsl.Sequence
 
         }
 
-        protected virtual void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
-        {
-            Logger.WithLogSection("Deployment", () =>
-                {
-                    foreach (var element in _sequence)
-                    {
-                        token.ThrowIfCancellationRequested();
-
-                        IExecuteOnServer elementToExecute = element;
-                        if (element is CompositeSequence)
-                            elementToExecute.Execute(server, status, settings, token);
-                        else
-                            Logger.WithLogSection(element.Name, () => elementToExecute.Execute(server, status, settings, token));
-                    }
-                });
-        }
-
-
         public void DryRun()
         {
-            foreach (var item in _sequence)
-            {
-                Logger.WithLogSection(item.Name, () => { item.DryRun(); });
-            }
+            //foreach (var item in _sequence)
+            //{
+            //    Logger.WithLogSection(item.Name, () => { item.DryRun(); });
+            //}
         }
     }
 }

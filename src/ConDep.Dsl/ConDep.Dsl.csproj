@@ -172,7 +172,6 @@
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />
     <Compile Include="Security\JsonPasswordCrypto.cs" />
-    <Compile Include="Sequence\ParalellRemoteExecutor.cs" />
     <Compile Include="Validation\ClientValidator.cs" />
     <Compile Include="Execution\ConDepExecutionResult.cs" />
     <Compile Include="Validation\ConDepValidationException.cs" />
@@ -220,7 +219,6 @@
     <Compile Include="Sequence\IManageSequence.cs" />
     <Compile Include="Sequence\LoadBalancerExecutorBase.cs" />
     <Compile Include="Sequence\LocalSequence.cs" />
-    <Compile Include="Sequence\RemoteConditionalSequence.cs" />
     <Compile Include="Sequence\RemoteSequence.cs" />
     <Compile Include="IReportStatus.cs" />
     <Compile Include="Sequence\RoundRobinLoadBalancerExecutor.cs" />

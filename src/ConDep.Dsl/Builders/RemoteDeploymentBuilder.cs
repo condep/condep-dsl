@@ -1,25 +1,32 @@
-﻿using ConDep.Dsl.Operations;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ConDep.Dsl.Operations;
 using ConDep.Dsl.SemanticModel;
+using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
     public class RemoteDeploymentBuilder : IOfferRemoteDeployment, IConfigureRemoteDeployment
     {
-        private readonly IManageRemoteSequence _remoteSequence;
+        private readonly IEnumerable<IManageRemoteSequence> _remoteSequences;
 
-        public RemoteDeploymentBuilder(IManageRemoteSequence remoteSequence)
+        public RemoteDeploymentBuilder(IEnumerable<IManageRemoteSequence> remoteSequences)
         {
-            _remoteSequence = remoteSequence;
+            _remoteSequences = remoteSequences;
         }
 
         public void AddOperation(IExecuteOnServer operation)
         {
-            _remoteSequence.Add(operation);    
+            foreach (var sequence in _remoteSequences)
+            {
+                sequence.Add(operation);
+            }
         }
 
         public void AddOperation(RemoteCompositeOperation operation)
         {
-            operation.Configure(new RemoteCompositeBuilder(_remoteSequence.NewCompositeSequence(operation)));
+            var sequences = _remoteSequences.Select(sequence => sequence.NewCompositeSequence(operation));
+            operation.Configure(new RemoteCompositeBuilder(sequences));
         }
     }
 }

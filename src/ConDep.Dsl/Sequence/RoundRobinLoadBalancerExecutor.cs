@@ -11,7 +11,7 @@ namespace ConDep.Dsl.Sequence
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ILoadBalance _loadBalancer;
 
-        public RoundRobinLoadBalancerExecutor(List<IExecuteOnServer> sequence, IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer) : base(sequence)
+        public RoundRobinLoadBalancerExecutor(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
         {
             _servers = servers;
             _loadBalancer = loadBalancer;
@@ -56,9 +56,6 @@ namespace ConDep.Dsl.Sequence
 
                 bool bringOnline = !(roundRobinMaxOfflineServers - (manuelTestServer == null ? 0 : 1) > execCount);
                 ExecuteOnServer(servers[execCount], status, settings, _loadBalancer, !bringOnline, bringOnline, token);
-
-                //if (status.HasErrors)
-                //    return;
             }
         }
 
