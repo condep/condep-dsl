@@ -84,7 +84,7 @@ namespace ConDep.Dsl.Execution
 
                 //Todo: Result of merge. Not sure if this is correct.
                 token.Register(() => Cancel(settings, status, token));
-            
+
                 var notification = new Notification();
                 if (!execManager.IsValid(notification))
                 {
@@ -103,21 +103,21 @@ namespace ConDep.Dsl.Execution
             {
                 var result = new ConDepExecutionResult(false);
                 aggEx.Handle(inner =>
+                {
+                    if (inner is OperationCanceledException)
                     {
-                        if (inner is OperationCanceledException)
-                        {
-                            Cancel(settings, status, token);
-                            result.Cancelled = true;
-                            Logger.Warn("ConDep execution cancelled.");
-                        }
-                        else
-                        {
-                            result.AddException(inner);
-                            Logger.Error("ConDep execution failed.", inner);
-                        }
-                        
-                        return true;
-                    });
+                        Cancel(settings, status, token);
+                        result.Cancelled = true;
+                        Logger.Warn("ConDep execution cancelled.");
+                    }
+                    else
+                    {
+                        result.AddException(inner);
+                        Logger.Error("ConDep execution failed.", inner);
+                    }
+
+                    return true;
+                });
                 return result;
             }
             catch (Exception ex)
@@ -129,7 +129,7 @@ namespace ConDep.Dsl.Execution
             }
             finally
             {
-                if(!_cancelled) ExecutePostOps(settings, status, token);
+                if (!_cancelled) ExecutePostOps(settings, status, token);
                 //new PostOpsSequence().Execute(status, settings);
             }
         }
@@ -137,26 +137,26 @@ namespace ConDep.Dsl.Execution
         private void Cancel(ConDepSettings settings, StatusReporter status, CancellationToken token)
         {
             Logger.WithLogSection("Cancellation", () =>
+            {
+                try
                 {
-                    try
-                    {
-                        var tokenSource = new CancellationTokenSource();
-                        Logger.Warn("Cancelling execution gracefully!");
-                        _cancelled = true;
-                        if (_serverNodeInstalled) ExecutePostOps(settings, status, tokenSource.Token);
-                    }
-                    catch (AggregateException aggEx)
-                    {
-                        foreach (var ex in aggEx.InnerExceptions)
-                        {
-                            Logger.Error("Failure during cancellation", ex);
-                        }
-                    }
-                    catch (Exception ex)
+                    var tokenSource = new CancellationTokenSource();
+                    Logger.Warn("Cancelling execution gracefully!");
+                    _cancelled = true;
+                    if (_serverNodeInstalled) ExecutePostOps(settings, status, tokenSource.Token);
+                }
+                catch (AggregateException aggEx)
+                {
+                    foreach (var ex in aggEx.InnerExceptions)
                     {
                         Logger.Error("Failure during cancellation", ex);
                     }
-                });
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error("Failure during cancellation", ex);
+                }
+            });
         }
 
         private static void Validate(IValidateClient clientValidator, IValidateServer serverValidator)
@@ -176,15 +176,15 @@ namespace ConDep.Dsl.Execution
             var artifacts = CreateApplicationArtifacts(conDepSettings);
             foreach (var artifact in artifacts)
             {
+                PopulateDependencies(conDepSettings, sequenceManager, artifact);
+
                 var localSequence = sequenceManager.NewLocalSequence(artifact.GetType().Name);
                 var localBuilder = new LocalOperationsBuilder(localSequence, conDepSettings.Config.Servers);
-
-                PopulateDependencies(conDepSettings, localSequence, artifact, localBuilder);
                 ConfigureArtifact(conDepSettings, localSequence, localBuilder, artifact);
             }
         }
 
-        private static void PopulateDependencies(ConDepSettings conDepSettings, LocalSequence localSequence, IProvideArtifact application, LocalOperationsBuilder localBuilder)
+        private static void PopulateDependencies(ConDepSettings conDepSettings, ExecutionSequenceManager sequenceManager, IProvideArtifact application)
         {
             var dependencyHandler = new ArtifactDependencyHandler(application);
             if (dependencyHandler.HasDependenciesDefined())
@@ -192,6 +192,8 @@ namespace ConDep.Dsl.Execution
                 var dependencies = dependencyHandler.GetDependeciesForArtifact(conDepSettings);
                 foreach (var dependency in dependencies)
                 {
+                    var localSequence = sequenceManager.NewLocalSequence(dependency.GetType().Name);
+                    var localBuilder = new LocalOperationsBuilder(localSequence, conDepSettings.Config.Servers);
                     ConfigureArtifact(conDepSettings, localSequence, localBuilder, dependency);
                 }
             }
@@ -202,34 +204,34 @@ namespace ConDep.Dsl.Execution
         {
             if (dependency is Artifact.Local)
             {
-                ((Artifact.Local) dependency).Configure(localBuilder, conDepSettings);
+                ((Artifact.Local)dependency).Configure(localBuilder, conDepSettings);
             }
             else if (dependency is Artifact.Remote)
             {
                 var remoteSequence = localSequence.RemoteSequence(conDepSettings.Config.Servers);
                 var remoteBuilder = new RemoteOperationsBuilder(remoteSequence);
-                ((Artifact.Remote) dependency).Configure(remoteBuilder, conDepSettings);
+                ((Artifact.Remote)dependency).Configure(remoteBuilder, conDepSettings);
             }
         }
 
         public static void ExecutePreOps(ConDepSettings conDepSettings, IReportStatus status, CancellationToken token)
         {
             Logger.WithLogSection("Executing pre-operations", () =>
+            {
+                foreach (var server in conDepSettings.Config.Servers)
                 {
-                    foreach (var server in conDepSettings.Config.Servers)
+                    Logger.WithLogSection(server.Name, () =>
                     {
-                        Logger.WithLogSection(server.Name, () =>
-                            {
-                                //Todo: This will not work with ConDep server. After first run, this key will always exist.
-                                if (!ConDepGlobals.ServersWithPreOps.ContainsKey(server.Name))
-                                {
-                                    var remotePreOps = new PreRemoteOps();
-                                    remotePreOps.Execute(server, status, conDepSettings, token);
-                                    ConDepGlobals.ServersWithPreOps.Add(server.Name, server);
-                                }
-                            });
-                    }
-                });
+                        //Todo: This will not work with ConDep server. After first run, this key will always exist.
+                        if (!ConDepGlobals.ServersWithPreOps.ContainsKey(server.Name))
+                        {
+                            var remotePreOps = new PreRemoteOps();
+                            remotePreOps.Execute(server, status, conDepSettings, token);
+                            ConDepGlobals.ServersWithPreOps.Add(server.Name, server);
+                        }
+                    });
+                }
+            });
         }
 
         private static void ExecutePostOps(ConDepSettings conDepSettings, IReportStatus status, CancellationToken token)
@@ -251,10 +253,10 @@ namespace ConDep.Dsl.Execution
             var assembly = settings.Options.Assembly;
             if (settings.Options.HasApplicationDefined())
             {
-                var type = assembly.GetTypes().SingleOrDefault(t => typeof (IProvideArtifact).IsAssignableFrom(t) && t.Name == settings.Options.Application);
+                var type = assembly.GetTypes().SingleOrDefault(t => typeof(IProvideArtifact).IsAssignableFrom(t) && t.Name == settings.Options.Application);
                 if (type == null)
                 {
-                    throw new ConDepConfigurationTypeNotFoundException(string.Format("A class inheriting from [{0}] or [{1}] must be present in assembly [{2}] for ConDep to work. No calss with name [{3}] found in assembly. ",typeof (Artifact.Local).FullName, typeof(Artifact.Remote).FullName, assembly.FullName, settings.Options.Application));
+                    throw new ConDepConfigurationTypeNotFoundException(string.Format("A class inheriting from [{0}] or [{1}] must be present in assembly [{2}] for ConDep to work. No calss with name [{3}] found in assembly. ", typeof(Artifact.Local).FullName, typeof(Artifact.Remote).FullName, assembly.FullName, settings.Options.Application));
                 }
                 yield return CreateApplicationArtifact(type);
             }
