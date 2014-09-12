@@ -10,20 +10,18 @@ namespace ConDep.Dsl.Sequence
     public class RemoteSequences : IExecute
     {
         private readonly IEnumerable<ServerConfig> _servers;
-        private readonly ILoadBalance _loadBalancer;
+        private readonly LoadBalancerExecutorBase _loadBalancer;
         private readonly bool _paralell;
         internal readonly List<RemoteSequence> _sequences = new List<RemoteSequence>();
-        private LoadBalancerExecutorBase _internalLoadBalancer;
 
-        public RemoteSequences(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer, bool paralell)
+        public RemoteSequences(IEnumerable<ServerConfig> servers, LoadBalancerExecutorBase loadBalancer, bool paralell)
         {
             _servers = servers;
             _loadBalancer = loadBalancer;
             _paralell = paralell;
-            _internalLoadBalancer = GetLoadBalancer();
             foreach (var server in servers)
             {
-                var remoteSequence = new RemoteSequence(server, loadBalancer, paralell);
+                var remoteSequence = new RemoteSequence(server, paralell);
                 _sequences.Add(remoteSequence);
             }
         }
@@ -38,7 +36,7 @@ namespace ConDep.Dsl.Sequence
             if (_sequences.Count != 0)
             {
                 RemoteSequence sequence;
-                if (settings.Options.ContinueAfterMarkedServer && _loadBalancer.Mode == LbMode.Sticky)
+                if (settings.Options.ContinueAfterMarkedServer && _loadBalancer is StickyLoadBalancerExecutor)
                 {
                     sequence = _sequences.SingleOrDefault(x => x.Server.StopServer) ?? _sequences[0];
                 }
@@ -54,7 +52,7 @@ namespace ConDep.Dsl.Sequence
         {
             if (_sequences.Count > 1)
             {
-                if (settings.Options.ContinueAfterMarkedServer && _loadBalancer.Mode == LbMode.Sticky)
+                if (settings.Options.ContinueAfterMarkedServer && _loadBalancer is StickyLoadBalancerExecutor)
                 {
                     var sequenceNotToExecute = _sequences.SingleOrDefault(x => x.Server.StopServer) ?? _sequences[0];
                     foreach (var sequence in _sequences.Where(sequence => sequence != sequenceNotToExecute))
@@ -75,7 +73,7 @@ namespace ConDep.Dsl.Sequence
 
             try
             {
-                _internalLoadBalancer.BringOffline(sequence.Server, status, settings, token);
+                _loadBalancer.BringOffline(sequence.Server, status, settings, token);
                 sequence.Execute(status, settings, token);
             }
             catch
@@ -87,14 +85,13 @@ namespace ConDep.Dsl.Sequence
             {
                 if (!errorDuringLoadBalancing && !settings.Options.StopAfterMarkedServer)
                 {
-                    _internalLoadBalancer.BringOnline(sequence.Server, status, settings, token);
+                    _loadBalancer.BringOnline(sequence.Server, status, settings, token);
                 }
             }
         }
 
         public void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            var loadBalancer = GetLoadBalancer();
             var errorDuringLoadBalancing = false;
 
             foreach (var sequence in _sequences)
@@ -102,7 +99,7 @@ namespace ConDep.Dsl.Sequence
                 try
                 {
                     Logger.Info(string.Format("Taking server [{0}] offline in load balancer.", sequence.Server.Name));
-                    loadBalancer.BringOffline(sequence.Server, status, settings, token);
+                    _loadBalancer.BringOffline(sequence.Server, status, settings, token);
                     sequence.Execute(status, settings, token);
                 }
                 catch
@@ -115,7 +112,7 @@ namespace ConDep.Dsl.Sequence
                     if (!errorDuringLoadBalancing)
                     {
                         Logger.Info(string.Format("Taking server [{0}] online in load balancer.", sequence.Server.Name));
-                        loadBalancer.BringOnline(sequence.Server, status, settings, token);
+                        _loadBalancer.BringOnline(sequence.Server, status, settings, token);
                     }
                 }
             }
@@ -148,25 +145,5 @@ namespace ConDep.Dsl.Sequence
         }
 
         public List<RemoteSequence> Sequenceses {get { return _sequences; }}
-
-        private LoadBalancerExecutorBase GetLoadBalancer()
-        {
-            //if (_paralell)
-            //{
-            //    return new ParalellRemoteExecutor(_servers);
-            //}
-
-            switch (_loadBalancer.Mode)
-            {
-                case LbMode.Sticky:
-                    return new StickyLoadBalancerExecutor(_servers, _loadBalancer);
-                case LbMode.RoundRobin:
-                    return new RoundRobinLoadBalancerExecutor(_servers, _loadBalancer);
-                default:
-                    throw new ConDepLoadBalancerException(string.Format("Load Balancer mode [{0}] not supported.",
-                                                                    _loadBalancer.Mode));
-            }
-            return null;
-        }
     }
 }

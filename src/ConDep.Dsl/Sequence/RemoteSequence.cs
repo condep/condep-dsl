@@ -14,14 +14,12 @@ namespace ConDep.Dsl.Sequence
     public class RemoteSequence : IManageRemoteSequence, IExecute
     {
         private readonly ServerConfig _server;
-        private readonly ILoadBalance _loadBalancer;
         private readonly bool _paralell;
         internal readonly List<IExecuteOnServer> _sequence = new List<IExecuteOnServer>();
 
-        public RemoteSequence(ServerConfig server, ILoadBalance loadBalancer, bool paralell = false)
+        public RemoteSequence(ServerConfig server, bool paralell = false)
         {
             _server = server;
-            _loadBalancer = loadBalancer;
             _paralell = paralell;
         }
 
