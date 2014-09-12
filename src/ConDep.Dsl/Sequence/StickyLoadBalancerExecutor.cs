@@ -16,26 +16,32 @@ namespace ConDep.Dsl.Sequence
             _loadBalancer = loadBalancer;
         }
 
-        public override void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
+        public override void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
             var servers = _servers.ToList();
-            ServerConfig manuelTestServer;
 
             if (settings.Options.StopAfterMarkedServer)
             {
-                manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
-                ExecuteOnServer(manuelTestServer, status, settings, _loadBalancer, true, false, token);
+                var manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
+                BringOffline(manuelTestServer, status, settings, _loadBalancer, token);
                 return;
             }
-
             if (settings.Options.ContinueAfterMarkedServer)
             {
-                manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
-                _loadBalancer.BringOnline(manuelTestServer.Name, manuelTestServer.LoadBalancerFarm, status);
-                servers.Remove(manuelTestServer);
+                var manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
+                if (manuelTestServer.Name.Equals(server.Name))
+                {
+                    return;
+                }
+                //BringOffline(manuelTestServer, status, settings, _loadBalancer, true, token);
+                //return;
             }
+            BringOffline(server, status, settings, _loadBalancer, token);
+        }
 
-            servers.ForEach(server => ExecuteOnServer(server, status, settings, _loadBalancer, true, true, token));
+        public override void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
+        {
+            BringOnline(server, status, settings, _loadBalancer, token);
         }
     }
 }

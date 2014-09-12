@@ -8,40 +8,27 @@ namespace ConDep.Dsl.Sequence
 {
     public abstract class LoadBalancerExecutorBase
     {
-        public abstract void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token);
+        //public abstract void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token);
+        public abstract void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
+        public abstract void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
 
-        protected void ExecuteOnServer(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, bool bringServerOfflineBeforeExecution, bool bringServerOnlineAfterExecution, CancellationToken token)
+        protected void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, CancellationToken token)
         {
-            var errorDuringLoadBalancing = false;
-
             Logger.WithLogSection(server.Name, () =>
-                {
-                    try
-                    {
-                        if (bringServerOfflineBeforeExecution)
-                        {
-                            Logger.Info(string.Format("Taking server [{0}] offline in load balancer.", server.Name));
-                            loadBalancer.BringOffline(server.Name, server.LoadBalancerFarm,
-                                                      LoadBalancerSuspendMethod.Suspend, status);
-                        }
+            {
+                Logger.Info(string.Format("Taking server [{0}] offline in load balancer.", server.Name));
+                loadBalancer.BringOffline(server.Name, server.LoadBalancerFarm,
+                                            LoadBalancerSuspendMethod.Suspend, status);
+            });
 
-                        //ExecuteOnServer(server, status, settings, token);
-                    }
-                    catch
-                    {
-                        errorDuringLoadBalancing = true;
-                        throw;
-                    }
-                    finally
-                    {
-                        //&& !status.HasErrors
-                        if (bringServerOnlineAfterExecution && !errorDuringLoadBalancing)
-                        {
-                            Logger.Info(string.Format("Taking server [{0}] online in load balancer.", server.Name));
-                            loadBalancer.BringOnline(server.Name, server.LoadBalancerFarm, status);
-                        }
-                    }
-                });
+        }
+        protected void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, CancellationToken token)
+        {
+            Logger.WithLogSection(server.Name, () =>
+            {
+                Logger.Info(string.Format("Taking server [{0}] online in load balancer.", server.Name));
+                loadBalancer.BringOnline(server.Name, server.LoadBalancerFarm, status);
+            });
 
         }
 

@@ -172,6 +172,7 @@
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />
     <Compile Include="Security\JsonPasswordCrypto.cs" />
+    <Compile Include="Sequence\RemoteSequences.cs" />
     <Compile Include="Validation\ClientValidator.cs" />
     <Compile Include="Execution\ConDepExecutionResult.cs" />
     <Compile Include="Validation\ConDepValidationException.cs" />

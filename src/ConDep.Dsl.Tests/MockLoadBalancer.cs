@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.Operations.LoadBalancer;
-using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Tests
 {

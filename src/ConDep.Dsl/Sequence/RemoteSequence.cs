@@ -39,7 +39,7 @@ namespace ConDep.Dsl.Sequence
 
         public virtual void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            Logger.WithLogSection(_server.Name, () =>
+            Logger.WithLogSection(Server.Name, () =>
             {
                 foreach (var element in _sequence)
                 {
@@ -47,40 +47,25 @@ namespace ConDep.Dsl.Sequence
 
                     IExecuteOnServer elementToExecute = element;
                     if (element is CompositeSequence)
-                        elementToExecute.Execute(_server, status, settings, token);
+                        elementToExecute.Execute(Server, status, settings, token);
                     else
-                        Logger.WithLogSection(element.Name, () => elementToExecute.Execute(_server, status, settings, token));
+                        Logger.WithLogSection(element.Name, () => elementToExecute.Execute(Server, status, settings, token));
                 }
             });
 
             //GetExecutor().Execute(status, settings, token);
         }
 
-        private LoadBalancerExecutorBase GetLoadBalancer()
-        {
-            //if (_paralell)
-            //{
-            //    return new ParalellRemoteExecutor(_servers);
-            //}
-
-            //switch (_loadBalancer.Mode)
-            //{
-            //    case LbMode.Sticky:
-            //        return new StickyLoadBalancerExecutor(_servers, _loadBalancer);
-            //    case LbMode.RoundRobin:
-            //        return new RoundRobinLoadBalancerExecutor(_servers, _loadBalancer);
-            //    default:
-            //        throw new ConDepLoadBalancerException(string.Format("Load Balancer mode [{0}] not supported.",
-            //                                                        _loadBalancer.Mode));
-            //}
-            return null;
-        }
-
         public virtual string Name { get { return "Remote Operations"; } }
+
+        public ServerConfig Server
+        {
+            get { return _server; }
+        }
 
         public void DryRun()
         {
-            Logger.WithLogSection(_server.Name, () =>
+            Logger.WithLogSection(Server.Name, () =>
             {
                 foreach (var item in _sequence)
                 {

@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Sequence;
 using ConDep.Dsl.Validation;
 using NUnit.Framework;
@@ -61,10 +60,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(1));
 
@@ -82,10 +84,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(1));
 
@@ -103,10 +108,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(1));
 
@@ -124,10 +132,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(1));
 
@@ -146,10 +157,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsDefault, _token);
+            //remoteSequence.Execute(status, _settingsDefault, _token);
+            localSequence.Execute(status, _settingsDefault, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(2));
 
@@ -170,11 +184,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsDefault, _token);
-
+            //remoteSequence.Execute(status, _settingsDefault, _token);
+            localSequence.Execute(status, _settingsDefault, _token);
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(config.Servers.Count * 2));
 
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item1, Is.EqualTo("jat-web01"));
@@ -198,10 +214,14 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsDefault, _token);
+            //remoteSequence.Execute(status, _settingsDefault, _token);
+            localSequence.Execute(status, _settingsDefault, _token);
+
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(config.Servers.Count * 2));
 
@@ -250,10 +270,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsDefault, _token);
+            //remoteSequence.Execute(status, _settingsDefault, _token);
+            localSequence.Execute(status, _settingsDefault, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(config.Servers.Count * 2));
 
@@ -283,10 +306,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(1));
 
@@ -308,10 +334,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(1));
 
@@ -333,10 +362,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((config.Servers.Count - 1) * 2) + 1));
 
@@ -369,10 +401,13 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((config.Servers.Count - 1) * 2) + 1));
 
@@ -405,6 +440,7 @@ namespace ConDep.Dsl.Tests
         }
 
         [Test]
+        [Ignore]
         public void TestThatRoundRobinWithContinueAfterManualTestOnSpecificServerExecutesOnCorrectServers()
         {
             var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
@@ -418,10 +454,14 @@ namespace ConDep.Dsl.Tests
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            //var remoteSequence = new RemoteSequence(config.Servers, loadBalancer);
+            var localSequence = new LocalSequence("MyLocalSequence", loadBalancer);
+            var remoteSequences = localSequence.RemoteSequence(config.Servers);
+
 
             var status = new StatusReporter();
-            remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            //remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
+            localSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((config.Servers.Count - 1) * 2) + 1));
 
