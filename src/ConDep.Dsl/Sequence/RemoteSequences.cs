@@ -75,7 +75,6 @@ namespace ConDep.Dsl.Sequence
 
             try
             {
-                Logger.Info(string.Format("Taking server [{0}] offline in load balancer.", sequence.Server.Name));
                 _internalLoadBalancer.BringOffline(sequence.Server, status, settings, token);
                 sequence.Execute(status, settings, token);
             }
@@ -88,7 +87,6 @@ namespace ConDep.Dsl.Sequence
             {
                 if (!errorDuringLoadBalancing && !settings.Options.StopAfterMarkedServer)
                 {
-                    Logger.Info(string.Format("Taking server [{0}] online in load balancer.", sequence.Server.Name));
                     _internalLoadBalancer.BringOnline(sequence.Server, status, settings, token);
                 }
             }
