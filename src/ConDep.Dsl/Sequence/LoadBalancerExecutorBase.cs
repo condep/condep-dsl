@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -10,7 +9,6 @@ namespace ConDep.Dsl.Sequence
 {
     public abstract class LoadBalancerExecutorBase
     {
-        //public abstract void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token);
         public abstract void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
         public abstract void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
 
@@ -35,33 +33,35 @@ namespace ConDep.Dsl.Sequence
 
         protected void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, CancellationToken token)
         {
-            if (server.LoadBalancerState == LoadBalanceState.Offline) return;
+            if (server.LoadBalancerState.CurrentState == LoadBalanceState.Offline) return;
 
             Logger.WithLogSection(string.Format("Taking server [{0}] offline in load balancer.", server.Name), () =>
             {
                 loadBalancer.BringOffline(server.Name, server.LoadBalancerFarm, LoadBalancerSuspendMethod.Suspend, status);
-                server.LoadBalancerState = LoadBalanceState.Offline;
+                server.LoadBalancerState.CurrentState = LoadBalanceState.Offline;
             });
 
         }
         protected void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, CancellationToken token)
         {
-            if (server.LoadBalancerState == LoadBalanceState.Online) return;
+            if (server.LoadBalancerState.CurrentState == LoadBalanceState.Online) return;
 
             Logger.WithLogSection(string.Format("Taking server [{0}] online in load balancer.", server.Name), () =>
             {
                 loadBalancer.BringOnline(server.Name, server.LoadBalancerFarm, status);
-                server.LoadBalancerState = LoadBalanceState.Online;
+                server.LoadBalancerState.CurrentState = LoadBalanceState.Online;
             });
 
         }
 
-        public void DryRun()
+        public void DryRunBringOnline(ServerConfig server)
         {
-            //foreach (var item in _sequence)
-            //{
-            //    Logger.WithLogSection(item.Name, () => { item.DryRun(); });
-            //}
+            Logger.Info(string.Format("Taking server [{0}] online in load balancer.", server.Name));
+        }
+
+        public void DryRunBringOffline(ServerConfig server)
+        {
+            Logger.Info(string.Format("Taking server [{0}] offline in load balancer.", server.Name));
         }
     }
 }

@@ -34,7 +34,7 @@ namespace ConDep.Dsl.Sequence
                     BringOnline(markedServer, status, settings, token);
                     return new List<ServerConfig>();
                 }
-                markedServer.PreventDeployment = true;
+                markedServer.LoadBalancerState.PreventDeployment = true;
             }
 
             return servers;
@@ -72,15 +72,15 @@ namespace ConDep.Dsl.Sequence
                 TurnRoundRobinServersAround(servers, settings, token, roundRobinMaxOfflineServers, status);
             }
 
-            if (server.PreventDeployment) return;
+            if (server.LoadBalancerState.PreventDeployment) return;
 
-            if (server.LoadBalancerState == LoadBalanceState.Offline)
+            if (server.LoadBalancerState.CurrentState == LoadBalanceState.Offline)
                 return;
 
             if (settings.Options.ContinueAfterMarkedServer)
             {
                 BringOffline(server, status, settings, _loadBalancer, token);
-                server.KeepOffline = true;
+                server.LoadBalancerState.KeepOffline = true;
                 return;
             }
 
@@ -91,12 +91,12 @@ namespace ConDep.Dsl.Sequence
             }
 
             BringOffline(server, status, settings, _loadBalancer, token);
-            server.KeepOffline = true;
+            server.LoadBalancerState.KeepOffline = true;
         }
 
         public override void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            if (server.KeepOffline)
+            if (server.LoadBalancerState.KeepOffline)
                 return;
 
             BringOnline(server, status, settings, _loadBalancer, token);

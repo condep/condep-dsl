@@ -72,7 +72,7 @@ namespace ConDep.Dsl.Sequence
                         try
                         {
                             _internalLoadBalancer.BringOffline(serverToDeployTo, status, settings, token);
-                            if (!serverToDeployTo.PreventDeployment)
+                            if (!serverToDeployTo.LoadBalancerState.PreventDeployment)
                             {
                                 foreach (var remoteSequence in _remoteSequences)
                                 {
@@ -118,15 +118,16 @@ namespace ConDep.Dsl.Sequence
 
             Logger.WithLogSection("Remote Operations", () =>
             {
-
                 foreach (var server in _servers)
                 {
                     Logger.WithLogSection(server.Name, () =>
                     {
+                        _internalLoadBalancer.DryRunBringOffline(server);
                         foreach (var item in _remoteSequences)
                         {
                             Logger.WithLogSection(item.Name, () => { item.DryRun(); });
                         }
+                        _internalLoadBalancer.DryRunBringOnline(server);
                     });
                 }
             });

@@ -17,14 +17,14 @@ namespace ConDep.Dsl.Sequence
 
         public override void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            if (server.LoadBalancerState == LoadBalanceState.Offline) return;
+            if (server.LoadBalancerState.CurrentState == LoadBalanceState.Offline) return;
 
             BringOffline(server, status, settings, _loadBalancer, token);
         }
 
         public override void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            if (server.LoadBalancerState == LoadBalanceState.Online) return;
+            if (server.LoadBalancerState.CurrentState == LoadBalanceState.Online) return;
 
             BringOnline(server, status, settings, _loadBalancer, token);
         }

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using ConDep.Dsl.Operations.LoadBalancer;
-using Newtonsoft.Json;
 
 namespace ConDep.Dsl.Config
 {
@@ -10,6 +8,7 @@ namespace ConDep.Dsl.Config
     {
         private DeploymentUserConfig _deploymentUserRemote;
         private ServerInfo _serverInfo = new ServerInfo();
+        private ServerLoadBalancerState _loadBalancerState = new ServerLoadBalancerState();
 
         public string Name { get; set; }
         public bool StopServer { get; set; }
@@ -21,9 +20,7 @@ namespace ConDep.Dsl.Config
         }
 
         public string LoadBalancerFarm { get; set; }
-        internal LoadBalanceState? LoadBalancerState { get; set; }
-        internal bool PreventDeployment { get; set; }
-        internal bool KeepOffline { get; set; }
+        internal ServerLoadBalancerState LoadBalancerState { get { return _loadBalancerState; } }
 
         public ServerInfo GetServerInfo()
         {
