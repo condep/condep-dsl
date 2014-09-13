@@ -5,7 +5,6 @@ using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Operations;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence

@@ -123,7 +123,6 @@ namespace ConDep.Dsl.Execution
             finally
             {
                 if (!_cancelled) ExecutePostOps(settings, status, token);
-                //new PostOpsSequence().Execute(status, settings);
             }
         }
 

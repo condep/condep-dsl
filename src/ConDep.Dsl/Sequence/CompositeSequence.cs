@@ -13,12 +13,10 @@ namespace ConDep.Dsl.Sequence
     public class CompositeSequence : IManageRemoteSequence, IExecuteRemotely    {
         private readonly string _compositeName;
         internal readonly List<IExecuteRemotely> _sequence = new List<IExecuteRemotely>();
-        //private SequenceFactory _sequenceFactory;
 
         public CompositeSequence(string compositeName)
         {
             _compositeName = compositeName;
-            //_sequenceFactory = new SequenceFactory(_sequence);
         }
 
         public void Add(IExecuteRemotely operation, bool addFirst = false)
@@ -56,7 +54,6 @@ namespace ConDep.Dsl.Sequence
             var seq = new CompositeSequence(operation.Name);
             _sequence.Add(seq);
             return seq;
-            //return _sequenceFactory.NewCompositeSequence(operation);
         }
 
         public CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition)
@@ -76,10 +73,7 @@ namespace ConDep.Dsl.Sequence
 
         public bool IsValid(Notification notification)
         {
-            var isRemoteOpsValid = _sequence.OfType<IExecuteRemotely>().All(x => x.IsValid(notification));
-            var isCompSeqValid = _sequence.OfType<CompositeSequence>().All(x => x.IsValid(notification));
-
-            return isCompSeqValid && isRemoteOpsValid;
+            return _sequence.All(x => x.IsValid(notification));
         }
 
         public virtual string Name { get { return _compositeName; } }

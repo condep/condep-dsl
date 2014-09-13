@@ -1,9 +1,9 @@
 using System;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Operations;
-using ConDep.Dsl.Sequence;
+using ConDep.Dsl.SemanticModel;
 
-namespace ConDep.Dsl.SemanticModel
+namespace ConDep.Dsl.Sequence
 {
     public interface IManageRemoteSequence : IManageSequence<IExecuteRemotely>
     {

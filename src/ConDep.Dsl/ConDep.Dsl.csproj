@@ -138,7 +138,7 @@
     <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="Logging\TeamCityLogger.cs" />
     <Compile Include="Logging\TeamCityMessageStatus.cs" />
-    <Compile Include="Operations\IOfferRemoteConfiguration.cs" />
+    <Compile Include="IOfferRemoteConfiguration.cs" />
     <Compile Include="Operations\RemoteServerOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperationBase.cs" />

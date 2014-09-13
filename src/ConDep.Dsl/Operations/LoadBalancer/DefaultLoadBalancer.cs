@@ -1,5 +1,4 @@
 ﻿using ConDep.Dsl.Config;
-using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Operations.LoadBalancer
 {

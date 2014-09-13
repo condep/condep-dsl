@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.SemanticModel;
 
 namespace ConDep.Dsl.Sequence
 {

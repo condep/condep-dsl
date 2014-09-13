@@ -1,4 +1,4 @@
-using ConDep.Dsl.Operations.Application.Local;
+using ConDep.Dsl.Operations;
 
 namespace ConDep.Dsl
 {
