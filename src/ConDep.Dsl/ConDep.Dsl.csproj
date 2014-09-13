@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="Artifact.cs" />
     <Compile Include="Config\ServerLoadBalancerState.cs" />
+    <Compile Include="Execution\ArtifactHandler.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
     <Compile Include="Builders\RemoteConfigurationBuilder.cs" />
