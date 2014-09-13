@@ -45,7 +45,7 @@ namespace ConDep.Dsl.Execution
                 if (conDepSettings.Options.DryRun)
                 {
                     Logger.Warn("Showing execution sequence from dry run:");
-                    sequenceManager.DryRun();
+                    sequenceManager.DryRun(conDepSettings);
                     return new ConDepExecutionResult(true);
                 }
 

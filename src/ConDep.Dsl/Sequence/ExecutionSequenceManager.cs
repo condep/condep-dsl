@@ -106,7 +106,7 @@ namespace ConDep.Dsl.Sequence
             return _localSequences.All(x => x.IsValid(notification));
         }
 
-        public void DryRun()
+        public void DryRun(ConDepSettings settings)
         {
             Logger.WithLogSection("Local Operations", () =>
             {
@@ -116,18 +116,19 @@ namespace ConDep.Dsl.Sequence
                 }
             });
 
+            var loadBalancer = GetDryRunLoadBalancer();
             Logger.WithLogSection("Remote Operations", () =>
             {
                 foreach (var server in _servers)
                 {
                     Logger.WithLogSection(server.Name, () =>
                     {
-                        _internalLoadBalancer.DryRunBringOffline(server);
+                        loadBalancer.BringOffline(server, new StatusReporter(), settings, new CancellationToken());
                         foreach (var item in _remoteSequences)
                         {
                             Logger.WithLogSection(item.Name, () => { item.DryRun(); });
                         }
-                        _internalLoadBalancer.DryRunBringOnline(server);
+                        loadBalancer.BringOnline(server, new StatusReporter(), settings, new CancellationToken());
                     });
                 }
             });
@@ -150,7 +151,20 @@ namespace ConDep.Dsl.Sequence
                     throw new ConDepLoadBalancerException(string.Format("Load Balancer mode [{0}] not supported.",
                                                                     _loadBalancer.Mode));
             }
-            return null;
+        }
+
+        private LoadBalancerExecutorBase GetDryRunLoadBalancer()
+        {
+            switch (_loadBalancer.Mode)
+            {
+                case LbMode.Sticky:
+                    return new StickyLoadBalancerExecutor(new DefaultLoadBalancer());
+                case LbMode.RoundRobin:
+                    return new RoundRobinLoadBalancerExecutor(_servers, new DefaultLoadBalancer());
+                default:
+                    throw new ConDepLoadBalancerException(string.Format("Load Balancer mode [{0}] not supported.",
+                                                                    _loadBalancer.Mode));
+            }
         }
     }
 }
