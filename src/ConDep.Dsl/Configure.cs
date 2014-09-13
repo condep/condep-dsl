@@ -15,7 +15,7 @@ namespace ConDep.Dsl
             seqContainer.AddOperation(operation);
         }
 
-        public static void ExecuteOperation(IOfferRemoteExecution executor, IExecuteOnServer operation)
+        public static void ExecuteOperation(IOfferRemoteExecution executor, IExecuteRemotely operation)
         {
             var seqContainer = executor as RemoteExecutionBuilder;
             seqContainer.AddOperation(operation);
@@ -33,19 +33,19 @@ namespace ConDep.Dsl
             seqContainer.AddOperation(operation);
         }
 
-        public static void DeployOperation(IOfferRemoteDeployment deployment, IExecuteOnServer operation)
+        public static void DeployOperation(IOfferRemoteDeployment deployment, IExecuteRemotely operation)
         {
             var seqContainer = deployment as RemoteDeploymentBuilder;
             seqContainer.AddOperation(operation);
         }
 
-        public static void Remote(IOfferRemoteOperations remote, IExecuteOnServer operation)
+        public static void Remote(IOfferRemoteOperations remote, IExecuteRemotely operation)
         {
             var seqContainer = remote as RemoteOperationsBuilder;
             seqContainer.AddOperation(operation);
         }
 
-        public static void InstallOperation(IOfferRemoteInstallation installation, IExecuteOnServer operation)
+        public static void InstallOperation(IOfferRemoteInstallation installation, IExecuteRemotely operation)
         {
             var seqContainer = installation as RemoteInstallationBuilder;
             seqContainer.AddOperation(operation);
@@ -57,7 +57,7 @@ namespace ConDep.Dsl
             seqContainer.AddOperation(operation);
         }
 
-        public static void ConfigureOperation(IOfferRemoteConfiguration remoteConfiguration, IExecuteOnServer operation)
+        public static void ConfigureOperation(IOfferRemoteConfiguration remoteConfiguration, IExecuteRemotely operation)
         {
             var seqContainer = remoteConfiguration as RemoteConfigurationBuilder;
             seqContainer.AddOperation(operation);

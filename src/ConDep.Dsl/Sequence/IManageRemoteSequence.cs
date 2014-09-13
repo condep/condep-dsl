@@ -5,17 +5,10 @@ using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.SemanticModel
 {
-    public interface IManageRemoteSequence : IManageSequence<IExecuteOnServer>
+    public interface IManageRemoteSequence : IManageSequence<IExecuteRemotely>
     {
         CompositeSequence NewCompositeSequence(RemoteCompositeOperation operation);
         CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition);
-        void DryRun();
-    }
-
-    public interface IManageRemoteServersSequence : IManageSequence<IExecuteOnServer>
-    {
-        CompositeServersSequence NewCompositeServersSequence(RemoteCompositeOperation operation);
-        CompositeServersSequence NewConditionalCompositeServersSequence(Predicate<ServerInfo> condition);
         void DryRun();
     }
 }

@@ -8,25 +8,21 @@ namespace ConDep.Dsl.Builders
 {
     public class RemoteDeploymentBuilder : IOfferRemoteDeployment, IConfigureRemoteDeployment
     {
-        private readonly IEnumerable<IManageRemoteSequence> _remoteSequences;
+        private readonly IManageRemoteSequence _remoteSequence;
 
-        public RemoteDeploymentBuilder(IEnumerable<IManageRemoteSequence> remoteSequences)
+        public RemoteDeploymentBuilder(IManageRemoteSequence remoteSequence)
         {
-            _remoteSequences = remoteSequences;
+            _remoteSequence = remoteSequence;
         }
 
-        public void AddOperation(IExecuteOnServer operation)
+        public void AddOperation(IExecuteRemotely operation)
         {
-            foreach (var sequence in _remoteSequences)
-            {
-                sequence.Add(operation);
-            }
+            _remoteSequence.Add(operation);
         }
 
         public void AddOperation(RemoteCompositeOperation operation)
         {
-            var sequences = _remoteSequences.Select(sequence => sequence.NewCompositeSequence(operation));
-            operation.Configure(new RemoteCompositeBuilder(sequences));
+            operation.Configure(new RemoteCompositeBuilder(_remoteSequence.NewCompositeSequence(operation)));
         }
     }
 }

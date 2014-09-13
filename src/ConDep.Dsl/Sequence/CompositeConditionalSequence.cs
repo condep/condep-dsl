@@ -26,7 +26,7 @@ namespace ConDep.Dsl.Sequence
                     {
                         foreach (var element in _sequence)
                         {
-                            IExecuteOnServer elementToExecute = element;
+                            IExecuteRemotely elementToExecute = element;
                             Logger.WithLogSection("Condition True, executing " + element.Name, () => elementToExecute.Execute(server, status, settings, token));
                         }
                     }

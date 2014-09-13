@@ -38,7 +38,7 @@ namespace ConDep.Dsl.Execution
                                                                 serverInfoHarvester);
 
                 var lbLookup = new LoadBalancerLookup(conDepSettings.Config.LoadBalancer);
-                var sequenceManager = new ExecutionSequenceManager(lbLookup.GetLoadBalancer());
+                var sequenceManager = new ExecutionSequenceManager(conDepSettings.Config.Servers, lbLookup.GetLoadBalancer());
 
                 PopulateExecutionSequence(conDepSettings, sequenceManager);
 
@@ -177,14 +177,14 @@ namespace ConDep.Dsl.Execution
             foreach (var artifact in artifacts)
             {
                 var localSequence = sequenceManager.NewLocalSequence(artifact.GetType().Name);
-                var localBuilder = new LocalOperationsBuilder(localSequence, conDepSettings.Config.Servers);
-                PopulateDependencies(conDepSettings, artifact, localSequence, localBuilder);
+                var localBuilder = new LocalOperationsBuilder(localSequence);
+                PopulateDependencies(conDepSettings, artifact, sequenceManager, localBuilder);
 
-                ConfigureArtifact(conDepSettings, localSequence, localBuilder, artifact);
+                ConfigureArtifact(conDepSettings, sequenceManager, localBuilder, artifact);
             }
         }
 
-        private static void PopulateDependencies(ConDepSettings conDepSettings, IProvideArtifact application, LocalSequence localSequence, LocalOperationsBuilder localBuilder)
+        private static void PopulateDependencies(ConDepSettings conDepSettings, IProvideArtifact application, ExecutionSequenceManager sequenceManager, LocalOperationsBuilder localBuilder)
         {
             var dependencyHandler = new ArtifactDependencyHandler(application);
             if (dependencyHandler.HasDependenciesDefined())
@@ -192,12 +192,12 @@ namespace ConDep.Dsl.Execution
                 var dependencies = dependencyHandler.GetDependeciesForArtifact(conDepSettings);
                 foreach (var dependency in dependencies)
                 {
-                    ConfigureArtifact(conDepSettings, localSequence, localBuilder, dependency);
+                    ConfigureArtifact(conDepSettings, sequenceManager, localBuilder, dependency);
                 }
             }
         }
 
-        private static void ConfigureArtifact(ConDepSettings conDepSettings, LocalSequence localSequence,
+        private static void ConfigureArtifact(ConDepSettings conDepSettings, ExecutionSequenceManager sequenceManager,
             LocalOperationsBuilder localBuilder, IProvideArtifact dependency)
         {
             if (dependency is Artifact.Local)
@@ -206,7 +206,7 @@ namespace ConDep.Dsl.Execution
             }
             else if (dependency is Artifact.Remote)
             {
-                var remoteSequence = localSequence.RemoteSequence(conDepSettings.Config.Servers);
+                var remoteSequence = sequenceManager.NewRemoteSequence(dependency.GetType().Name);
                 var remoteBuilder = new RemoteOperationsBuilder(remoteSequence);
                 ((Artifact.Remote)dependency).Configure(remoteBuilder, conDepSettings);
             }

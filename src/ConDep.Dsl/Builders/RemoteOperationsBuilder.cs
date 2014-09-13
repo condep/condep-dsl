@@ -8,30 +8,26 @@ namespace ConDep.Dsl.Builders
 {
     public class RemoteOperationsBuilder : IOfferRemoteOperations
     {
-        private readonly IEnumerable<IManageRemoteSequence> _remoteSequences;
+        private readonly IManageRemoteSequence _remoteSequence;
 
-        public RemoteOperationsBuilder(IEnumerable<IManageRemoteSequence> remoteSequences)
+        public RemoteOperationsBuilder(IManageRemoteSequence remoteSequence)
         {
-            _remoteSequences = remoteSequences;
+            _remoteSequence = remoteSequence;
         }
 
-        public IOfferRemoteDeployment Deploy { get { return new RemoteDeploymentBuilder(_remoteSequences); } }
-        public IOfferRemoteExecution Execute { get { return new RemoteExecutionBuilder(_remoteSequences); } }
-        public IOfferRemoteConfiguration Configure { get { return new RemoteConfigurationBuilder(_remoteSequences);  } }
-        public IOfferRemoteInstallation Install { get { return new RemoteInstallationBuilder(_remoteSequences); } }
+        public IOfferRemoteDeployment Deploy { get { return new RemoteDeploymentBuilder(_remoteSequence); } }
+        public IOfferRemoteExecution Execute { get { return new RemoteExecutionBuilder(_remoteSequence); } }
+        public IOfferRemoteConfiguration Configure { get { return new RemoteConfigurationBuilder(_remoteSequence);  } }
+        public IOfferRemoteInstallation Install { get { return new RemoteInstallationBuilder(_remoteSequence); } }
 
         public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)
         {
-            var sequences = _remoteSequences.Select(sequence => sequence.NewConditionalCompositeSequence(condition));
-            return new RemoteCompositeBuilder(sequences);
+            return new RemoteCompositeBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
 
-        public void AddOperation(IExecuteOnServer operation)
+        public void AddOperation(IExecuteRemotely operation)
         {
-            foreach (var sequence in _remoteSequences)
-            {
-                sequence.Add(operation);
-            }
+            _remoteSequence.Add(operation);
         }
     }
 }

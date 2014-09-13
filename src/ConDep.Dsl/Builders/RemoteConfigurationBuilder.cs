@@ -9,31 +9,26 @@ namespace ConDep.Dsl.Builders
 {
     public class RemoteConfigurationBuilder : IOfferRemoteConfiguration, IConfigureInfrastructure
     {
-        private readonly List<IManageRemoteSequence> _remoteSequences;
+        private readonly IManageRemoteSequence _remoteSequence;
 
-        public RemoteConfigurationBuilder(IEnumerable<IManageRemoteSequence> remoteSequences)
+        public RemoteConfigurationBuilder(IManageRemoteSequence remoteSequences)
         {
-            _remoteSequences = remoteSequences.ToList();
+            _remoteSequence = remoteSequences;
         }
 
         public IOfferRemoteConfiguration OnlyIf(Predicate<ServerInfo> condition)
         {
-            var sequences = _remoteSequences.Select(sequence => sequence.NewConditionalCompositeSequence(condition));
-            return new RemoteConfigurationBuilder(sequences);
+            return new RemoteConfigurationBuilder(_remoteSequence);
         }
 
         public void AddOperation(RemoteCompositeOperation operation)
         {
-            var sequences = _remoteSequences.Select(sequence => sequence.NewCompositeSequence(operation));
-            operation.Configure(new RemoteCompositeBuilder(sequences));
+            operation.Configure(new RemoteCompositeBuilder(_remoteSequence.NewCompositeSequence(operation)));
         }
 
-        public void AddOperation(IExecuteOnServer operation)
+        public void AddOperation(IExecuteRemotely operation)
         {
-            foreach (var sequence in _remoteSequences)
-            {
-                sequence.Add(operation);
-            }
+            _remoteSequence.Add(operation);
         }
     }
 }

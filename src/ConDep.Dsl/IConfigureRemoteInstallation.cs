@@ -5,6 +5,6 @@ namespace ConDep.Dsl
     public interface IConfigureRemoteInstallation
     {
         void AddOperation(RemoteCompositeOperation operation);
-        void AddOperation(IExecuteOnServer operation);
+        void AddOperation(IExecuteRemotely operation);
     }
 }

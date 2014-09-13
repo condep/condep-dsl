@@ -8,7 +8,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations
 {
-    internal class PreRemoteOps : IExecuteOnServer
+    internal class PreRemoteOps : IExecuteRemotely
     {
         const string TMP_FOLDER = @"{0}\temp\ConDep";
         const string NODE_LISTEN_URL = "http://{0}:80/ConDepNode/";

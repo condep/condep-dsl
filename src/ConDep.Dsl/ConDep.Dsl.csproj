@@ -126,6 +126,7 @@
     <Compile Include="IConfigureRemoteExecution.cs" />
     <Compile Include="Config\ConDepAssemblyHandler.cs" />
     <Compile Include="Config\ConDepAssemblyNotFoundException.cs" />
+    <Compile Include="IExecuteRemotely.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
     <Compile Include="IProvideArtifact.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
@@ -172,7 +173,8 @@
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />
     <Compile Include="Security\JsonPasswordCrypto.cs" />
-    <Compile Include="Sequence\RemoteSequences.cs" />
+    <Compile Include="Sequence\CompositeServersSequence.cs" />
+    <Compile Include="Sequence\IManageRemoteServersSequence.cs" />
     <Compile Include="Validation\ClientValidator.cs" />
     <Compile Include="Execution\ConDepExecutionResult.cs" />
     <Compile Include="Validation\ConDepValidationException.cs" />
@@ -181,8 +183,7 @@
     <Compile Include="Operations\PostRemoteOps.cs" />
     <Compile Include="Harvesters\DiskHarvester.cs" />
     <Compile Include="Harvesters\DotNetFrameworkHarvester.cs" />
-    <Compile Include="IExecute.cs" />
-    <Compile Include="IExecuteOnServer.cs" />
+    <Compile Include="IExecuteLocally.cs" />
     <Compile Include="Harvesters\IHarvestServerInfo.cs" />
     <Compile Include="Validation\IValidateClient.cs" />
     <Compile Include="Validation\IValidateServer.cs" />

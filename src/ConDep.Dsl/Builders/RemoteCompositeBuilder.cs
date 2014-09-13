@@ -8,15 +8,15 @@ namespace ConDep.Dsl.Builders
 {
     public class RemoteCompositeBuilder : IOfferRemoteComposition
     {
-        private readonly List<CompositeSequence> _compositeSequences;
+        private readonly CompositeSequence _compositeSequence;
 
-        public RemoteCompositeBuilder(IEnumerable<CompositeSequence> compositeSequences)
+        public RemoteCompositeBuilder(CompositeSequence compositeSequence)
         {
-            _compositeSequences = compositeSequences.ToList();
-            Deploy = new RemoteDeploymentBuilder(_compositeSequences);
-            Execute = new RemoteExecutionBuilder(_compositeSequences);
-            Configure = new RemoteConfigurationBuilder(_compositeSequences);
-            Install = new RemoteInstallationBuilder(_compositeSequences);
+            _compositeSequence = compositeSequence;
+            Deploy = new RemoteDeploymentBuilder(_compositeSequence);
+            Execute = new RemoteExecutionBuilder(_compositeSequence);
+            Configure = new RemoteConfigurationBuilder(_compositeSequence);
+            Install = new RemoteInstallationBuilder(_compositeSequence);
         }
 
         public IOfferRemoteDeployment Deploy { get; private set; }
@@ -26,8 +26,7 @@ namespace ConDep.Dsl.Builders
 
         public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)
         {
-            var sequences = _compositeSequences.Select(sequence => sequence.NewConditionalCompositeSequence(condition));
-            return new RemoteCompositeBuilder(sequences);
+            return new RemoteCompositeBuilder(_compositeSequence.NewConditionalCompositeSequence(condition));
         }
     }
 }

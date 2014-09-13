@@ -10,11 +10,11 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence
 {
-    public class LocalSequence : IManageSequence<LocalOperation>, IExecute
+    public class LocalSequence : IManageSequence<LocalOperation>, IExecuteLocally
     {
         private readonly string _name;
         private readonly ILoadBalance _loadBalancer;
-        internal readonly List<IExecute> _sequence = new List<IExecute>();
+        internal readonly List<IExecuteLocally> _sequence = new List<IExecuteLocally>();
         private LoadBalancerExecutorBase _internalLoadBalancer;
 
         public LocalSequence(string name, ILoadBalance loadBalancer)
@@ -36,15 +36,6 @@ namespace ConDep.Dsl.Sequence
             }
         }
 
-        public IEnumerable<RemoteSequence> RemoteSequence(IEnumerable<ServerConfig> servers, bool paralell = false)
-        {
-            var serverList = servers.ToList();
-            if (_internalLoadBalancer == null) _internalLoadBalancer = GetLoadBalancer(serverList);
-            var remoteSequences = new RemoteSequences(serverList, _internalLoadBalancer, paralell);
-            _sequence.Add(remoteSequences);
-            return remoteSequences.Sequenceses;
-        }
-
         //public RemoteSequence NewRemoteConditionalSequence(IEnumerable<ServerConfig> servers, Predicate<ServerInfo> condition, bool expectedConditionResult, bool paralell)
         //{
         //    var sequence = new RemoteConditionalSequence(servers, _loadBalancer, condition, expectedConditionResult, paralell);
@@ -57,25 +48,8 @@ namespace ConDep.Dsl.Sequence
             foreach (var element in _sequence)
             {
                 token.ThrowIfCancellationRequested();
-                IExecute internalElement = element;
-                if (internalElement is RemoteSequences)
-                {
-                    ((RemoteSequences)internalElement).ExecuteFirst(status, settings, token);
-                }
-                else
-                {
-                    Logger.WithLogSection(internalElement.Name, () => internalElement.Execute(status, settings, token));
-                }
-            }
-
-            foreach (var element in _sequence)
-            {
-                token.ThrowIfCancellationRequested();
-                IExecute internalElement = element;
-                if (internalElement is RemoteSequences)
-                {
-                    ((RemoteSequences)internalElement).ExecuteRemaining(status, settings, token);
-                }
+                IExecuteLocally internalElement = element;
+                Logger.WithLogSection(internalElement.Name, () => element.Execute(status, settings, token));
             }
         }
 
@@ -92,24 +66,7 @@ namespace ConDep.Dsl.Sequence
         {
             foreach (var item in _sequence)
             {
-                IExecute internalElement = item;
-                if (internalElement is RemoteSequences)
-                {
-                    ((RemoteSequences) internalElement).DryRunFirst();
-                }
-                else
-                {
-                    internalElement.DryRun();
-                }
-            }
-
-            foreach (var item in _sequence)
-            {
-                IExecute internalElement = item;
-                if (internalElement is RemoteSequences)
-                {
-                    ((RemoteSequences)internalElement).DryRunRemaining();
-                }
+                item.DryRun();
             }
         }
 
@@ -123,7 +80,7 @@ namespace ConDep.Dsl.Sequence
             switch (_loadBalancer.Mode)
             {
                 case LbMode.Sticky:
-                    return new StickyLoadBalancerExecutor(servers, _loadBalancer);
+                    return new StickyLoadBalancerExecutor(_loadBalancer);
                 case LbMode.RoundRobin:
                     return new RoundRobinLoadBalancerExecutor(servers, _loadBalancer);
                 default:

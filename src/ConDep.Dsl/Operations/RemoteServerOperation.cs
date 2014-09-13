@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace ConDep.Dsl.Operations
 {
-    public abstract class RemoteServerOperation : IExecuteOnServer
+    public abstract class RemoteServerOperation : IExecuteRemotely
     {
         protected RemoteServerOperation(params object[] constructorArguments)
         {

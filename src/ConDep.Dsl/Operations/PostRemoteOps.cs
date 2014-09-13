@@ -6,7 +6,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Operations
 {
-    internal class PostRemoteOps : IExecuteOnServer
+    internal class PostRemoteOps : IExecuteRemotely
     {
         public void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {

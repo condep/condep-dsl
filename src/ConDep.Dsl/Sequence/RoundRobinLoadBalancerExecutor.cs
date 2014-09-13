@@ -11,8 +11,6 @@ namespace ConDep.Dsl.Sequence
     {
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ILoadBalance _loadBalancer;
-        private Dictionary<string, LoadBalanceState> _serverStates = new Dictionary<string, LoadBalanceState>();
-        private Dictionary<string, LoadBalanceState> _serversToKeepOffline = new Dictionary<string, LoadBalanceState>();
  
         public RoundRobinLoadBalancerExecutor(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
         {
@@ -20,229 +18,90 @@ namespace ConDep.Dsl.Sequence
             _loadBalancer = loadBalancer;
         }
 
-        //public override void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
-        //{
-        //    var servers = _servers.ToList();
-        //    var roundRobinMaxOfflineServers = (int)Math.Ceiling(((double)servers.Count) / 2);
-        //    ServerConfig manuelTestServer = null;
-
-        //    if (settings.Options.StopAfterMarkedServer)
-        //    {
-        //        manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
-        //        ExecuteOnServer(manuelTestServer, status, settings, _loadBalancer, true, false, token);
-        //        return;
-        //    }
-
-        //    if (settings.Options.ContinueAfterMarkedServer)
-        //    {
-        //        manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
-        //        servers.Remove(manuelTestServer);
-
-        //        if (roundRobinMaxOfflineServers == 1)
-        //        {
-        //            _loadBalancer.BringOnline(manuelTestServer.Name, manuelTestServer.LoadBalancerFarm, status);
-        //        }
-        //    }
-
-        //    if (servers.Count == 1)
-        //    {
-        //        ExecuteOnServer(servers.First(), status, settings, _loadBalancer, true, true, token);
-        //        return;
-        //    }
-
-        //    for (int execCount = 0; execCount < servers.Count; execCount++)
-        //    {
-        //        if (execCount == roundRobinMaxOfflineServers - (manuelTestServer == null ? 0 : 1))
-        //        {
-        //            TurnRoundRobinServersAround(_loadBalancer, servers, roundRobinMaxOfflineServers, manuelTestServer, status);
-        //        }
-
-        //        bool bringOnline = !(roundRobinMaxOfflineServers - (manuelTestServer == null ? 0 : 1) > execCount);
-        //        ExecuteOnServer(servers[execCount], status, settings, _loadBalancer, !bringOnline, bringOnline, token);
-        //    }
-        //}
-
-        private void SetServerState(ServerConfig server, LoadBalanceState state)
+        public override IEnumerable<ServerConfig> GetServerExecutionOrder(IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            if (_serverStates.ContainsKey(server.Name))
+            var servers = settings.Config.Servers;
+            if (settings.Options.StopAfterMarkedServer)
             {
-                _serverStates[server.Name] = state;
+                return new[] { servers.SingleOrDefault(x => x.StopServer) ?? servers.First() };
             }
-            else
+
+            if (settings.Options.ContinueAfterMarkedServer)
             {
-                _serverStates.Add(server.Name, state);
+                var markedServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
+                if (servers.Count == 1)
+                {
+                    BringOnline(markedServer, status, settings, token);
+                    return new List<ServerConfig>();
+                }
+                markedServer.PreventDeployment = true;
             }
+
+            return servers;
         }
 
-        private LoadBalanceState? GetServerState(ServerConfig server)
+        private void TurnRoundRobinServersAround(IEnumerable<ServerConfig> servers, ConDepSettings settings, CancellationToken token, int roundRobinMaxOfflineServers, IReportStatus status)
         {
-            if (_serverStates.ContainsKey(server.Name))
-            {
-                return _serverStates[server.Name];
-            }
-            return null;
-        }
-
-        private void TurnRoundRobinServersAround(ILoadBalance loadBalancer, IEnumerable<ServerConfig> servers, ConDepSettings settings, CancellationToken token, int roundRobinMaxOfflineServers, ServerConfig testServer, IReportStatus status)
-        {
-            if (testServer != null)
-            {
-                BringOnline(testServer, status, settings, _loadBalancer, token);
-                SetServerState(testServer, LoadBalanceState.Online);
-                //loadBalancer.BringOnline(testServer.Name, testServer.LoadBalancerFarm, status);
-            }
-            var numberOfServers = roundRobinMaxOfflineServers - (testServer == null ? 0 : 1);
-
-            var serversToBringOnline = servers.Take(numberOfServers);
+            var serversToBringOnline = servers.Take(roundRobinMaxOfflineServers);
             foreach (var server in serversToBringOnline)
             {
                 BringOnline(server, status, settings, _loadBalancer, token);
-                SetServerState(server, LoadBalanceState.Online);
-                //loadBalancer.BringOnline(server.Name, server.LoadBalancerFarm, status);
             }
-            var serversToBringOffline = servers.Skip(numberOfServers);
+            var serversToBringOffline = servers.Skip(roundRobinMaxOfflineServers);
             foreach (var server in serversToBringOffline)
             {
                 BringOffline(server, status, settings, _loadBalancer, token);
-                SetServerState(server, LoadBalanceState.Offline);
-                //loadBalancer.BringOffline(server.Name, server.LoadBalancerFarm, LoadBalancerSuspendMethod.Suspend, status);
             }
         }
 
         public override void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            if (GetServerState(server) == LoadBalanceState.Offline)
-                return;
-
             var servers = _servers.ToList();
             var roundRobinMaxOfflineServers = (int)Math.Ceiling(((double)servers.Count) / 2);
-            ServerConfig manuelTestServer = null;
+            var activeServerIndex = _servers.ToList().IndexOf(server);
 
             if (settings.Options.StopAfterMarkedServer)
             {
-                manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
-                if (GetServerState(manuelTestServer) == LoadBalanceState.Offline)
-                    return;
-
+                var manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
                 BringOffline(manuelTestServer, status, settings, _loadBalancer, token);
-                SetServerState(manuelTestServer, LoadBalanceState.Offline);
-                //ExecuteOnServer(manuelTestServer, status, settings, _loadBalancer, true, false, token);
                 return;
             }
 
+            if (activeServerIndex == roundRobinMaxOfflineServers)
+            {
+                TurnRoundRobinServersAround(servers, settings, token, roundRobinMaxOfflineServers, status);
+            }
+
+            if (server.PreventDeployment) return;
+
+            if (server.LoadBalancerState == LoadBalanceState.Offline)
+                return;
+
             if (settings.Options.ContinueAfterMarkedServer)
             {
-                manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
-                //servers.Remove(manuelTestServer);
-
-                if (manuelTestServer.Name.Equals(server.Name))
-                {
-                    return;
-                }
-
-                //if (roundRobinMaxOfflineServers == 1)
-                //{
-                //    _loadBalancer.BringOnline(manuelTestServer.Name, manuelTestServer.LoadBalancerFarm, status);
-                //}
                 BringOffline(server, status, settings, _loadBalancer, token);
-                SetServerState(server, LoadBalanceState.Offline);
-                _serversToKeepOffline.Add(server.Name, LoadBalanceState.Offline);
+                server.KeepOffline = true;
                 return;
             }
 
             if (_servers.Count() == 1)
             {
                 BringOffline(server, status, settings, _loadBalancer, token);
-                SetServerState(server, LoadBalanceState.Offline);
                 return;
             }
 
-            var activeServerIndex = _servers.ToList().IndexOf(server);
-            //for (int execCount = 0; execCount < servers.Count; execCount++)
-            //{
-            if (activeServerIndex == roundRobinMaxOfflineServers - (manuelTestServer == null ? 0 : 1))
-            {
-                TurnRoundRobinServersAround(_loadBalancer, servers, settings, token, roundRobinMaxOfflineServers,
-                    manuelTestServer, status);
-            }
-            else
-            {
-                BringOffline(server, status, settings, _loadBalancer, token);
-                SetServerState(server, LoadBalanceState.Offline);
-                _serversToKeepOffline.Add(server.Name, LoadBalanceState.Offline);
-            }
-
-
-            //if (servers.Count == 1)
-            //{
-            //    ExecuteOnServer(servers.First(), status, settings, _loadBalancer, true, true, token);
-            //    return;
-            //}
-
-            //for (int execCount = 0; execCount < servers.Count; execCount++)
-            //{
-            //    if (execCount == roundRobinMaxOfflineServers - (manuelTestServer == null ? 0 : 1))
-            //    {
-            //        TurnRoundRobinServersAround(_loadBalancer, servers, roundRobinMaxOfflineServers, manuelTestServer, status);
-            //    }
-
-            //    bool bringOnline = !(roundRobinMaxOfflineServers - (manuelTestServer == null ? 0 : 1) > execCount);
-            //    ExecuteOnServer(servers[execCount], status, settings, _loadBalancer, !bringOnline, bringOnline, token);
-            //}
+            BringOffline(server, status, settings, _loadBalancer, token);
+            server.KeepOffline = true;
         }
 
         public override void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            if (GetServerState(server) == LoadBalanceState.Online)
+            //if (server.LoadBalancerState == LoadBalanceState.Online)
+            //    return;
+            if (server.KeepOffline)
                 return;
 
-            if (_serversToKeepOffline.ContainsKey(server.Name))
-                return;
-
-            if (settings.Options.StopAfterMarkedServer)
-                return;
-
-            var servers = _servers.ToList();
-            var roundRobinMaxOfflineServers = (int)Math.Ceiling(((double)servers.Count) / 2);
-            ServerConfig manuelTestServer = null;
-
-            if (settings.Options.ContinueAfterMarkedServer)
-            {
-                manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
-                servers.Remove(manuelTestServer);
-
-                if (roundRobinMaxOfflineServers == 1)
-                {
-                    BringOnline(manuelTestServer, status, settings, _loadBalancer, token);
-                    return;
-                    //_loadBalancer.BringOnline(manuelTestServer.Name, manuelTestServer.LoadBalancerFarm, status);
-                }
-            }
-
-            if (servers.Count == 1)
-            {
-                BringOnline(server, status, settings, _loadBalancer, token);
-                //ExecuteOnServer(servers.First(), status, settings, _loadBalancer, true, true, token);
-                return;
-            }
-
-            if (!_serversToKeepOffline.ContainsKey(server.Name))
-            {
-                BringOnline(server, status, settings, _loadBalancer, token);
-            }
-
-            //var activeServerIndex = _servers.ToList().IndexOf(server) + 1;
-            ////for (int execCount = 0; execCount < servers.Count; execCount++)
-            ////{
-            //if (activeServerIndex == roundRobinMaxOfflineServers - (manuelTestServer == null ? 0 : 1))
-            //{
-            //    TurnRoundRobinServersAround(_loadBalancer, servers, settings, token, roundRobinMaxOfflineServers,
-            //        manuelTestServer, status);
-            //}
-
-                //bool bringOnline = !(roundRobinMaxOfflineServers - (manuelTestServer == null ? 0 : 1) > execCount);
-                //ExecuteOnServer(servers[execCount], status, settings, _loadBalancer, !bringOnline, bringOnline, token);
-            //}
+            BringOnline(server, status, settings, _loadBalancer, token);
         }
     }
 }
