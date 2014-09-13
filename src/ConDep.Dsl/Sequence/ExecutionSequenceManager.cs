@@ -105,21 +105,28 @@ namespace ConDep.Dsl.Sequence
 
         public void DryRun()
         {
-            foreach (var item in _localSequences)
+            Logger.WithLogSection("Local Operations", () =>
             {
-                Logger.WithLogSection(item.Name, () => { item.DryRun(); });
-            }
-
-            foreach (var server in _servers)
-            {
-                Logger.WithLogSection(server.Name, () =>
+                foreach (var item in _localSequences)
                 {
-                    foreach (var item in _remoteSequences)
+                    Logger.WithLogSection(item.Name, () => { item.DryRun(); });
+                }
+            });
+
+            Logger.WithLogSection("Remote Operations", () =>
+            {
+
+                foreach (var server in _servers)
+                {
+                    Logger.WithLogSection(server.Name, () =>
                     {
-                        Logger.WithLogSection(item.Name, () => { item.DryRun(); });
-                    }
-                });
-            }
+                        foreach (var item in _remoteSequences)
+                        {
+                            Logger.WithLogSection(item.Name, () => { item.DryRun(); });
+                        }
+                    });
+                }
+            });
         }
 
         private LoadBalancerExecutorBase GetLoadBalancer()

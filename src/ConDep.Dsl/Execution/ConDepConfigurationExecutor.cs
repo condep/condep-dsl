@@ -176,15 +176,12 @@ namespace ConDep.Dsl.Execution
             var artifacts = CreateApplicationArtifacts(conDepSettings);
             foreach (var artifact in artifacts)
             {
-                var localSequence = sequenceManager.NewLocalSequence(artifact.GetType().Name);
-                var localBuilder = new LocalOperationsBuilder(localSequence);
-                PopulateDependencies(conDepSettings, artifact, sequenceManager, localBuilder);
-
+                PopulateDependencies(conDepSettings, artifact, sequenceManager);
                 ConfigureArtifact(conDepSettings, sequenceManager, artifact);
             }
         }
 
-        private static void PopulateDependencies(ConDepSettings conDepSettings, IProvideArtifact application, ExecutionSequenceManager sequenceManager, LocalOperationsBuilder localBuilder)
+        private static void PopulateDependencies(ConDepSettings conDepSettings, IProvideArtifact application, ExecutionSequenceManager sequenceManager)
         {
             var dependencyHandler = new ArtifactDependencyHandler(application);
             if (dependencyHandler.HasDependenciesDefined())
