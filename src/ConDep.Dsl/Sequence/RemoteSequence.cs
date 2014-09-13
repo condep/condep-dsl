@@ -35,21 +35,16 @@ namespace ConDep.Dsl.Sequence
 
         public virtual void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            Logger.WithLogSection(server.Name, () =>
+            foreach (var element in _sequence)
             {
-                foreach (var element in _sequence)
-                {
-                    token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 
-                    IExecuteRemotely elementToExecute = element;
-                    if (element is CompositeSequence)
-                        elementToExecute.Execute(server, status, settings, token);
-                    else
-                        Logger.WithLogSection(element.Name, () => elementToExecute.Execute(server, status, settings, token));
-                }
-            });
-
-            //GetExecutor().Execute(status, settings, token);
+                IExecuteRemotely elementToExecute = element;
+                if (element is CompositeSequence)
+                    elementToExecute.Execute(server, status, settings, token);
+                else
+                    Logger.WithLogSection(element.Name, () => elementToExecute.Execute(server, status, settings, token));
+            }
         }
 
         public virtual string Name { get; private set; }

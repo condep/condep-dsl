@@ -4,7 +4,6 @@ using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Operations.Application.Local;
-using ConDep.Dsl.Operations.LoadBalancer;
 using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Validation;
 
@@ -14,15 +13,12 @@ namespace ConDep.Dsl.Sequence
     {
         private readonly string _name;
         private readonly ExecutionSequenceManager _sequenceManager;
-        private readonly ILoadBalance _loadBalancer;
         internal readonly List<IExecuteLocally> _sequence = new List<IExecuteLocally>();
-        private LoadBalancerExecutorBase _internalLoadBalancer;
 
-        public LocalSequence(string name, ExecutionSequenceManager sequenceManager, ILoadBalance loadBalancer)
+        public LocalSequence(string name, ExecutionSequenceManager sequenceManager)
         {
             _name = name;
             _sequenceManager = sequenceManager;
-            _loadBalancer = loadBalancer;
         }
 
         public void Add(LocalOperation operation, bool addFirst = false)
@@ -42,13 +38,6 @@ namespace ConDep.Dsl.Sequence
         {
             return _sequenceManager.NewRemoteSequence(name);
         }
-
-        //public RemoteSequence NewRemoteConditionalSequence(IEnumerable<ServerConfig> servers, Predicate<ServerInfo> condition, bool expectedConditionResult, bool paralell)
-        //{
-        //    var sequence = new RemoteConditionalSequence(servers, _loadBalancer, condition, expectedConditionResult, paralell);
-        //    _sequence.Add(sequence);
-        //    return sequence;
-        //}
 
         public void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
@@ -75,26 +64,6 @@ namespace ConDep.Dsl.Sequence
             {
                 item.DryRun();
             }
-        }
-
-        private LoadBalancerExecutorBase GetLoadBalancer(IEnumerable<ServerConfig> servers)
-        {
-            //if (_paralell)
-            //{
-            //    return new ParalellRemoteExecutor(_servers);
-            //}
-
-            switch (_loadBalancer.Mode)
-            {
-                case LbMode.Sticky:
-                    return new StickyLoadBalancerExecutor(_loadBalancer);
-                case LbMode.RoundRobin:
-                    return new RoundRobinLoadBalancerExecutor(servers, _loadBalancer);
-                default:
-                    throw new ConDepLoadBalancerException(string.Format("Load Balancer mode [{0}] not supported.",
-                                                                    _loadBalancer.Mode));
-            }
-            return null;
         }
     }
 }

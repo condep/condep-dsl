@@ -137,7 +137,6 @@
     <Compile Include="Logging\TeamCityLogger.cs" />
     <Compile Include="Logging\TeamCityMessageStatus.cs" />
     <Compile Include="Operations\IOfferRemoteConfiguration.cs" />
-    <Compile Include="Operations\PowerShellScriptDeployOperation.cs" />
     <Compile Include="Operations\RemoteServerOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperation.cs" />
     <Compile Include="Operations\RemoteCompositeOperationBase.cs" />
@@ -224,7 +223,6 @@
     <Compile Include="Sequence\RemoteSequence.cs" />
     <Compile Include="IReportStatus.cs" />
     <Compile Include="Sequence\RoundRobinLoadBalancerExecutor.cs" />
-    <Compile Include="Sequence\SequenceFactory.cs" />
     <Compile Include="Sequence\StickyLoadBalancerExecutor.cs" />
     <Compile Include="Harvesters\ServerInfoHarvester.cs" />
     <Compile Include="Validation\StatusReporter.cs" />

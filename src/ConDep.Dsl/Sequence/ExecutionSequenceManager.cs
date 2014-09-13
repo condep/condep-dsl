@@ -14,7 +14,7 @@ namespace ConDep.Dsl.Sequence
         private readonly ILoadBalance _loadBalancer;
         internal readonly List<LocalSequence> _localSequences = new List<LocalSequence>();
         internal readonly List<RemoteSequence> _remoteSequences = new List<RemoteSequence>();
-        private LoadBalancerExecutorBase _internalLoadBalancer;
+        private readonly LoadBalancerExecutorBase _internalLoadBalancer;
 
         public ExecutionSequenceManager(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
         {
@@ -25,7 +25,7 @@ namespace ConDep.Dsl.Sequence
 
         public LocalSequence NewLocalSequence(string name)
         {
-            var sequence = new LocalSequence(name, this, _loadBalancer);
+            var sequence = new LocalSequence(name, this);
             _localSequences.Add(sequence);
             return sequence;
         }
@@ -66,34 +66,37 @@ namespace ConDep.Dsl.Sequence
 
                 foreach (var server in serversToDeployTo)
                 {
-                    var server1 = server;
-                    try
+                    var serverToDeployTo = server;
+                    Logger.WithLogSection(serverToDeployTo.Name, () =>
                     {
-                        _internalLoadBalancer.BringOffline(server1, status, settings, token);
-                        if (!server1.PreventDeployment)
+                        try
                         {
-                            foreach (var remoteSequence in _remoteSequences)
+                            _internalLoadBalancer.BringOffline(serverToDeployTo, status, settings, token);
+                            if (!serverToDeployTo.PreventDeployment)
                             {
-                                token.ThrowIfCancellationRequested();
+                                foreach (var remoteSequence in _remoteSequences)
+                                {
+                                    token.ThrowIfCancellationRequested();
 
-                                var sequence = remoteSequence;
-                                Logger.WithLogSection(remoteSequence.Name,
-                                    () => sequence.Execute(server1, status, settings, token));
+                                    var sequence = remoteSequence;
+                                    Logger.WithLogSection(remoteSequence.Name,
+                                        () => sequence.Execute(serverToDeployTo, status, settings, token));
+                                }
                             }
                         }
-                    }
-                    catch
-                    {
-                        errorDuringLoadBalancing = true;
-                        throw;
-                    }
-                    finally
-                    {
-                        if (!errorDuringLoadBalancing && !settings.Options.StopAfterMarkedServer)
+                        catch
                         {
-                            _internalLoadBalancer.BringOnline(server1, status, settings, token);
+                            errorDuringLoadBalancing = true;
+                            throw;
                         }
-                    }
+                        finally
+                        {
+                            if (!errorDuringLoadBalancing && !settings.Options.StopAfterMarkedServer)
+                            {
+                                _internalLoadBalancer.BringOnline(serverToDeployTo, status, settings, token);
+                            }
+                        }
+                    });
                 }
             });
         }

@@ -37,11 +37,9 @@ namespace ConDep.Dsl.Sequence
         {
             if (server.LoadBalancerState == LoadBalanceState.Offline) return;
 
-            Logger.WithLogSection(server.Name, () =>
+            Logger.WithLogSection(string.Format("Taking server [{0}] offline in load balancer.", server.Name), () =>
             {
-                Logger.Info(string.Format("Taking server [{0}] offline in load balancer.", server.Name));
-                loadBalancer.BringOffline(server.Name, server.LoadBalancerFarm,
-                                            LoadBalancerSuspendMethod.Suspend, status);
+                loadBalancer.BringOffline(server.Name, server.LoadBalancerFarm, LoadBalancerSuspendMethod.Suspend, status);
                 server.LoadBalancerState = LoadBalanceState.Offline;
             });
 
@@ -50,9 +48,8 @@ namespace ConDep.Dsl.Sequence
         {
             if (server.LoadBalancerState == LoadBalanceState.Online) return;
 
-            Logger.WithLogSection(server.Name, () =>
+            Logger.WithLogSection(string.Format("Taking server [{0}] online in load balancer.", server.Name), () =>
             {
-                Logger.Info(string.Format("Taking server [{0}] online in load balancer.", server.Name));
                 loadBalancer.BringOnline(server.Name, server.LoadBalancerFarm, status);
                 server.LoadBalancerState = LoadBalanceState.Online;
             });
