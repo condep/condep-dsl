@@ -180,7 +180,7 @@ namespace ConDep.Dsl.Execution
                 var localBuilder = new LocalOperationsBuilder(localSequence);
                 PopulateDependencies(conDepSettings, artifact, sequenceManager, localBuilder);
 
-                ConfigureArtifact(conDepSettings, sequenceManager, localBuilder, artifact);
+                ConfigureArtifact(conDepSettings, sequenceManager, artifact);
             }
         }
 
@@ -192,16 +192,17 @@ namespace ConDep.Dsl.Execution
                 var dependencies = dependencyHandler.GetDependeciesForArtifact(conDepSettings);
                 foreach (var dependency in dependencies)
                 {
-                    ConfigureArtifact(conDepSettings, sequenceManager, localBuilder, dependency);
+                    ConfigureArtifact(conDepSettings, sequenceManager, dependency);
                 }
             }
         }
 
-        private static void ConfigureArtifact(ConDepSettings conDepSettings, ExecutionSequenceManager sequenceManager,
-            LocalOperationsBuilder localBuilder, IProvideArtifact dependency)
+        private static void ConfigureArtifact(ConDepSettings conDepSettings, ExecutionSequenceManager sequenceManager, IProvideArtifact dependency)
         {
             if (dependency is Artifact.Local)
             {
+                var localSequence = sequenceManager.NewLocalSequence(dependency.GetType().Name);
+                var localBuilder = new LocalOperationsBuilder(localSequence);
                 ((Artifact.Local)dependency).Configure(localBuilder, conDepSettings);
             }
             else if (dependency is Artifact.Remote)

@@ -15,8 +15,9 @@ namespace ConDep.Dsl.Sequence
         private readonly bool _paralell;
         internal readonly List<IExecuteRemotely> _sequence = new List<IExecuteRemotely>();
 
-        public RemoteSequence(bool paralell = false)
+        public RemoteSequence(string name, bool paralell = false)
         {
+            Name = name;
             _paralell = paralell;
         }
 
@@ -51,7 +52,7 @@ namespace ConDep.Dsl.Sequence
             //GetExecutor().Execute(status, settings, token);
         }
 
-        public virtual string Name { get { return "Remote Operations"; } }
+        public virtual string Name { get; private set; }
 
         public void DryRun()
         {

@@ -30,56 +30,72 @@ namespace ConDep.Dsl.Sequence
             return sequence;
         }
 
-        public RemoteSequence NewRemoteSequence(string name)
+        public RemoteSequence NewRemoteSequence(string name, bool paralell = false)
         {
-            var sequence = new RemoteSequence();
+            var sequence = new RemoteSequence(name);
             _remoteSequences.Add(sequence);
             return sequence;
         }
 
         public void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            foreach (var localSequence in _localSequences)
+            ExecuteLocalOperations(status, settings, token);
+            ExecuteRemoteOperations(status, settings, token);
+        }
+
+        private void ExecuteLocalOperations(IReportStatus status, ConDepSettings settings, CancellationToken token)
+        {
+            Logger.WithLogSection("Local Operations", () =>
             {
-                token.ThrowIfCancellationRequested();
-
-                LocalSequence sequence = localSequence;
-                Logger.WithLogSection(localSequence.Name, () => sequence.Execute(status, settings, token));
-            }
-
-            var serversToDeployTo = _internalLoadBalancer.GetServerExecutionOrder(status, settings, token);
-            var errorDuringLoadBalancing = false;
-
-            foreach (var server in serversToDeployTo)
-            {
-                var server1 = server;
-                try
+                foreach (var localSequence in _localSequences)
                 {
-                    _internalLoadBalancer.BringOffline(server1, status, settings, token);
-                    if (!server1.PreventDeployment)
-                    {
-                        foreach (var remoteSequence in _remoteSequences)
-                        {
-                            token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
 
-                            var sequence = remoteSequence;
-                            Logger.WithLogSection(remoteSequence.Name, () => sequence.Execute(server1, status, settings, token));
+                    LocalSequence sequence = localSequence;
+                    Logger.WithLogSection(localSequence.Name, () => sequence.Execute(status, settings, token));
+                }
+            });
+        }
+
+        private void ExecuteRemoteOperations(IReportStatus status, ConDepSettings settings, CancellationToken token)
+        {
+            Logger.WithLogSection("Remote Operations", () =>
+            {
+                var serversToDeployTo = _internalLoadBalancer.GetServerExecutionOrder(status, settings, token);
+                var errorDuringLoadBalancing = false;
+
+                foreach (var server in serversToDeployTo)
+                {
+                    var server1 = server;
+                    try
+                    {
+                        _internalLoadBalancer.BringOffline(server1, status, settings, token);
+                        if (!server1.PreventDeployment)
+                        {
+                            foreach (var remoteSequence in _remoteSequences)
+                            {
+                                token.ThrowIfCancellationRequested();
+
+                                var sequence = remoteSequence;
+                                Logger.WithLogSection(remoteSequence.Name,
+                                    () => sequence.Execute(server1, status, settings, token));
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        errorDuringLoadBalancing = true;
+                        throw;
+                    }
+                    finally
+                    {
+                        if (!errorDuringLoadBalancing && !settings.Options.StopAfterMarkedServer)
+                        {
+                            _internalLoadBalancer.BringOnline(server1, status, settings, token);
                         }
                     }
                 }
-                catch
-                {
-                    errorDuringLoadBalancing = true;
-                    throw;
-                }
-                finally
-                {
-                    if (!errorDuringLoadBalancing && !settings.Options.StopAfterMarkedServer)
-                    {
-                        _internalLoadBalancer.BringOnline(server1, status, settings, token);
-                    }
-                }
-            }
+            });
         }
 
         public bool IsValid(Notification notification)
