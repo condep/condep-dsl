@@ -93,6 +93,17 @@ namespace ConDep.Dsl.Sequence
             {
                 Logger.WithLogSection(item.Name, () => { item.DryRun(); });
             }
+
+            foreach (var server in _servers)
+            {
+                Logger.WithLogSection(server.Name, () =>
+                {
+                    foreach (var item in _remoteSequences)
+                    {
+                        Logger.WithLogSection(item.Name, () => { item.DryRun(); });
+                    }
+                });
+            }
         }
 
         private LoadBalancerExecutorBase GetLoadBalancer()
