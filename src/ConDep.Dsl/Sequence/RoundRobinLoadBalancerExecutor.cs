@@ -96,8 +96,6 @@ namespace ConDep.Dsl.Sequence
 
         public override void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
-            //if (server.LoadBalancerState == LoadBalanceState.Online)
-            //    return;
             if (server.KeepOffline)
                 return;
 

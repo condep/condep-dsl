@@ -13,13 +13,15 @@ namespace ConDep.Dsl.Sequence
     public class LocalSequence : IManageSequence<LocalOperation>, IExecuteLocally
     {
         private readonly string _name;
+        private readonly ExecutionSequenceManager _sequenceManager;
         private readonly ILoadBalance _loadBalancer;
         internal readonly List<IExecuteLocally> _sequence = new List<IExecuteLocally>();
         private LoadBalancerExecutorBase _internalLoadBalancer;
 
-        public LocalSequence(string name, ILoadBalance loadBalancer)
+        public LocalSequence(string name, ExecutionSequenceManager sequenceManager, ILoadBalance loadBalancer)
         {
             _name = name;
+            _sequenceManager = sequenceManager;
             _loadBalancer = loadBalancer;
         }
 
@@ -34,6 +36,11 @@ namespace ConDep.Dsl.Sequence
             {
                 _sequence.Add(operation);
             }
+        }
+
+        public RemoteSequence NewRemoteSequence(string name, bool paralell = false)
+        {
+            return _sequenceManager.NewRemoteSequence(name);
         }
 
         //public RemoteSequence NewRemoteConditionalSequence(IEnumerable<ServerConfig> servers, Predicate<ServerInfo> condition, bool expectedConditionResult, bool paralell)

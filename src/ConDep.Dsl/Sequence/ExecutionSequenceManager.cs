@@ -13,7 +13,7 @@ namespace ConDep.Dsl.Sequence
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ILoadBalance _loadBalancer;
         internal readonly List<LocalSequence> _localSequences = new List<LocalSequence>();
-        private readonly List<RemoteSequence> _remoteSequences = new List<RemoteSequence>();
+        internal readonly List<RemoteSequence> _remoteSequences = new List<RemoteSequence>();
         private LoadBalancerExecutorBase _internalLoadBalancer;
 
         public ExecutionSequenceManager(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
@@ -25,7 +25,7 @@ namespace ConDep.Dsl.Sequence
 
         public LocalSequence NewLocalSequence(string name)
         {
-            var sequence = new LocalSequence(name, _loadBalancer);
+            var sequence = new LocalSequence(name, this, _loadBalancer);
             _localSequences.Add(sequence);
             return sequence;
         }

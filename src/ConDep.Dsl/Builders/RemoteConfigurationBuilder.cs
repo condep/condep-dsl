@@ -4,6 +4,7 @@ using System.Linq;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Operations;
 using ConDep.Dsl.SemanticModel;
+using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
@@ -18,7 +19,7 @@ namespace ConDep.Dsl.Builders
 
         public IOfferRemoteConfiguration OnlyIf(Predicate<ServerInfo> condition)
         {
-            return new RemoteConfigurationBuilder(_remoteSequence);
+            return new RemoteConfigurationBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
 
         public void AddOperation(RemoteCompositeOperation operation)
