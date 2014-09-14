@@ -14,7 +14,7 @@ using ConDep.Dsl.Resources;
 
 namespace ConDep.Dsl.Remote
 {
-    internal class ConDepNodePublisher
+    public class ConDepNodePublisher
     {
         private readonly string _srcPath;
         private readonly string _destPath;

@@ -22,7 +22,7 @@ namespace ConDep.Dsl.Operations.LoadBalancer
                     var assemblyHandler = new ConDepAssemblyHandler(_loadBalancerSettings.Provider);
                     var assembly = assemblyHandler.GetAssembly();
 
-                    var type = assembly.GetTypes().Where(t => typeof(ILoadBalance).IsAssignableFrom(t)).FirstOrDefault();
+                    var type = assembly.GetTypes().FirstOrDefault(t => typeof(ILoadBalance).IsAssignableFrom(t));
                     var loadBalancer = Activator.CreateInstance(type, _loadBalancerSettings) as ILoadBalance;
                     loadBalancer.Mode = _loadBalancerSettings.GetModeAsEnum();
                     return loadBalancer;

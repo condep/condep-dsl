@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using ConDep.Dsl.Builders;
 using ConDep.Dsl.Config;
@@ -11,12 +10,38 @@ namespace ConDep.Dsl.Execution
     {
         public static void PopulateExecutionSequence(ConDepSettings conDepSettings, ExecutionSequenceManager sequenceManager)
         {
-            var artifacts = CreateApplicationArtifacts(conDepSettings);
-            foreach (var artifact in artifacts)
+            CreateApplicationArtifacts(conDepSettings, sequenceManager);
+        }
+
+        private static void CreateApplicationArtifacts(ConDepSettings settings, ExecutionSequenceManager sequenceManager)
+        {
+            var assembly = settings.Options.Assembly;
+            if (settings.Options.HasApplicationDefined())
             {
-                PopulateDependencies(conDepSettings, artifact, sequenceManager);
-                ConfigureArtifact(conDepSettings, sequenceManager, artifact);
+                var type = assembly.GetTypes().SingleOrDefault(t => typeof(IProvideArtifact).IsAssignableFrom(t) && t.Name == settings.Options.Application);
+                if (type == null)
+                {
+                    throw new ConDepConfigurationTypeNotFoundException(string.Format("A class inheriting from [{0}] or [{1}] must be present in assembly [{2}] for ConDep to work. No calss with name [{3}] found in assembly. ", typeof(Artifact.Local).FullName, typeof(Artifact.Remote).FullName, assembly.FullName, settings.Options.Application));
+                }
+                CreateApplicationArtifact(type, settings, sequenceManager);
             }
+            else
+            {
+                var types = assembly.GetTypes().Where(t => typeof(IProvideArtifact).IsAssignableFrom(t));
+                foreach (var type in types)
+                {
+                    CreateApplicationArtifact(type, settings, sequenceManager);
+                }
+            }
+        }
+
+        private static void CreateApplicationArtifact(Type type, ConDepSettings settings, ExecutionSequenceManager sequenceManager)
+        {
+            var application = Activator.CreateInstance(type) as IProvideArtifact;
+            if (application == null) throw new NullReferenceException(string.Format("Instance of application class [{0}] not found.", type.FullName));
+
+            PopulateDependencies(settings, application, sequenceManager);
+            ConfigureArtifact(settings, sequenceManager, application);
         }
 
         private static void PopulateDependencies(ConDepSettings conDepSettings, IProvideArtifact application, ExecutionSequenceManager sequenceManager)
@@ -47,35 +72,5 @@ namespace ConDep.Dsl.Execution
                 ((Artifact.Remote)dependency).Configure(remoteBuilder, conDepSettings);
             }
         }
-
-        private static IEnumerable<IProvideArtifact> CreateApplicationArtifacts(ConDepSettings settings)
-        {
-            var assembly = settings.Options.Assembly;
-            if (settings.Options.HasApplicationDefined())
-            {
-                var type = assembly.GetTypes().SingleOrDefault(t => typeof(IProvideArtifact).IsAssignableFrom(t) && t.Name == settings.Options.Application);
-                if (type == null)
-                {
-                    throw new ConDepConfigurationTypeNotFoundException(string.Format("A class inheriting from [{0}] or [{1}] must be present in assembly [{2}] for ConDep to work. No calss with name [{3}] found in assembly. ", typeof(Artifact.Local).FullName, typeof(Artifact.Remote).FullName, assembly.FullName, settings.Options.Application));
-                }
-                yield return CreateApplicationArtifact(type);
-            }
-            else
-            {
-                var types = assembly.GetTypes().Where(t => typeof(IProvideArtifact).IsAssignableFrom(t));
-                foreach (var type in types)
-                {
-                    yield return CreateApplicationArtifact(type);
-                }
-            }
-        }
-
-        private static IProvideArtifact CreateApplicationArtifact(Type type)
-        {
-            var application = Activator.CreateInstance(type) as IProvideArtifact;
-            if (application == null) throw new NullReferenceException(string.Format("Instance of application class [{0}] not found.", type.FullName));
-            return application;
-        }
-        
     }
 }

@@ -33,6 +33,7 @@ namespace ConDep.Dsl.Sequence
 
         protected void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, CancellationToken token)
         {
+            if (settings.Config.LoadBalancer == null) return;
             if (server.LoadBalancerState.CurrentState == LoadBalanceState.Offline) return;
 
             Logger.WithLogSection(string.Format("Taking server [{0}] offline in load balancer.", server.Name), () =>
@@ -44,6 +45,7 @@ namespace ConDep.Dsl.Sequence
         }
         protected void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, ILoadBalance loadBalancer, CancellationToken token)
         {
+            if (settings.Config.LoadBalancer == null) return;
             if (server.LoadBalancerState.CurrentState == LoadBalanceState.Online) return;
 
             Logger.WithLogSection(string.Format("Taking server [{0}] online in load balancer.", server.Name), () =>

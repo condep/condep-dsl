@@ -4,4 +4,9 @@
     {
          
     }
+
+    public interface IdependOnSequence
+    {
+        void Configure(IOfferArtifactExecutionOrder sequence);
+    }
 }

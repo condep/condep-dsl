@@ -118,6 +118,9 @@
     <Compile Include="Config\ConDepAssemblyHandler.cs" />
     <Compile Include="Config\ConDepAssemblyNotFoundException.cs" />
     <Compile Include="IExecuteRemotely.cs" />
+    <Compile Include="IOfferArtifactExecutionOrder.cs" />
+    <Compile Include="IOfferArtifactFollowedBy.cs" />
+    <Compile Include="IOfferArtifactPrecededBy.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
     <Compile Include="IProvideArtifact.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

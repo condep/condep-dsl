@@ -31,5 +31,10 @@ namespace ConDep.Dsl
         {
             public abstract void Configure(IOfferRemoteOperations server, ConDepSettings settings);
         }
+
+        public abstract class Order : IProvideArtifact
+        {
+            public abstract void Configure(IOfferArtifactExecutionOrder sequence);
+        }
     }
 }
