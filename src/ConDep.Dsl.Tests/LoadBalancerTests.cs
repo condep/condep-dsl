@@ -25,6 +25,14 @@ namespace ConDep.Dsl.Tests
             new Logger().AutoResolveLogger();
             _settingsStopAfterMarkedServer = new ConDepSettings
             {
+                Config =
+                {
+                    EnvironmentName = "bogus",
+                    LoadBalancer = new LoadBalancerConfig
+                    {
+                        Name = "bogus"
+                    }
+                },
                 Options =
                     {
                         StopAfterMarkedServer = true,
@@ -34,6 +42,14 @@ namespace ConDep.Dsl.Tests
 
             _settingsContinueAfterMarkedServer = new ConDepSettings
             {
+                Config =
+                {
+                    EnvironmentName = "bogus",
+                    LoadBalancer = new LoadBalancerConfig
+                    {
+                        Name = "bogus"
+                    }
+                },
                 Options =
                 {
                     ContinueAfterMarkedServer = true,
@@ -43,6 +59,14 @@ namespace ConDep.Dsl.Tests
 
             _settingsDefault = new ConDepSettings
             {
+                Config =
+                {
+                    EnvironmentName = "bogus",
+                    LoadBalancer = new LoadBalancerConfig
+                    {
+                        Name = "bogus"
+                    }
+                },
                 Options =
                 {
                     SuspendMode = LoadBalancerSuspendMethod.Graceful
@@ -53,15 +77,13 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatStickyLoadBlancingWithOneServerAndManuelTestWorks()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
 
-            config.Servers = new[] { server1 };
-            _settingsStopAfterMarkedServer.Config = config;
+            _settingsStopAfterMarkedServer.Config.Servers = new[] { server1 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsStopAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
@@ -76,15 +98,13 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatStickyLoadBlancingWithOneServerAndContinueWorks()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
 
-            config.Servers = new[] { server1 };
-            _settingsContinueAfterMarkedServer.Config = config;
+            _settingsContinueAfterMarkedServer.Config.Servers = new[] { server1 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsContinueAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
@@ -100,15 +120,13 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatRoundRobinLoadBlancingWithOneServerAndManuelTestWorks()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
 
-            config.Servers = new[] { server1 };
-            _settingsStopAfterMarkedServer.Config = config;
+            _settingsStopAfterMarkedServer.Config.Servers = new[] { server1 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsStopAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
@@ -124,15 +142,13 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatRoundRobinLoadBlancingWithOneServerAndContinueWorks()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
 
-            config.Servers = new[] { server1 };
-            _settingsContinueAfterMarkedServer.Config = config;
+            _settingsContinueAfterMarkedServer.Config.Servers = new[] { server1 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsContinueAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
@@ -149,15 +165,13 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatRoundRobinLoadBlancingWithOneServerWorks()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
 
-            config.Servers = new[] { server1 };
-            _settingsDefault.Config = config;
+            _settingsDefault.Config.Servers = new[] { server1 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsDefault.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
@@ -176,21 +190,19 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatStickyLoadBlancingWithOneServerWorks()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
 
-            config.Servers = new[] { server1 };
-            _settingsDefault.Config = config;
+            _settingsDefault.Config.Servers = new[] { server1 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsDefault.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
             //remoteSequence.Execute(status, _settingsDefault, _token);
             sequnceManager.Execute(status, _settingsDefault, _token);
-            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(config.Servers.Count * 2));
+            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(_settingsDefault.Config.Servers.Count * 2));
 
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item1, Is.EqualTo("jat-web01"));
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item2, Is.EqualTo("offline"));
@@ -202,19 +214,17 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatRoundRobinLoadBalancingGoesOnlineOfflineInCorrectOrder()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
             var server2 = new ServerConfig { Name = "jat-web02" };
             var server3 = new ServerConfig { Name = "jat-web03" };
             var server4 = new ServerConfig { Name = "jat-web04" };
             var server5 = new ServerConfig { Name = "jat-web05" };
 
-            config.Servers = new[] { server1, server2, server3, server4, server5 };
-            _settingsDefault.Config = config;
+            _settingsDefault.Config.Servers = new[] { server1, server2, server3, server4, server5 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsDefault.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
@@ -222,7 +232,7 @@ namespace ConDep.Dsl.Tests
             sequnceManager.Execute(status, _settingsDefault, _token);
 
 
-            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(config.Servers.Count * 2));
+            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(_settingsDefault.Config.Servers.Count * 2));
 
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item1, Is.EqualTo("jat-web01"));
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item2, Is.EqualTo("offline"));
@@ -258,26 +268,24 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatStickyLoadBalancingGoesOnlineOfflineInCorrectOrder()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
             var server2 = new ServerConfig { Name = "jat-web02" };
             var server3 = new ServerConfig { Name = "jat-web03" };
             var server4 = new ServerConfig { Name = "jat-web04" };
             var server5 = new ServerConfig { Name = "jat-web05" };
 
-            config.Servers = new[] { server1, server2, server3, server4, server5 };
-            _settingsDefault.Config = config;
+            _settingsDefault.Config.Servers = new[] { server1, server2, server3, server4, server5 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsDefault.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
             //remoteSequence.Execute(status, _settingsDefault, _token);
             sequnceManager.Execute(status, _settingsDefault, _token);
 
-            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(config.Servers.Count * 2));
+            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(_settingsDefault.Config.Servers.Count * 2));
 
             var serverNumber = 1;
             for (int i = 0; i < loadBalancer.OnlineOfflineSequence.Count; i += 2)
@@ -294,23 +302,20 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatRoundRobinWithManualTestStopsAfterFirstServer()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
             var server2 = new ServerConfig { Name = "jat-web02" };
             var server3 = new ServerConfig { Name = "jat-web03" };
             var server4 = new ServerConfig { Name = "jat-web04" };
             var server5 = new ServerConfig { Name = "jat-web05" };
 
-            config.Servers = new[] { server1, server2, server3, server4, server5 };
-            _settingsStopAfterMarkedServer.Config = config;
+            _settingsStopAfterMarkedServer.Config.Servers = new[] { server1, server2, server3, server4, server5 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsStopAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
-            //remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
             sequnceManager.Execute(status, _settingsStopAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(1));
@@ -322,23 +327,20 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatRoundRobinWithContinueAfterManuelTestOnSpecificServerExecuteCorrectServers()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
             var server2 = new ServerConfig { Name = "jat-web02" };
             var server3 = new ServerConfig { Name = "jat-web03", StopServer = true };
             var server4 = new ServerConfig { Name = "jat-web04" };
             var server5 = new ServerConfig { Name = "jat-web05" };
 
-            config.Servers = new[] { server1, server2, server3, server4, server5 };
-            _settingsStopAfterMarkedServer.Config = config;
+            _settingsStopAfterMarkedServer.Config.Servers = new[] { server1, server2, server3, server4, server5 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsStopAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
-            //remoteSequence.Execute(status, _settingsStopAfterMarkedServer, _token);
             sequnceManager.Execute(status, _settingsStopAfterMarkedServer, _token);
 
             Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(1));
@@ -350,26 +352,24 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatStickyWithContinueAfterManualTestExecutesOnCorrectServers()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
             var server2 = new ServerConfig { Name = "jat-web02" };
             var server3 = new ServerConfig { Name = "jat-web03" };
             var server4 = new ServerConfig { Name = "jat-web04" };
             var server5 = new ServerConfig { Name = "jat-web05" };
 
-            config.Servers = new[] { server1, server2, server3, server4, server5 };
-            _settingsContinueAfterMarkedServer.Config = config;
+            _settingsContinueAfterMarkedServer.Config.Servers = new[] { server1, server2, server3, server4, server5 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsContinueAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
             //remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
             sequnceManager.Execute(status, _settingsContinueAfterMarkedServer, _token);
 
-            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((config.Servers.Count - 1) * 2) + 1));
+            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((_settingsContinueAfterMarkedServer.Config.Servers.Count - 1) * 2) + 1));
 
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item1, Is.EqualTo("jat-web01"));
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item2, Is.EqualTo("online"));
@@ -389,26 +389,24 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatStickyWithContinueAfterManualTestOnSpecificServerExecutesOnCorrectServers()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
             var server2 = new ServerConfig { Name = "jat-web02" };
             var server3 = new ServerConfig { Name = "jat-web03", StopServer = true };
             var server4 = new ServerConfig { Name = "jat-web04" };
             var server5 = new ServerConfig { Name = "jat-web05" };
 
-            config.Servers = new[] { server1, server2, server3, server4, server5 };
-            _settingsContinueAfterMarkedServer.Config = config;
+            _settingsContinueAfterMarkedServer.Config.Servers = new[] { server1, server2, server3, server4, server5 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.Sticky };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsContinueAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
             //remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
             sequnceManager.Execute(status, _settingsContinueAfterMarkedServer, _token);
 
-            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((config.Servers.Count - 1) * 2) + 1));
+            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((_settingsContinueAfterMarkedServer.Config.Servers.Count - 1) * 2) + 1));
 
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item1, Is.EqualTo("jat-web03"));
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item2, Is.EqualTo("online"));
@@ -441,26 +439,24 @@ namespace ConDep.Dsl.Tests
         [Test]
         public void TestThatRoundRobinWithContinueAfterManualTestOnSpecificServerExecutesOnCorrectServers()
         {
-            var config = new ConDepEnvConfig { EnvironmentName = "bogusEnv" };
             var server1 = new ServerConfig { Name = "jat-web01" };
             var server2 = new ServerConfig { Name = "jat-web02" };
             var server3 = new ServerConfig { Name = "jat-web03", StopServer = true };
             var server4 = new ServerConfig { Name = "jat-web04" };
             var server5 = new ServerConfig { Name = "jat-web05" };
 
-            config.Servers = new[] { server1, server2, server3, server4, server5 };
-            _settingsContinueAfterMarkedServer.Config = config;
+            _settingsContinueAfterMarkedServer.Config.Servers = new[] { server1, server2, server3, server4, server5 };
 
             var loadBalancer = new MockLoadBalancer { Mode = LbMode.RoundRobin };
 
-            var sequnceManager = new ExecutionSequenceManager(config.Servers, loadBalancer);
+            var sequnceManager = new ExecutionSequenceManager(_settingsContinueAfterMarkedServer.Config.Servers, loadBalancer);
             sequnceManager.NewRemoteSequence("Test");
 
             var status = new StatusReporter();
             //remoteSequence.Execute(status, _settingsContinueAfterMarkedServer, _token);
             sequnceManager.Execute(status, _settingsContinueAfterMarkedServer, _token);
 
-            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((config.Servers.Count - 1) * 2) + 1));
+            Assert.That(loadBalancer.OnlineOfflineSequence.Count, Is.EqualTo(((_settingsContinueAfterMarkedServer.Config.Servers.Count - 1) * 2) + 1));
 
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item1, Is.EqualTo("jat-web01"));
             Assert.That(loadBalancer.OnlineOfflineSequence[0].Item2, Is.EqualTo("offline"));
