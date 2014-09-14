@@ -8,7 +8,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Remote
 {
-    internal class RemoteServerValidator : IValidateServer
+    public class RemoteServerValidator : IValidateServer
     {
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ServerInfoHarvester _serverInfoHarvester;
