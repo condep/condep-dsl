@@ -36,11 +36,4 @@ namespace ConDep.Dsl.Execution
             return _exceptions.Count > 0;
         }
     }
-
-    [Serializable]
-    public class TimedException
-    {
-        public DateTime DateTime { get; set; }
-        public Exception Exception { get; set; }
-    }
 }

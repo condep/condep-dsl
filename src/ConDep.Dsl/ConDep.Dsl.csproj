@@ -87,6 +87,7 @@
     <Compile Include="Artifact.cs" />
     <Compile Include="Config\ServerLoadBalancerState.cs" />
     <Compile Include="Execution\ArtifactHandler.cs" />
+    <Compile Include="Execution\TimedException.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
     <Compile Include="Builders\RemoteConfigurationBuilder.cs" />
@@ -140,10 +141,13 @@
     <Compile Include="Remote\ConDepPSHostUI.cs" />
     <Compile Include="Remote\FilePublisher.cs" />
     <Compile Include="Remote\FileHashGenerator.cs" />
+    <Compile Include="Remote\ImpersinatorNativeMethods.cs" />
     <Compile Include="Remote\Node\Api.cs" />
     <Compile Include="Remote\Node\Model\DirectoryInfoExtensions.cs" />
+    <Compile Include="Remote\Node\Model\InstallationResult.cs" />
     <Compile Include="Remote\Node\Model\InstallResponse.cs" />
     <Compile Include="Remote\Node\Model\Link.cs" />
+    <Compile Include="Remote\Node\Model\LinkListExtensions.cs" />
     <Compile Include="Remote\Node\Model\SyncDirContainer.cs" />
     <Compile Include="Remote\Node\Model\SyncDirDiff.cs" />
     <Compile Include="Remote\Node\Model\SyncDirDirectory.cs" />
@@ -151,6 +155,7 @@
     <Compile Include="Remote\Node\Model\SyncPath.cs" />
     <Compile Include="Remote\Node\Model\SyncPathRelativePathComparer.cs" />
     <Compile Include="Remote\Node\Model\SyncResult.cs" />
+    <Compile Include="Remote\Node\Model\UninstallRegKey.cs" />
     <Compile Include="Remote\Node\Model\WebAppInfo.cs" />
     <Compile Include="Remote\Node\MultipartSyncDirContent.cs" />
     <Compile Include="Remote\Node\SyncPostProcContent.cs" />
@@ -221,12 +226,12 @@
     <Compile Include="Operations\LoadBalancer\LoadBalancerLookup.cs" />
     <Compile Include="Operations\LoadBalancer\LoadBalanceState.cs" />
     <Compile Include="Config\ConDepEnvConfig.cs" />
-    <Compile Include="Config\OperationsConfig.cs" />
+    <Compile Include="Config\OperationConfig.cs" />
     <Compile Include="Config\DeploymentUserConfig.cs" />
     <Compile Include="Config\LoadBalancerConfig.cs" />
     <Compile Include="Config\ConDepNoServersFoundException.cs" />
     <Compile Include="Config\ServerConfig.cs" />
-    <Compile Include="Config\ServerListExtensions.cs" />
+    <Compile Include="Config\Extensions.cs" />
     <Compile Include="Config\WebSiteBindingConfig.cs" />
     <Compile Include="Config\WebSiteConfig.cs" />
     <Compile Include="Validation\ConDepInvalidSetupException.cs" />

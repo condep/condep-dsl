@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ConDep.Dsl.Remote.Node.Model
 {
@@ -11,25 +10,4 @@ namespace ConDep.Dsl.Remote.Node.Model
         public List<Link> Links { get { return _links; } }
         public string TempDirForUpload { get; set; }
     }
-
-    public class UninstallRegKey
-    {
-        public string UninstallString { get; set; }
-
-        public string DisplayVersion { get; set; }
-
-        public string DisplayName { get; set; }
-    }
-
-    public class InstallationResult
-    {
-        public DateTime StartedUtc { get; set; }
-        public int ExitCode { get; set; }
-        public string Message { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Log { get; set; }
-        public bool Success { get; set; }
-        public bool AllreadyInstalled { get; set; }
-    }
-
 }
