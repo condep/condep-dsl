@@ -4,12 +4,11 @@ using System.Diagnostics;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Harvesters;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Remote
 {
-    public class RemoteServerValidator : IValidateServer
+    internal class RemoteServerValidator : IValidateServer
     {
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ServerInfoHarvester _serverInfoHarvester;

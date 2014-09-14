@@ -10,7 +10,7 @@ using ConDep.Dsl.Resources;
 
 namespace ConDep.Dsl.Remote
 {
-    public class PowerShellScriptPublisher
+    internal class PowerShellScriptPublisher
     {
         private readonly ConDepSettings _settings;
 

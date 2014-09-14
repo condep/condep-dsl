@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using ConDep.Dsl.Operations;
-using ConDep.Dsl.SemanticModel;
+﻿using ConDep.Dsl.Operations;
 using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
-    public class RemoteDeploymentBuilder : IOfferRemoteDeployment, IConfigureRemoteDeployment
+    internal class RemoteDeploymentBuilder : IOfferRemoteDeployment, IConfigureRemoteDeployment
     {
         private readonly IManageRemoteSequence _remoteSequence;
 

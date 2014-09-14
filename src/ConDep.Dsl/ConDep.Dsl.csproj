@@ -198,7 +198,6 @@
     <Compile Include="Remote\Registry\RegistryStringValue.cs" />
     <Compile Include="Remote\Registry\RegistryValue.cs" />
     <Compile Include="Remote\RemoteServerValidator.cs" />
-    <Compile Include="Remote\RemoteRegistry.cs" />
     <Compile Include="IOfferRemoteComposition.cs" />
     <Compile Include="Configure.cs" />
     <Compile Include="PSScripts\PowerShellResources.cs" />

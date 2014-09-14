@@ -1,5 +1,4 @@
-﻿using ConDep.Dsl.SemanticModel;
-using ConDep.Dsl.Validation;
+﻿using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Config
 {

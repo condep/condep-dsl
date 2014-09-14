@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
-using ConDep.Dsl.Config;
 using ConDep.Dsl.Operations;
 using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
-    public class LocalOperationsBuilder : IOfferLocalOperations, IConfigureLocalOperations
+    internal class LocalOperationsBuilder : IOfferLocalOperations, IConfigureLocalOperations
     {
         private readonly LocalSequence _localSequence;
 

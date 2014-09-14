@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
-    public class RemoteOperationsBuilder : IOfferRemoteOperations
+    internal class RemoteOperationsBuilder : IOfferRemoteOperations
     {
         private readonly IManageRemoteSequence _remoteSequence;
 

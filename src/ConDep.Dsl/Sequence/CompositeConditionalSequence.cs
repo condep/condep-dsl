@@ -5,7 +5,7 @@ using ConDep.Dsl.Logging;
 
 namespace ConDep.Dsl.Sequence
 {
-    public class CompositeConditionalSequence : CompositeSequence
+    internal class CompositeConditionalSequence : CompositeSequence
     {
         internal readonly Predicate<ServerInfo> _condition;
         private readonly bool _expectedConditionResult;

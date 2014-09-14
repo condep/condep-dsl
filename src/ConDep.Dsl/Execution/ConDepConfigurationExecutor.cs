@@ -7,7 +7,6 @@ using ConDep.Dsl.Logging;
 using ConDep.Dsl.Operations;
 using ConDep.Dsl.Operations.LoadBalancer;
 using ConDep.Dsl.Remote;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Sequence;
 using ConDep.Dsl.Validation;
 
@@ -57,7 +56,7 @@ namespace ConDep.Dsl.Execution
             return Task.Factory.StartNew(() => ExecuteFromAssembly(conDepSettings, token), token);
         }
 
-        public ConDepExecutionResult Execute(ConDepSettings settings, IValidateClient clientValidator, IValidateServer serverValidator, ExecutionSequenceManager execManager, CancellationToken token)
+        internal ConDepExecutionResult Execute(ConDepSettings settings, IValidateClient clientValidator, IValidateServer serverValidator, ExecutionSequenceManager execManager, CancellationToken token)
         {
             if (settings == null) { throw new ArgumentException("settings"); }
             if (settings.Config == null) { throw new ArgumentException("settings.Config"); }

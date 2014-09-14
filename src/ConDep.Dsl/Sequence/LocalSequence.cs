@@ -8,7 +8,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence
 {
-    public class LocalSequence : IManageSequence<LocalOperation>, IExecuteLocally
+    internal class LocalSequence : IManageSequence<LocalOperation>, IExecuteLocally
     {
         private readonly string _name;
         private readonly ExecutionSequenceManager _sequenceManager;

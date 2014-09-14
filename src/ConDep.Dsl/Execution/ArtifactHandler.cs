@@ -7,7 +7,7 @@ using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Execution
 {
-    public class ArtifactHandler
+    internal class ArtifactHandler
     {
         public static void PopulateExecutionSequence(ConDepSettings conDepSettings, ExecutionSequenceManager sequenceManager)
         {

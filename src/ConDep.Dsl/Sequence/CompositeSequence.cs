@@ -5,12 +5,11 @@ using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Operations;
-using ConDep.Dsl.SemanticModel;
 using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence
 {
-    public class CompositeSequence : IManageRemoteSequence, IExecuteRemotely    {
+    internal class CompositeSequence : IManageRemoteSequence, IExecuteRemotely    {
         private readonly string _compositeName;
         internal readonly List<IExecuteRemotely> _sequence = new List<IExecuteRemotely>();
 

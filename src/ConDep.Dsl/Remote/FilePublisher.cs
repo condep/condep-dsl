@@ -4,7 +4,7 @@ using ConDep.Dsl.Remote.Node;
 
 namespace ConDep.Dsl.Remote
 {
-    public class FilePublisher
+    internal class FilePublisher
     {
         public void PublishFile(string srcFile, string dstFile, ServerConfig server, ConDepSettings settings)
         {

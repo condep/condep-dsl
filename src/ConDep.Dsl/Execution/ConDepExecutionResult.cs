@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ConDep.Dsl.SemanticModel
+namespace ConDep.Dsl.Execution
 {
     [Serializable]
     public class ConDepExecutionResult

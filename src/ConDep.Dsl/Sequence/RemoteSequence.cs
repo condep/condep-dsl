@@ -9,7 +9,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence
 {
-    public class RemoteSequence : IManageRemoteSequence, IExecuteRemotely
+    internal class RemoteSequence : IManageRemoteSequence, IExecuteRemotely
     {
         private readonly bool _paralell;
         internal readonly List<IExecuteRemotely> _sequence = new List<IExecuteRemotely>();

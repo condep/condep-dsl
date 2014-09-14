@@ -6,7 +6,7 @@ using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
-    public class RemoteCompositeBuilder : IOfferRemoteComposition
+    internal class RemoteCompositeBuilder : IOfferRemoteComposition
     {
         private readonly CompositeSequence _compositeSequence;
 
