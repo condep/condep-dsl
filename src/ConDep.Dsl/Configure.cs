@@ -1,3 +1,4 @@
+using System;
 using ConDep.Dsl.Builders;
 using ConDep.Dsl.Operations;
 
@@ -40,9 +41,21 @@ namespace ConDep.Dsl
 
         public static void Operation(IOfferRemoteOperations remote, IExecuteRemotely operation)
         {
-            var seqContainer = remote as RemoteOperationsBuilder;
-            seqContainer.AddOperation(operation);
+            if (remote is RemoteOperationsBuilder)
+            {
+                var seqContainer = remote as RemoteOperationsBuilder;
+                seqContainer.AddOperation(operation);
+                return;
+            }
+            if (remote is RemoteCompositeBuilder)
+            {
+                var seqContainer = remote as RemoteCompositeBuilder;
+                seqContainer.CompositeSequence.Add(operation);
+                return;
+            }
+            throw new Exception(string.Format("Type {0} not currently supported.", remote.GetType().Name));
         }
+
 
         public static void Operation(IOfferRemoteInstallation installation, IExecuteRemotely operation)
         {
