@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Sequence;
 
@@ -29,7 +27,7 @@ namespace ConDep.Dsl.Builders
             get { return _compositeSequence; }
         }
 
-        public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)
+        public IOfferRemoteOperations OnlyIf(Predicate<ServerInfo> condition)
         {
             return new RemoteCompositeBuilder(CompositeSequence.NewConditionalCompositeSequence(condition));
         }

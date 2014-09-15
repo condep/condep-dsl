@@ -18,7 +18,7 @@ namespace ConDep.Dsl.Builders
         public IOfferRemoteConfiguration Configure { get { return new RemoteConfigurationBuilder(_remoteSequence);  } }
         public IOfferRemoteInstallation Install { get { return new RemoteInstallationBuilder(_remoteSequence); } }
 
-        public IOfferRemoteComposition OnlyIf(Predicate<ServerInfo> condition)
+        public IOfferRemoteOperations OnlyIf(Predicate<ServerInfo> condition)
         {
             return new RemoteCompositeBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }

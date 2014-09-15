@@ -1,6 +1,6 @@
 namespace ConDep.Dsl
 {
-    public interface IOfferRemoteInstallation
+    public interface IOfferRemoteInstallation : IOfferOnlyIf<IOfferRemoteInstallation>
     {
     }
 }

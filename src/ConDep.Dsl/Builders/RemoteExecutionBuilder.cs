@@ -1,3 +1,5 @@
+using System;
+using ConDep.Dsl.Config;
 using ConDep.Dsl.Operations;
 using ConDep.Dsl.Sequence;
 
@@ -20,6 +22,11 @@ namespace ConDep.Dsl.Builders
         public void AddOperation(RemoteCompositeOperation operation)
         {
             operation.Configure(new RemoteCompositeBuilder(_remoteSequence.NewCompositeSequence(operation)));
+        }
+
+        public IOfferRemoteExecution OnlyIf(Predicate<ServerInfo> condition)
+        {
+            return new RemoteExecutionBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
     }
 }
