@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ConDep.Dsl.Config;
+using ConDep.Dsl.LoadBalancer;
 using ConDep.Dsl.Logging;
-using ConDep.Dsl.Operations.LoadBalancer;
 
 namespace ConDep.Dsl.Sequence
 {

@@ -1,6 +1,5 @@
 using System;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.Operations;
 
 namespace ConDep.Dsl.Sequence
 {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.Operations.LoadBalancer;
+using ConDep.Dsl.LoadBalancer;
 
 namespace ConDep.Dsl.Sequence
 {

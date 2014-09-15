@@ -1,4 +1,4 @@
-using ConDep.Dsl.Operations.LoadBalancer;
+using ConDep.Dsl.LoadBalancer;
 
 namespace ConDep.Dsl.Config
 {

@@ -6,7 +6,7 @@ using ConDep.Dsl.Logging;
 using ConDep.Dsl.Remote;
 using ConDep.Dsl.Validation;
 
-namespace ConDep.Dsl.Operations
+namespace ConDep.Dsl
 {
     internal class PreRemoteOps : IExecuteRemotely
     {

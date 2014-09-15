@@ -1,5 +1,3 @@
-using ConDep.Dsl.Operations;
-
 namespace ConDep.Dsl
 {
     public interface IConfigureRemoteInstallation

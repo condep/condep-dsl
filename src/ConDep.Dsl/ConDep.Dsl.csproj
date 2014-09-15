@@ -122,6 +122,7 @@
     <Compile Include="IOfferArtifactExecutionOrder.cs" />
     <Compile Include="IOfferArtifactFollowedBy.cs" />
     <Compile Include="IOfferArtifactPrecededBy.cs" />
+    <Compile Include="IOfferOnlyIf.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
     <Compile Include="IProvideArtifact.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
@@ -132,11 +133,11 @@
     <Compile Include="Logging\TeamCityLogger.cs" />
     <Compile Include="Logging\TeamCityMessageStatus.cs" />
     <Compile Include="IOfferRemoteConfiguration.cs" />
-    <Compile Include="Operations\RemoteServerOperation.cs" />
-    <Compile Include="Operations\RemoteCompositeOperation.cs" />
-    <Compile Include="Operations\RemoteCompositeOperationBase.cs" />
+    <Compile Include="RemoteServerOperation.cs" />
+    <Compile Include="RemoteCompositeOperation.cs" />
+    <Compile Include="RemoteCompositeOperationBase.cs" />
     <Compile Include="Logging\RemotePowerShellLogger.cs" />
-    <Compile Include="Operations\ForEachServerOperation.cs" />
+    <Compile Include="ForEachServerOperation.cs" />
     <Compile Include="PSScripts\ConDepNode\ConDepNodeResources.cs" />
     <Compile Include="PSScripts\ConDep\ConDepResources.cs" />
     <Compile Include="Remote\ConDepNodeValidationException.cs" />
@@ -166,7 +167,7 @@
     <Compile Include="Remote\PowerShellErrors.cs" />
     <Compile Include="Remote\PowerShellExecutor.cs" />
     <Compile Include="Remote\ConDepNodePublisher.cs" />
-    <Compile Include="Operations\LoadBalancer\ConDepLoadBalancerException.cs" />
+    <Compile Include="LoadBalancer\ConDepLoadBalancerException.cs" />
     <Compile Include="Remote\PowerShellScriptPublisher.cs" />
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />
@@ -177,8 +178,8 @@
     <Compile Include="Execution\ConDepExecutionResult.cs" />
     <Compile Include="Validation\ConDepValidationException.cs" />
     <Compile Include="ConDepGlobals.cs" />
-    <Compile Include="Operations\LoadBalancer\ILookupLoadBalancer.cs" />
-    <Compile Include="Operations\PostRemoteOps.cs" />
+    <Compile Include="LoadBalancer\ILookupLoadBalancer.cs" />
+    <Compile Include="PostRemoteOps.cs" />
     <Compile Include="Harvesters\DiskHarvester.cs" />
     <Compile Include="Harvesters\DotNetFrameworkHarvester.cs" />
     <Compile Include="IExecuteLocally.cs" />
@@ -187,7 +188,7 @@
     <Compile Include="Validation\IValidateServer.cs" />
     <Compile Include="Harvesters\NetworkHarvester.cs" />
     <Compile Include="Harvesters\OperatingSystemHarvester.cs" />
-    <Compile Include="Operations\PreRemoteOps.cs" />
+    <Compile Include="PreRemoteOps.cs" />
     <Compile Include="Remote\Registry\RegistryBinaryValue.cs" />
     <Compile Include="Remote\Registry\RegistryDWordValue.cs" />
     <Compile Include="Remote\Registry\RegistryExpandedStringValue.cs" />
@@ -226,9 +227,9 @@
     <Compile Include="Validation\StatusReporter.cs" />
     <Compile Include="Config\IRequireCustomConfiguration.cs" />
     <Compile Include="ILoadBalance.cs" />
-    <Compile Include="Operations\LoadBalancer\DefaultLoadBalancer.cs" />
-    <Compile Include="Operations\LoadBalancer\LoadBalancerLookup.cs" />
-    <Compile Include="Operations\LoadBalancer\LoadBalanceState.cs" />
+    <Compile Include="LoadBalancer\DefaultLoadBalancer.cs" />
+    <Compile Include="LoadBalancer\LoadBalancerLookup.cs" />
+    <Compile Include="LoadBalancer\LoadBalanceState.cs" />
     <Compile Include="Config\ConDepEnvConfig.cs" />
     <Compile Include="Config\OperationConfig.cs" />
     <Compile Include="Config\DeploymentUserConfig.cs" />
@@ -242,7 +243,7 @@
     <Compile Include="Resources\ConDepResourceFiles.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Execution\ConDepConfigurationExecutor.cs" />
-    <Compile Include="Operations\LocalOperation.cs" />
+    <Compile Include="LocalOperation.cs" />
     <Compile Include="Validation\IValidate.cs" />
     <Compile Include="Validation\Notification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,7 +3,7 @@ using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Validation;
 
-namespace ConDep.Dsl.Operations
+namespace ConDep.Dsl
 {
     public abstract class LocalOperation : IValidate, IExecuteLocally
 	{

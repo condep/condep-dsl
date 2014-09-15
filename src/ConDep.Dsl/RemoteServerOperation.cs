@@ -13,7 +13,7 @@ using ConDep.Dsl.Remote;
 using ConDep.Dsl.Validation;
 using Newtonsoft.Json;
 
-namespace ConDep.Dsl.Operations
+namespace ConDep.Dsl
 {
     public abstract class RemoteServerOperation : IExecuteRemotely
     {
