@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Artifact.cs" />
+    <Compile Include="Config\ConDepConfigurationException.cs" />
     <Compile Include="Config\ServerLoadBalancerState.cs" />
     <Compile Include="Execution\ArtifactHandler.cs" />
     <Compile Include="Execution\TimedException.cs" />

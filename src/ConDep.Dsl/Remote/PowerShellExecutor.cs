@@ -38,7 +38,6 @@ namespace ConDep.Dsl.Remote
             {
                 runspace.Open();
 
-                Logger.Verbose(commandOrScript);
                 var ps = PowerShell.Create();
                 ps.Runspace = runspace;
 
@@ -47,18 +46,21 @@ namespace ConDep.Dsl.Remote
                     if (LoadConDepModule)
                     {
                         var conDepModule = string.Format(@"Import-Module {0};", _server.GetServerInfo().ConDepScriptsFolder);
+                        Logger.Verbose(conDepModule);
                         pipeline.Commands.AddScript(conDepModule);
                     }
 
                     if (LoadConDepNodeModule)
                     {
                         var conDepNodeModule = string.Format(@"Import-Module {0};", _server.GetServerInfo().ConDepNodeScriptsFolder);
+                        Logger.Verbose(conDepNodeModule);
                         pipeline.Commands.AddScript(conDepNodeModule);
                     }
 
                     if (LoadConDepDotNetLibrary)
                     {
                         var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}"";", Path.Combine(_server.GetServerInfo().TempFolderPowerShell, "ConDep.Dsl.Remote.Helpers.dll"));
+                        Logger.Verbose(netLibraryCmd);
                         pipeline.Commands.AddScript(netLibraryCmd);
                     }
 
@@ -76,6 +78,7 @@ namespace ConDep.Dsl.Remote
                         pipeline.Commands.AddScript(commandOrScript);
                     }
 
+                    Logger.Verbose(commandOrScript);
                     var result = pipeline.Invoke();
 
                     if (pipeline.Error.Count > 0)
