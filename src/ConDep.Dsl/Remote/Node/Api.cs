@@ -78,7 +78,7 @@ namespace ConDep.Dsl.Remote.Node
             throw new ConDepResourceNotFoundException(string.Format("Unable to sync Web Application using {0}. Returned status code was {1}.", url2, syncResponse.StatusCode));
         }
 
-        public void InstallMsi(string packageName, Uri location)
+        public InstallationResult InstallMsi(string packageName, Uri location)
         {
             var url = DiscoverUrl("http://www.con-dep.net/rels/install/msi_template");
             var url2 = url.Replace("{packageName}", packageName);
@@ -94,11 +94,42 @@ namespace ConDep.Dsl.Remote.Node
                         var message = new HttpRequestMessage { Method = link.HttpMethod, RequestUri = new Uri(string.Format(link.Href, location)) };
 
                         var installResponse = _client.SendAsync(message).Result;
-
+                        return installResponse.Content.ReadAsAsync<InstallationResult>().Result;
                     }
                 }
             }
+            else
+            {
+                return new InstallationResult { Success = true, AllreadyInstalled = true };
+            }
+            return new InstallationResult { Success = false };
+        }
 
+        public InstallationResult InstallMsi(string packageName, string fileLocation)
+        {
+            var url = DiscoverUrl("http://www.con-dep.net/rels/install/msi_template");
+            var url2 = url.Replace("{packageName}", packageName);
+
+            var getResponse = _client.GetAsync(url2).Result;
+            if (getResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                var downloadInfo = getResponse.Content.ReadAsAsync<InstallResponse>().Result;
+                foreach (var link in downloadInfo.Links)
+                {
+                    if (link.Rel == "http://www.con-dep.net/rels/install/msi_file_template")
+                    {
+                        var message = new HttpRequestMessage { Method = link.HttpMethod, RequestUri = new Uri(string.Format(link.Href, fileLocation)) };
+
+                        var installResponse = _client.SendAsync(message).Result;
+                        return installResponse.Content.ReadAsAsync<InstallationResult>().Result;
+                    }
+                }
+            }
+            else
+            {
+                return new InstallationResult { Success = true, AllreadyInstalled = true };
+            }
+            return new InstallationResult { Success = false };
         }
 
         public InstallationResult InstallCustom(string packageName, Uri location, string parameters)
