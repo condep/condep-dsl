@@ -24,6 +24,7 @@ namespace ConDep.Dsl.Remote
         public bool LoadConDepModule { get; set; }
         public bool LoadConDepNodeModule { get; set; }
         public bool LoadConDepDotNetLibrary { get; set; }
+        public bool UseCredSSP { get; set; }
 
         public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
@@ -32,6 +33,11 @@ namespace ConDep.Dsl.Remote
             var remoteCredential = new PSCredential(_server.DeploymentUser.UserName, GetPasswordAsSecString(_server.DeploymentUser.Password));
             var connectionInfo = new WSManConnectionInfo(false, _server.Name, 5985, "/wsman", SHELL_URI,
                                                          remoteCredential);
+            if (UseCredSSP)
+            {
+                connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Credssp;
+            }
+
             //{AuthenticationMechanism = AuthenticationMechanism.Negotiate, SkipCACheck = true, SkipCNCheck = true, SkipRevocationCheck = true};
 
             using (var runspace = RunspaceFactory.CreateRunspace(host, connectionInfo))
