@@ -218,7 +218,7 @@ namespace ConDep.Dsl.Config
 
             if (config.Servers != null && config.Tiers != null)
                 throw new ConDepConfigurationException(
-                    "You cannot define both Tiers and Servers at the same level. Either you use Tiers and define servers for each tiers or you use Servers without Tiers. Servers without Tiers would be the same as having just one Tier."); 
+                    "You cannot define both Tiers and Servers at the same level. Either you use Tiers and define servers for each tier or you use Servers without Tiers. Servers without Tiers would be the same as having just one Tier."); 
 
             if(config.Servers == null) config.Servers = new List<ServerConfig>();
 

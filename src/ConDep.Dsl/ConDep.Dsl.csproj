@@ -85,9 +85,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Artifact.cs" />
+    <Compile Include="ConDepInvalidEnumValueException.cs" />
     <Compile Include="Config\ConDepConfigurationException.cs" />
     <Compile Include="Config\ServerLoadBalancerState.cs" />
+    <Compile Include="Execution\ArtifactConfigurationHandler.cs" />
     <Compile Include="Execution\ArtifactHandler.cs" />
+    <Compile Include="Execution\ConDepNoArtifactDefinedException.cs" />
+    <Compile Include="Execution\ConDepNoArtifactTierDefinedException.cs" />
+    <Compile Include="Execution\IDiscoverArtifacts.cs" />
+    <Compile Include="Execution\IDiscoverServers.cs" />
+    <Compile Include="Execution\IResolveArtifactDependencies.cs" />
+    <Compile Include="Execution\ServerHandler.cs" />
     <Compile Include="Execution\TimedException.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
@@ -174,6 +182,8 @@
     <Compile Include="Security\JsonPasswordCrypto.cs" />
     <Compile Include="Sequence\CompositeServersSequence.cs" />
     <Compile Include="Sequence\IManageRemoteServersSequence.cs" />
+    <Compile Include="Tier.cs" />
+    <Compile Include="TierAttribute.cs" />
     <Compile Include="Validation\ClientValidator.cs" />
     <Compile Include="Execution\ConDepExecutionResult.cs" />
     <Compile Include="Validation\ConDepValidationException.cs" />

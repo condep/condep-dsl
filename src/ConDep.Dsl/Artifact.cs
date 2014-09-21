@@ -1,4 +1,5 @@
-﻿using ConDep.Dsl.Config;
+﻿using System.Collections.Generic;
+using ConDep.Dsl.Config;
 
 namespace ConDep.Dsl
 {
@@ -25,16 +26,19 @@ namespace ConDep.Dsl
         public abstract class Local : IProvideArtifact
         {
             public abstract void Configure(IOfferLocalOperations onLocalMachine, ConDepSettings settings);
+            public IEnumerable<IProvideArtifact> Dependencies { get; set; }
         }
 
         public abstract class Remote : IProvideArtifact
         {
             public abstract void Configure(IOfferRemoteOperations server, ConDepSettings settings);
+            public IEnumerable<IProvideArtifact> Dependencies { get; set; }
         }
 
         public abstract class Order : IProvideArtifact
         {
             public abstract void Configure(IOfferArtifactExecutionOrder sequence);
+            public IEnumerable<IProvideArtifact> Dependencies { get; set; }
         }
     }
 }

@@ -4,26 +4,26 @@ using ConDep.Dsl.Config;
 
 namespace ConDep.Dsl.Execution
 {
-    public class ArtifactDependencyHandler
+    internal class ArtifactDependencyHandler : IResolveArtifactDependencies
     {
-        private readonly IProvideArtifact _artifact;
-
-        public ArtifactDependencyHandler(IProvideArtifact artifact)
-        {
-            _artifact = artifact;
-        }
-
-        public bool HasDependenciesDefined()
+        public bool HasDependenciesDefined(IProvideArtifact artifact)
         {
             var typeName = typeof(IDependOn<>).Name;
-            var interfaces = _artifact.GetType().GetInterfaces();
+            var interfaces = artifact.GetType().GetInterfaces();
             return interfaces.Any(x => x.Name == typeName);
         }
 
-        public IEnumerable<IProvideArtifact> GetDependeciesForArtifact(ConDepSettings settings)
+        public void PopulateWithDependencies(IProvideArtifact artifact, ConDepSettings settings)
+        {
+            if (!HasDependenciesDefined(artifact)) return;
+
+            artifact.Dependencies = GetDependeciesForArtifact(artifact, settings);
+        }
+
+        private IEnumerable<IProvideArtifact> GetDependeciesForArtifact(IProvideArtifact artifact, ConDepSettings settings)
         {
             var typeName = typeof(IDependOn<>).Name;
-            var typeInterfaces = _artifact.GetType().GetInterfaces();
+            var typeInterfaces = artifact.GetType().GetInterfaces();
 
             var dependencies = typeInterfaces.Where(x => x.Name == typeName);
             var dependencyInstances = new List<IProvideArtifact>();
@@ -34,11 +34,10 @@ namespace ConDep.Dsl.Execution
 
                 var dependencyInstance = settings.Options.Assembly.CreateInstance(dependencyType.FullName) as IProvideArtifact;
 
-                dependencyInstances.AddRange(new ArtifactDependencyHandler(dependencyInstance).GetDependeciesForArtifact(settings));
+                dependencyInstances.AddRange(new ArtifactDependencyHandler().GetDependeciesForArtifact(dependencyInstance, settings));
                 dependencyInstances.Add(dependencyInstance);
             }
             return dependencyInstances;
         }
     }
-
 }

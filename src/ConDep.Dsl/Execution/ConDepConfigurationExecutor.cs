@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ConDep.Dsl.Config;
@@ -29,9 +30,14 @@ namespace ConDep.Dsl.Execution
                                                                 serverInfoHarvester);
 
                 var lbLookup = new LoadBalancerLookup(conDepSettings.Config.LoadBalancer);
-                var sequenceManager = new ExecutionSequenceManager(conDepSettings.Config.Servers, lbLookup.GetLoadBalancer());
 
-                ArtifactHandler.PopulateExecutionSequence(conDepSettings, sequenceManager);
+                var artifactConfigHandler = new ArtifactConfigurationHandler(new ArtifactHandler(), new ArtifactDependencyHandler(), new ServerHandler(), lbLookup.GetLoadBalancer());
+                var sequenceManager = artifactConfigHandler.CreateExecutionSequence(conDepSettings);
+                // 1. Get Artifact
+                // 2. Get Artifact Dependencies (Validate all on same Tier)
+                // 3. Get Servers for Artifact
+                // 4. Configure Artifacts
+                //var sequenceManager = ArtifactHandler.PopulateExecutionSequence(conDepSettings, lbLookup.GetLoadBalancer());
 
                 if (conDepSettings.Options.DryRun)
                 {

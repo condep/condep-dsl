@@ -129,6 +129,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteServerOperationTests.cs" />
     <Compile Include="TeamCityLoggerTests.cs" />
+    <Compile Include="TiersTests.cs" />
     <Compile Include="UnitTestLogger.cs" />
     <Compile Include="SimpleTestFixtureBase.cs" />
   </ItemGroup>
