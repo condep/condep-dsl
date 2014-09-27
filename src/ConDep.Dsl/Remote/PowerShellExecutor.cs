@@ -28,18 +28,26 @@ namespace ConDep.Dsl.Remote
 
         public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
-            var host = new ConDepPSHost();
-
             var remoteCredential = new PSCredential(_server.DeploymentUser.UserName, GetPasswordAsSecString(_server.DeploymentUser.Password));
             var connectionInfo = new WSManConnectionInfo(false, _server.Name, 5985, "/wsman", SHELL_URI,
-                                                         remoteCredential);
+                                             remoteCredential);
+
             if (UseCredSSP)
             {
-                connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Credssp;
+                using (new CredSSPHandler(connectionInfo, _server))
+                {
+                    return ExecuteCommand(commandOrScript, connectionInfo, parameters, logOutput);
+                }
             }
 
-            //{AuthenticationMechanism = AuthenticationMechanism.Negotiate, SkipCACheck = true, SkipCNCheck = true, SkipRevocationCheck = true};
+            return ExecuteCommand(commandOrScript, connectionInfo, parameters, logOutput);
 
+            //{AuthenticationMechanism = AuthenticationMechanism.Negotiate, SkipCACheck = true, SkipCNCheck = true, SkipRevocationCheck = true};
+        }
+
+        private IEnumerable<dynamic> ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, IEnumerable<CommandParameter> parameters = null, bool logOutput = true )
+        {
+            var host = new ConDepPSHost();
             using (var runspace = RunspaceFactory.CreateRunspace(host, connectionInfo))
             {
                 runspace.Open();
@@ -49,40 +57,11 @@ namespace ConDep.Dsl.Remote
 
                 using (var pipeline = ps.Runspace.CreatePipeline("set-executionpolicy remotesigned -force"))
                 {
-                    if (LoadConDepModule)
-                    {
-                        var conDepModule = string.Format(@"Import-Module {0};", _server.GetServerInfo().ConDepScriptsFolder);
-                        Logger.Verbose(conDepModule);
-                        pipeline.Commands.AddScript(conDepModule);
-                    }
+                    ConfigureConDepModule(pipeline);
+                    ConfigureConDepNodeModule(pipeline);
+                    ConfigureConDepDotNetLibrary(pipeline);
 
-                    if (LoadConDepNodeModule)
-                    {
-                        var conDepNodeModule = string.Format(@"Import-Module {0};", _server.GetServerInfo().ConDepNodeScriptsFolder);
-                        Logger.Verbose(conDepNodeModule);
-                        pipeline.Commands.AddScript(conDepNodeModule);
-                    }
-
-                    if (LoadConDepDotNetLibrary)
-                    {
-                        var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}"";", Path.Combine(_server.GetServerInfo().TempFolderPowerShell, "ConDep.Dsl.Remote.Helpers.dll"));
-                        Logger.Verbose(netLibraryCmd);
-                        pipeline.Commands.AddScript(netLibraryCmd);
-                    }
-
-                    if (parameters != null)
-                    {
-                        var cmd = new Command(commandOrScript, true);
-                        foreach (var param in parameters)
-                        {
-                            cmd.Parameters.Add(param);
-                        }
-                        pipeline.Commands.Add(cmd);
-                    }
-                    else
-                    {
-                        pipeline.Commands.AddScript(commandOrScript);
-                    }
+                    ConfigureCommand(commandOrScript, parameters, pipeline);
 
                     Logger.Verbose(commandOrScript);
                     var result = pipeline.Invoke();
@@ -105,7 +84,55 @@ namespace ConDep.Dsl.Remote
                     return result;
                 }
             }
+        } 
+        private static void ConfigureCommand(string commandOrScript, IEnumerable<CommandParameter> parameters, Pipeline pipeline)
+        {
+            if (parameters != null)
+            {
+                var cmd = new Command(commandOrScript, true);
+                foreach (var param in parameters)
+                {
+                    cmd.Parameters.Add(param);
+                }
+                pipeline.Commands.Add(cmd);
+            }
+            else
+            {
+                pipeline.Commands.AddScript(commandOrScript);
+            }
         }
+
+        private void ConfigureConDepDotNetLibrary(Pipeline pipeline)
+        {
+            if (LoadConDepDotNetLibrary)
+            {
+                var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}""",
+                    Path.Combine(_server.GetServerInfo().TempFolderPowerShell, "ConDep.Dsl.Remote.Helpers.dll"));
+                Logger.Verbose(netLibraryCmd);
+                pipeline.Commands.AddScript(netLibraryCmd);
+            }
+        }
+
+        private void ConfigureConDepNodeModule(Pipeline pipeline)
+        {
+            if (LoadConDepNodeModule)
+            {
+                var conDepNodeModule = string.Format(@"Import-Module {0}", _server.GetServerInfo().ConDepNodeScriptsFolder);
+                Logger.Verbose(conDepNodeModule);
+                pipeline.Commands.AddScript(conDepNodeModule);
+            }
+        }
+
+        private void ConfigureConDepModule(Pipeline pipeline)
+        {
+            if (LoadConDepModule)
+            {
+                var conDepModule = string.Format(@"Import-Module {0}", _server.GetServerInfo().ConDepScriptsFolder);
+                Logger.Verbose(conDepModule);
+                pipeline.Commands.AddScript(conDepModule);
+            }
+        }
+
 
         public SecureString GetPasswordAsSecString(string password)
         {
