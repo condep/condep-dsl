@@ -6,7 +6,15 @@ namespace ConDep.Dsl.Config
     [Serializable]
     public class ConDepEnvConfig
     {
+        private string[] _powerShellScriptFolders = new string[0];
         public string EnvironmentName { get; set; }
+
+        public string[] PowerShellScriptFolders
+        {
+            get { return _powerShellScriptFolders; }
+            set { _powerShellScriptFolders = value; }
+        }
+
         public LoadBalancerConfig LoadBalancer { get; set; }
         public IList<ServerConfig> Servers { get; set; }
         public IList<TiersConfig> Tiers { get; set; }

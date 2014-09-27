@@ -31,7 +31,7 @@ namespace ConDep.Dsl.Remote
             SaveConDepScriptModuleResourceToFolder(localTargetPath);
             SaveConDepScriptResourcesToFolder(localTargetPath);
             SaveExternalScriptResourcesToFolder(localTargetPath);
-            SaveExecutionPathScriptsToFolder(localTargetPath);
+            SaveExecutionPathScriptsToFolder(localTargetPath, _settings.Config);
 
             SyncDir(localTargetPath, server.GetServerInfo().ConDepScriptsFolderDos, server, _settings);
         }
@@ -77,14 +77,21 @@ namespace ConDep.Dsl.Remote
             filePublisher.PublishFile(srcPath, dstPath, server, settings);
         }
 
-        private void SaveExecutionPathScriptsToFolder(string localTargetPath)
+        private void SaveExecutionPathScriptsToFolder(string localTargetPath, ConDepEnvConfig config)
         {
             var currDir = Directory.GetCurrentDirectory();
-            var dirInfo = new DirectoryInfo(currDir);
-            var files = dirInfo.GetFiles("*.ps1", SearchOption.AllDirectories);
-            foreach (var file in files.Select(x => x.FullName))
+
+            foreach (var psDir in config.PowerShellScriptFolders)
             {
-                File.Copy(file, Path.Combine(localTargetPath, Path.GetFileName(file)));
+                var absPath = Path.Combine(currDir, psDir);
+                if(!Directory.Exists(absPath)) throw new DirectoryNotFoundException(absPath);
+
+                var dirInfo = new DirectoryInfo(absPath);
+                var files = dirInfo.GetFiles("*.ps1", SearchOption.TopDirectoryOnly);
+                foreach (var file in files.Select(x => x.FullName))
+                {
+                    File.Copy(file, Path.Combine(localTargetPath, Path.GetFileName(file)));
+                }
             }
         }
 

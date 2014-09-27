@@ -152,6 +152,7 @@
     <Compile Include="Remote\ConDepPSHost.cs" />
     <Compile Include="Remote\ConDepPsHostRawUI.cs" />
     <Compile Include="Remote\ConDepPSHostUI.cs" />
+    <Compile Include="Remote\CredSSPHandler.cs" />
     <Compile Include="Remote\FilePublisher.cs" />
     <Compile Include="Remote\FileHashGenerator.cs" />
     <Compile Include="Remote\ImpersinatorNativeMethods.cs" />

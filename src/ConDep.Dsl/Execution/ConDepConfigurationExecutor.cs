@@ -33,11 +33,6 @@ namespace ConDep.Dsl.Execution
 
                 var artifactConfigHandler = new ArtifactConfigurationHandler(new ArtifactHandler(), new ArtifactDependencyHandler(), new ServerHandler(), lbLookup.GetLoadBalancer());
                 var sequenceManager = artifactConfigHandler.CreateExecutionSequence(conDepSettings);
-                // 1. Get Artifact
-                // 2. Get Artifact Dependencies (Validate all on same Tier)
-                // 3. Get Servers for Artifact
-                // 4. Configure Artifacts
-                //var sequenceManager = ArtifactHandler.PopulateExecutionSequence(conDepSettings, lbLookup.GetLoadBalancer());
 
                 if (conDepSettings.Options.DryRun)
                 {

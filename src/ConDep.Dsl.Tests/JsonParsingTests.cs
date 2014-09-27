@@ -101,6 +101,12 @@ namespace ConDep.Dsl.Tests
             }
         ]
     },
+    ""PowerShellScriptFolders"" : 
+    [
+        ""psScripts"",
+        ""psScripts\\subScripts"",
+        ""psScripts\\subScripts\\subSubScripts""
+    ],
 	""Servers"":
     [
         {
@@ -218,6 +224,20 @@ namespace ConDep.Dsl.Tests
             Assert.That(_config.LoadBalancer.GetModeAsEnum(), Is.Not.Null.Or.Empty);
             Assert.That(_config.LoadBalancer.SuspendMode, Is.Not.Null.Or.Empty);
             Assert.That(_config.LoadBalancer.GetSuspendModeAsEnum(), Is.Not.Null.Or.Empty);
+        }
+
+        [Test]
+        public void TestThatEmptyPowerShellScriptFoldersIsNotNullAndEmpty()
+        {
+            var config = new ConDepEnvConfig();
+            Assert.That(config.PowerShellScriptFolders, Is.Not.Null);
+            Assert.That(config.PowerShellScriptFolders.Length, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TestThatPowerShellScriptFoldersCanBeIterated()
+        {
+            Assert.That(_config.PowerShellScriptFolders.Length, Is.EqualTo(3));
         }
 
         [Test]
