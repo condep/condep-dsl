@@ -133,7 +133,6 @@
     <Compile Include="TiersTests.cs" />
     <Compile Include="UnitTestLogger.cs" />
     <Compile Include="SimpleTestFixtureBase.cs" />
-    <Compile Include="CredSspTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConDep.Dsl\ConDep.Dsl.csproj">

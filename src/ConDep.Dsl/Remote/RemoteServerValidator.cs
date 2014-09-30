@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Harvesters;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Validation;
+using Newtonsoft.Json.Linq;
 
 namespace ConDep.Dsl.Remote
 {
@@ -35,6 +37,11 @@ namespace ConDep.Dsl.Remote
                                 return;
                             }
 
+                            if (!ValidatePowerShellVersion(currentServer))
+                            {
+                                isValid = false;
+                                return;
+                            }
                             Logger.WithLogSection("Collecting server data", () => _serverInfoHarvester.Harvest(currentServer));
  
                             if (HaveNet40(currentServer))
@@ -49,6 +56,23 @@ namespace ConDep.Dsl.Remote
                         });
                 }
                 return isValid;
+            });
+        }
+
+        private bool ValidatePowerShellVersion(ServerConfig currentServer)
+        {
+            return Logger.WithLogSection("Validating remote PowerShell version (must be 3.0 or higher)", () =>
+            {
+                var executor = new PowerShellExecutor(currentServer) { LoadConDepModule = false };
+                var versionResult = executor.Execute("$psVersionTable.PSVersion.Major", logOutput: false);
+                if (versionResult == null)
+                {
+                    Logger.Error("Unable to get remote PowerShell version.");
+                    return false;
+                }
+                var version = versionResult.First();
+                Logger.Info(string.Format("Remote PowerShell version is {0}", version));
+                return version >= 3;
             });
         }
 
