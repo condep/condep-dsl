@@ -13,7 +13,7 @@ namespace ConDep.Dsl.Remote
     {
         private readonly ServerConfig _server;
 
-        private const string SHELL_URI = "http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
+        protected const string SHELL_URI = "http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
 
         public PowerShellExecutor(ServerConfig server)
         {
@@ -25,6 +25,12 @@ namespace ConDep.Dsl.Remote
         public bool LoadConDepNodeModule { get; set; }
         public bool LoadConDepDotNetLibrary { get; set; }
         public bool UseCredSSP { get; set; }
+
+        public IEnumerable<dynamic> ExecuteLocal(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
+        {
+            var connectionInfo = new WSManConnectionInfo();
+            return ExecuteCommand(commandOrScript, connectionInfo, parameters, logOutput);
+        } 
 
         public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
@@ -45,7 +51,7 @@ namespace ConDep.Dsl.Remote
             //{AuthenticationMechanism = AuthenticationMechanism.Negotiate, SkipCACheck = true, SkipCNCheck = true, SkipRevocationCheck = true};
         }
 
-        private IEnumerable<dynamic> ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, IEnumerable<CommandParameter> parameters = null, bool logOutput = true )
+        internal IEnumerable<dynamic> ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, IEnumerable<CommandParameter> parameters = null, bool logOutput = true )
         {
             var host = new ConDepPSHost();
             using (var runspace = RunspaceFactory.CreateRunspace(host, connectionInfo))
@@ -134,7 +140,7 @@ namespace ConDep.Dsl.Remote
         }
 
 
-        public SecureString GetPasswordAsSecString(string password)
+        public static SecureString GetPasswordAsSecString(string password)
         {
             var secureString = new SecureString();
             if (!string.IsNullOrWhiteSpace(password))
