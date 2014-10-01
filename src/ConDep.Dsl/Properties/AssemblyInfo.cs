@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("")]
 [assembly: AssemblyCopyright("Copyright © ConDep 2014")]
 [assembly: AssemblyVersion("3.0.55.0")]
-[assembly: AssemblyFileVersion("3.0.55.0")]
+[assembly: AssemblyFileVersion("3.0.56.0")]
 [assembly: CLSCompliant(true)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
