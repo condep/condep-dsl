@@ -69,7 +69,6 @@ namespace ConDep.Dsl.Remote
 
                     ConfigureCommand(commandOrScript, parameters, pipeline);
 
-                    Logger.Verbose(commandOrScript);
                     var result = pipeline.Invoke();
 
                     if (pipeline.Error.Count > 0)
@@ -82,9 +81,15 @@ namespace ConDep.Dsl.Remote
                         throw errorCollection;
                     }
 
-                    foreach (var psObject in result.Where(psObject => logOutput))
+                    if (logOutput && result.Count > 0)
                     {
-                        Logger.Info(psObject.ToString());
+                        Logger.WithLogSection("Script output", () =>
+                        {
+                            foreach (var psObject in result)
+                            {
+                                Logger.Info(psObject.ToString());
+                            }
+                        });
                     }
 
                     return result;
@@ -106,6 +111,7 @@ namespace ConDep.Dsl.Remote
             {
                 pipeline.Commands.AddScript(commandOrScript);
             }
+            Logger.Verbose(commandOrScript);
         }
 
         private void ConfigureConDepDotNetLibrary(Pipeline pipeline)
