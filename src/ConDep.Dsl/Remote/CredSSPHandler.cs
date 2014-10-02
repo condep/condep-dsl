@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Logging;
-using Microsoft.Win32;
 
 namespace ConDep.Dsl.Remote
 {
@@ -35,44 +33,8 @@ namespace ConDep.Dsl.Remote
             EnableServerCredSSP();
         }
 
-        //private void DisableCredSSP()
-        //{
-        //    DisableClientCredSSP();
-        //    DisableServerCredSSP();
-        //}
-
-        //private void DisableServerCredSSP()
-        //{
-        //    if (!_originalServerCredSSPValue)
-        //    {
-        //        var executor = new PowerShellExecutor(_server) { LoadConDepModule = false };
-        //        Logger.Verbose("Disabling CredSSP for server since it was disabled to begin with.");
-        //        executor.Execute(@"set-item -path wsman:\localhost\Service\Auth\CredSSP -value ""false""", logOutput: false);
-        //    }
-        //}
-
-        //private void DisableClientCredSSP()
-        //{
-        //    if (!_originalClientCredSSPValue)
-        //    {
-        //        Logger.Verbose("Disabling CredSSP for client since it was disabled to begin with.");
-        //        using (var ps = PowerShell.Create())
-        //        {
-        //            ps.AddScript(@"Disable-WSManCredSSP -Role Client");
-        //            ps.Invoke();
-        //        }
-        //    }
-        //}
-
-
         private void EnableClientCredSSP()
         {
-            //if Domain
-            //  if HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\AllowFreshCredentials Exists
-            //      if
-            //  Add credssp settings to HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\AllowFreshCredentials
-            //else
-            //  Add credssp setti to HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\AllowFreshCredentialsWhenNTLMOnly
             var localExecutor = new PowerShellExecutor(_server) {LoadConDepModule = false};
 
             var result = localExecutor.ExecuteLocal(@"get-item -Path wsman:\localhost\Client\Auth\CredSSP").ToList();
@@ -93,11 +55,8 @@ namespace ConDep.Dsl.Remote
                 _cleanupFunctions.Add(() => localExecutor.ExecuteLocal(@"set-item -path wsman:\localhost\Client\Auth\CredSSP -value 'false'"));
             }
 
-            if (IsDomainUser())
-            {
-                EnableFreshCredentials(REG_KEY_ALLOW_FRESH_CREDENTIALS);
-            }
-            else
+            EnableFreshCredentials(REG_KEY_ALLOW_FRESH_CREDENTIALS);
+            if(!IsDomainUser())
             {
                 EnableFreshCredentials(REG_KEY_ALLOW_FRESH_CREDENTIALS_WHEN_NTLM_ONLY);
             }
@@ -105,16 +64,19 @@ namespace ConDep.Dsl.Remote
 
         private void EnableFreshCredentials(string key)
         {
-
+            Logger.Verbose(string.Format("Checking if registry key for fresh credentials {0} is set.", key));
             var regKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(key, true);
             if (regKey == null)
             {
+                Logger.Verbose("Key not set. Setting now.");
                 regKey = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(key);
-                regKey.SetValue("1", @"WSMAN/*");
+                Logger.Verbose("Setting value 1 to wsman/*");
+                regKey.SetValue("1", "WSMAN/*");
                 _cleanupFunctions.Add(() => Microsoft.Win32.Registry.LocalMachine.DeleteSubKey(key));
             }
             else if (regKey.ValueCount == 0)
             {
+                Logger.Verbose("Key found, but no values exists. Setting value 1 to wsman/*");
                 regKey.SetValue("1", @"WSMAN/*");
                 _cleanupFunctions.Add(() => regKey.DeleteValue("1"));
                 return;
@@ -126,10 +88,12 @@ namespace ConDep.Dsl.Remote
                 .Where(val => !string.IsNullOrWhiteSpace(val))
                 .Any(val => val.Equals(@"wsman/*", StringComparison.InvariantCultureIgnoreCase)))
             {
+                Logger.Verbose("Value for wsman/* found.");
                 return;
             }
 
             var credSspRuleNumber = (regKey.ValueCount + 1).ToString(CultureInfo.InvariantCulture);
+            Logger.Verbose("Value for wsman/* not found. Adding value with index " + credSspRuleNumber + " now.");
             regKey.SetValue(credSspRuleNumber, @"WSMAN/*");
 
             _cleanupFunctions.Add(() => regKey.DeleteValue(credSspRuleNumber));
@@ -137,8 +101,12 @@ namespace ConDep.Dsl.Remote
 
         private bool IsDomainUser()
         {
+            Logger.Verbose(string.Format("Checking if {0} is a domain user.", _server.DeploymentUser.UserName));
             var domain = Impersonator.GetDomain(_server.DeploymentUser.UserName);
-            return !string.IsNullOrWhiteSpace(domain) || domain != ".";
+            Logger.Verbose(string.Format("Domain found was: {0}", domain));
+            var isDomainUser = !string.IsNullOrWhiteSpace(domain) && domain != ".";
+            Logger.Verbose(string.Format("Is user {0} domain user: {1}", _server.DeploymentUser.UserName, isDomainUser));
+            return isDomainUser;
         }
 
         private void EnableServerCredSSP()
@@ -170,9 +138,5 @@ namespace ConDep.Dsl.Remote
                 cleanupMethod();
             }
         }
-    }
-
-    public class ConDepCredSSPException : Exception
-    {
     }
 }

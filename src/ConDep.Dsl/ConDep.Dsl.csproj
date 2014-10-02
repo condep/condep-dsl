@@ -148,6 +148,7 @@
     <Compile Include="ForEachServerOperation.cs" />
     <Compile Include="PSScripts\ConDepNode\ConDepNodeResources.cs" />
     <Compile Include="PSScripts\ConDep\ConDepResources.cs" />
+    <Compile Include="Remote\ConDepCredSSPException.cs" />
     <Compile Include="Remote\ConDepNodeValidationException.cs" />
     <Compile Include="Remote\ConDepPSHost.cs" />
     <Compile Include="Remote\ConDepPsHostRawUI.cs" />
