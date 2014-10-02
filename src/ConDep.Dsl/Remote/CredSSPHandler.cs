@@ -93,7 +93,7 @@ namespace ConDep.Dsl.Remote
                 _cleanupFunctions.Add(() => localExecutor.ExecuteLocal(@"set-item -path wsman:\localhost\Client\Auth\CredSSP -value 'false'"));
             }
 
-            if (IsDomainComputer())
+            if (IsDomainUser())
             {
                 EnableFreshCredentials(REG_KEY_ALLOW_FRESH_CREDENTIALS);
             }
@@ -135,9 +135,10 @@ namespace ConDep.Dsl.Remote
             _cleanupFunctions.Add(() => regKey.DeleteValue(credSspRuleNumber));
         }
 
-        private bool IsDomainComputer()
+        private bool IsDomainUser()
         {
-            return !Environment.UserDomainName.Equals(Environment.MachineName, StringComparison.InvariantCultureIgnoreCase);
+            var domain = Impersonator.GetDomain(_server.DeploymentUser.UserName);
+            return !string.IsNullOrWhiteSpace(domain) || domain != ".";
         }
 
         private void EnableServerCredSSP()
