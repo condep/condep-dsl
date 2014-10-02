@@ -12,12 +12,10 @@ namespace ConDep.Dsl.Remote
     {
         private const string REG_KEY_ALLOW_FRESH_CREDENTIALS = @"SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\AllowFreshCredentials";
         private const string REG_KEY_ALLOW_FRESH_CREDENTIALS_WHEN_NTLM_ONLY = @"SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\AllowFreshCredentialsWhenNTLMOnly";
-        private List<Action> _cleanupFunctions = new List<Action>();
+        private readonly List<Action> _cleanupFunctions = new List<Action>();
  
         private readonly ServerConfig _server;
         private readonly WSManConnectionInfo _connectionInfo;
-        private bool _originalClientCredSSPValue;
-        private bool _originalServerCredSSPValue;
 
         public CredSSPHandler(WSManConnectionInfo connectionInfo, ServerConfig server)
         {
@@ -41,13 +39,13 @@ namespace ConDep.Dsl.Remote
 
             if (result.Count != 1) throw new ConDepCredSSPException();
 
-            bool value;
-            if (Boolean.TryParse(result.First().Value, out value))
+            bool credSspEnabled;
+            if (!Boolean.TryParse(result.First().Value, out credSspEnabled))
             {
-                _originalClientCredSSPValue = value;
+                throw new ConDepCredSSPException("Unable to retreive CredSSP value for this client.");
             }
 
-            if (!_originalClientCredSSPValue)
+            if (!credSspEnabled)
             {
                 Logger.Verbose("CredSSP for client not enabled. Temporarly enabling now for this execution.");
                 localExecutor.ExecuteLocal(@"set-item -path wsman:\localhost\Client\Auth\CredSSP -value 'true'");
@@ -102,11 +100,13 @@ namespace ConDep.Dsl.Remote
         private bool IsDomainUser()
         {
             Logger.Verbose(string.Format("Checking if {0} is a domain user.", _server.DeploymentUser.UserName));
-            var domain = Impersonator.GetDomain(_server.DeploymentUser.UserName);
-            Logger.Verbose(string.Format("Domain found was: {0}", domain));
-            var isDomainUser = !string.IsNullOrWhiteSpace(domain) && domain != ".";
-            Logger.Verbose(string.Format("Is user {0} domain user: {1}", _server.DeploymentUser.UserName, isDomainUser));
-            return isDomainUser;
+
+            var split = _server.DeploymentUser.UserName.Split('\\');
+            if (split.Length == 2)
+            {
+                if(split[0] != ".") return true;
+            }
+            return false;
         }
 
         private void EnableServerCredSSP()
@@ -116,19 +116,18 @@ namespace ConDep.Dsl.Remote
 
             if (result.Count != 1) throw new ConDepCredSSPException();
 
-            bool value;
-            if (Boolean.TryParse(result.First().Value, out value))
+            bool credSspEnabled;
+            if (!Boolean.TryParse(result.First().Value, out credSspEnabled))
             {
-                _originalServerCredSSPValue = value;
+                throw new ConDepCredSSPException("Unable to retreive CredSSP value from server.");
             }
 
-            if (!_originalServerCredSSPValue)
+            if (!credSspEnabled)
             {
                 Logger.Verbose("CredSSP for server not enabled. Temporarly enabling now for this execution.");
                 executor.Execute(@"set-item -path wsman:\localhost\Service\Auth\CredSSP -value ""true"" -force", logOutput: false);
                 _cleanupFunctions.Add(() => executor.Execute(@"set-item -path wsman:\localhost\Service\Auth\CredSSP -value ""false"" -force", logOutput: false));
             }
-
         }
 
         public void Dispose()
