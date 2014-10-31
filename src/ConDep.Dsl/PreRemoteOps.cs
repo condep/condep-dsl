@@ -11,7 +11,7 @@ namespace ConDep.Dsl
     internal class PreRemoteOps : IExecuteRemotely
     {
         const string TMP_FOLDER = @"{0}\temp\ConDep";
-        const string NODE_LISTEN_URL = "http://{0}:80/ConDepNode/";
+        const string NODE_LISTEN_URL = "http://{0}:{1}/ConDepNode/";
 
         public void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
@@ -74,7 +74,7 @@ namespace ConDep.Dsl
 
                     var nodePublisher = new ConDepNodePublisher(path, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), string.Format(NODE_LISTEN_URL, "localhost"), settings);
                     nodePublisher.Execute(server);
-                    if (!nodePublisher.ValidateNode(string.Format(NODE_LISTEN_URL, server.Name), server.DeploymentUser.UserName, server.DeploymentUser.Password))
+                    if (!nodePublisher.ValidateNode(string.Format(NODE_LISTEN_URL, server.Name, settings.Options.NodePort), server.DeploymentUser.UserName, server.DeploymentUser.Password))
                     {
                         throw new ConDepNodeValidationException("Unable to make contact with ConDep Node or return content from API.");
                     }
