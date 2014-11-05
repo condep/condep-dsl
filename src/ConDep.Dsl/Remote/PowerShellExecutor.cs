@@ -30,13 +30,20 @@ namespace ConDep.Dsl.Remote
         {
             var connectionInfo = new WSManConnectionInfo();
             return ExecuteCommand(commandOrScript, connectionInfo, parameters, logOutput);
-        } 
+        }
 
-        public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
+        public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool useSsl = false, int port = -1, bool logOutput = true)
         {
+            if (port == -1) port = useSsl ? 5986 : 5985;
+
             var remoteCredential = new PSCredential(_server.DeploymentUser.UserName, GetPasswordAsSecString(_server.DeploymentUser.Password));
-            var connectionInfo = new WSManConnectionInfo(false, _server.Name, 5985, "/wsman", SHELL_URI,
-                                             remoteCredential);
+            var connectionInfo = new WSManConnectionInfo(useSsl, _server.Name, port, "/wsman", SHELL_URI,
+                                             remoteCredential)
+            {
+                //SkipCACheck = true,
+                //SkipCNCheck = true,
+                //SkipRevocationCheck = true
+            };
 
             if (UseCredSSP)
             {

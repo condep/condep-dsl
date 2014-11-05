@@ -72,15 +72,18 @@ namespace ConDep.Dsl
                         path = executionPath;
                     }
 
-                    var nodePublisher = new ConDepNodePublisher(path, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), string.Format(NODE_LISTEN_URL, "localhost"), settings);
+                    var nodeUrl = string.Format(NODE_LISTEN_URL, server.Name, settings.Options.NodePort);
+                    var nodeLocalhostUrl = string.Format(NODE_LISTEN_URL, "localhost", settings.Options.NodePort);
+
+                    var nodePublisher = new ConDepNodePublisher(path, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), nodeLocalhostUrl, settings);
                     nodePublisher.Execute(server);
-                    if (!nodePublisher.ValidateNode(string.Format(NODE_LISTEN_URL, server.Name, settings.Options.NodePort), server.DeploymentUser.UserName, server.DeploymentUser.Password))
+                    if (!nodePublisher.ValidateNode(nodeUrl, server.DeploymentUser.UserName, server.DeploymentUser.Password))
                     {
                         throw new ConDepNodeValidationException("Unable to make contact with ConDep Node or return content from API.");
                     }
 
                     Logger.Info(string.Format("ConDep Node successfully validated on {0}", server.Name));
-                    Logger.Info(string.Format("Node listening on {0}", string.Format(NODE_LISTEN_URL, server.Name)));
+                    Logger.Info(string.Format("Node listening on {0}", nodeUrl));
                 });
         }
 
