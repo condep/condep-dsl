@@ -70,6 +70,13 @@ namespace ConDep.Dsl.Sequence
             return sequence;
         }
 
+        public CompositeSequence NewConditionalCompositeSequence(string conditionScript)
+        {
+            var sequence = new CompositeConditionalSequence(Name, conditionScript);
+            _sequence.Add(sequence);
+            return sequence;
+        }
+
         public bool IsValid(Notification notification)
         {
             var isRemoteOpValid = _sequence.OfType<IExecuteRemotely>().All(x => x.IsValid(notification));

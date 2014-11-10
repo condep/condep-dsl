@@ -18,6 +18,11 @@ namespace ConDep.Dsl.Builders
             return new RemoteConfigurationBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
 
+        public IOfferRemoteConfiguration OnlyIf(string conditionScript)
+        {
+            return new RemoteConfigurationBuilder(_remoteSequence.NewConditionalCompositeSequence(conditionScript));
+        }
+
         public void AddOperation(RemoteCompositeOperation operation)
         {
             operation.Configure(new RemoteCompositeBuilder(_remoteSequence.NewCompositeSequence(operation)));

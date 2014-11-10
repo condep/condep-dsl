@@ -27,5 +27,10 @@ namespace ConDep.Dsl.Builders
         {
             return new RemoteExecutionBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
+
+        public IOfferRemoteExecution OnlyIf(string conditionScript)
+        {
+            return new RemoteExecutionBuilder(_remoteSequence.NewConditionalCompositeSequence(conditionScript));
+        }
     }
 }

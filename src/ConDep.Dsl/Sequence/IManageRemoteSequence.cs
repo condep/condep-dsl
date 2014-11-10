@@ -7,6 +7,7 @@ namespace ConDep.Dsl.Sequence
     {
         CompositeSequence NewCompositeSequence(RemoteCompositeOperation operation);
         CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition);
+        CompositeSequence NewConditionalCompositeSequence(string conditionScript);
         void DryRun();
     }
 }

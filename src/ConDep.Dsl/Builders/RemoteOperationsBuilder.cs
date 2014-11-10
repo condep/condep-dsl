@@ -23,6 +23,11 @@ namespace ConDep.Dsl.Builders
             return new RemoteCompositeBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
         }
 
+        public IOfferRemoteOperations OnlyIf(string conditionScript)
+        {
+            return new RemoteCompositeBuilder(_remoteSequence.NewConditionalCompositeSequence(conditionScript));            
+        }
+
         public void AddOperation(IExecuteRemotely operation)
         {
             _remoteSequence.Add(operation);
