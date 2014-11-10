@@ -12,7 +12,6 @@ namespace ConDep.Dsl.Sequence
         internal readonly Predicate<ServerInfo> _condition;
         private readonly bool _expectedConditionResult;
         private readonly string _conditionScript;
-        private bool _conditionFulfilled;
 
         public CompositeConditionalSequence(string name, Predicate<ServerInfo> condition, bool expectedConditionResult)
             : base(name)
@@ -31,9 +30,7 @@ namespace ConDep.Dsl.Sequence
         {
             Logger.WithLogSection(Name, () =>
             {
-                CheckIfConditionIsFulFilled(server);
-
-                if (_conditionFulfilled)
+                if (ConditionFulfilled(server))
                 {
                     foreach (var element in _sequence)
                     {
@@ -53,17 +50,17 @@ namespace ConDep.Dsl.Sequence
             get { return "Condition"; }
         }
 
-        private void CheckIfConditionIsFulFilled(ServerConfig server)
+        private bool ConditionFulfilled(ServerConfig server)
         {
             if (string.IsNullOrEmpty(_conditionScript))
             {
-                _conditionFulfilled = _condition(server.GetServerInfo()) == _expectedConditionResult;
+                return _condition(server.GetServerInfo()) == _expectedConditionResult;
             }
             else
             {
                 var psExecutor = new PowerShellExecutor(server);
                 var result = psExecutor.Execute(_conditionScript);
-                _conditionFulfilled = result.First().ToString() == "True";
+                return result.First().ToString() == "True";
             }
         }
     }
