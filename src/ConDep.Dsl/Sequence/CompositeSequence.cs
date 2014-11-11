@@ -61,6 +61,13 @@ namespace ConDep.Dsl.Sequence
             return sequence;
         }
 
+        public CompositeSequence NewConditionalCompositeSequence(string conditionScript)
+        {
+            var sequence = new CompositeConditionalSequence(Name, conditionScript);
+            _sequence.Add(sequence);
+            return sequence;
+        }
+
         public void DryRun()
         {
             foreach (var item in _sequence)
