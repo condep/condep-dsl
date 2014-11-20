@@ -1,5 +1,5 @@
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 
 namespace ConDep.Dsl.Config
 {
@@ -14,7 +14,7 @@ namespace ConDep.Dsl.Config
         public int BuildNumber { get; set; }
         public string ProgramFilesFolder { get; set; }
         public string ProgramFilesX86Folder { get; set; }
-        public string[] InstalledSoftwarePackages { get; set; }
+        public IEnumerable<InstalledSoftwarePackage> InstalledSoftwarePackages { get; set; } 
 
         public WindowsOperatingSystem OsAsEnum()
         {
@@ -27,5 +27,11 @@ namespace ConDep.Dsl.Config
                 default: return WindowsOperatingSystem.Unknown;
             }
         }
+    }
+
+    public class InstalledSoftwarePackage
+    {
+        public string DisplayName { get; set; }
+        public string DisplayVersion { get; set; }
     }
 }
