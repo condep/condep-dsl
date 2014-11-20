@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 using ConDep.Dsl.Config;
@@ -41,7 +42,7 @@ if(Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall) {
     $regKeys += 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
 }
 
-$packages = Get-ChildItem -Path $regKeys | Get-ItemProperty | where-object { $_.DisplayName -ne $null } | select-object -Property DisplayName | foreach{$_.DisplayName}
+$packages = Get-ChildItem -Path $regKeys | Get-ItemProperty | where-object { $_.DisplayName -ne $null } | select-object -Property DisplayName,DisplayVersion | foreach{$_.DisplayName + "";"" + $_.DisplayVersion}
 $osInfo.InstalledSoftwarePackages = $packages
 
 return $osInfo
@@ -61,7 +62,7 @@ return $osInfo
                                                             Version = osInfoResult.Version,
                                                             ProgramFilesFolder = osInfoResult.ProgramFilesFolder,
                                                             ProgramFilesX86Folder = osInfoResult.ProgramFilesX86Folder,
-                                                            InstalledSoftwarePackages = ((ArrayList)((PSObject)osInfoResult.InstalledSoftwarePackages).BaseObject).Cast<string>().ToArray()
+                                                            InstalledSoftwarePackages = ConvertPackagesStringArrayToObjectCollection(((ArrayList)((PSObject)osInfoResult.InstalledSoftwarePackages).BaseObject).Cast<string>().ToArray())
                                                         };
 
                 Logger.Verbose("Output from harvester:");
@@ -74,9 +75,19 @@ return $osInfo
                 Logger.Verbose("ProgramFiles    : " + osInfoResult.ProgramFilesFolder);
                 Logger.Verbose("ProgramFilesX86 : " + osInfoResult.ProgramFilesX86Folder);
                 Logger.Verbose("InstalledPackages:");
-                server.GetServerInfo().OperatingSystem.InstalledSoftwarePackages.ToList().ForEach(x => Logger.Verbose("\t" + x));
+                server.GetServerInfo().OperatingSystem.InstalledSoftwarePackages.ToList().ForEach(x => Logger.Verbose("\t" + x.DisplayName + ", version: " + x.DisplayVersion));
             }
+        }
 
+        private IEnumerable<InstalledSoftwarePackage> ConvertPackagesStringArrayToObjectCollection(IEnumerable<string> packages)
+        {
+            var result = new List<InstalledSoftwarePackage>();
+            foreach (var package in packages)
+            {
+                var splitted = package.Split(';');
+                result.Add(new InstalledSoftwarePackage { DisplayName = splitted[0], DisplayVersion = splitted[1] ?? "" });
+            }
+            return result;
         }
     }
 }
