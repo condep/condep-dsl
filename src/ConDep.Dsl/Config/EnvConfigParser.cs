@@ -47,8 +47,8 @@ namespace ConDep.Dsl.Config
             var fileName = string.Format("{0}.env.json", env);
             var configFiles = dirInfo.GetFiles(fileName);
 
-            if (configFiles.Any())
-                throw new FileNotFoundException(string.Format("No ConDep configuration files found in directory [{0}] with name {1}", dir, fileName));
+            if (!configFiles.Any())
+                throw new FileNotFoundException(string.Format("No ConDep configuration file found in directory [{0}] with name {1}", dir, fileName));
 
             return configFiles.Single().FullName;
         }
