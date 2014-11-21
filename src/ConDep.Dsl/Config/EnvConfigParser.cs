@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management.Automation;
 using ConDep.Dsl.Security;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,27 +26,15 @@ namespace ConDep.Dsl.Config
         {
             jsonModel = JObject.Parse(jsonConfig);
 
-            if (jsonModel.DeploymentUser != null)
-            {
-                if (!(jsonModel.DeploymentUser.Password.Value is string))
-                {
-                    return true;
-                }
-            }
-            if (jsonModel.Servers != null)
-            {
-                foreach (var server in jsonModel.Servers)
-                {
-                    if (server.DeploymentUser != null)
-                    {
-                        if (!(server.DeploymentUser.Password.Value is string))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
+            var ivTokens = ((JObject)jsonModel).FindEncryptedTokens();
+
+            return ivTokens
+                .Select(token => token.ToObject<EncryptedValue>())
+                .Any(value => 
+                    value != null && 
+                    !string.IsNullOrWhiteSpace(value.IV) && 
+                    !string.IsNullOrWhiteSpace(value.Value)
+                 );
         }
 
         public IEnumerable<string> GetConDepConfigFiles(string directory = null)
@@ -124,25 +113,13 @@ namespace ConDep.Dsl.Config
 
         public void DecryptJsonConfig(dynamic config, JsonPasswordCrypto crypto)
         {
-            if (config.LoadBalancer != null && config.LoadBalancer.Password != null)
-            {
-                DecryptJsonValue(crypto, config.LoadBalancer.Password);
-            }
-
-            foreach (var server in config.Servers)
-            {
-                if (server.DeploymentUser != null)
-                {
-                    DecryptJsonValue(crypto, server.DeploymentUser.Password);
-                }
-            }
-
-            DecryptJsonValue(crypto, config.DeploymentUser.Password);
+            ((JObject)config).FindEncryptedTokens()
+                .ForEach(x => DecryptJsonValue(crypto, x));
         }
 
         private void DecryptJsonValue(JsonPasswordCrypto crypto, dynamic originalValue)
         {
-            var valueToDecrypt = new EncryptedPassword(originalValue.IV.Value, originalValue.Password.Value);
+            var valueToDecrypt = new EncryptedValue(originalValue.IV.Value, originalValue.Value.Value);
             var decryptedValue = crypto.Decrypt(valueToDecrypt);
             JObject valueToReplace = originalValue;
             valueToReplace.Replace(decryptedValue);
@@ -162,23 +139,14 @@ namespace ConDep.Dsl.Config
 
         public void EncryptJsonConfig(dynamic config, JsonPasswordCrypto crypto)
         {
-            if (config.LoadBalancer != null && config.LoadBalancer.Password != null && !string.IsNullOrWhiteSpace(config.LoadBalancer.Password.Value))
-            {
-                EncryptJsonValue(crypto, config.LoadBalancer.Password);
-            }
+            ((JObject) config).FindTaggedTokens("encrypt")
+                .ForEach(x => EncryptTaggedValue(crypto, x));
 
-            if (config.Servers != null && config.Servers.Count > 0)
+            var passwordTokens = ((JObject) config).SelectTokens("$..Password").OfType<JValue>();
+            foreach (var token in passwordTokens)
             {
-                foreach (var server in config.Servers)
-                {
-                    if (server.DeploymentUser != null)
-                    {
-                        EncryptJsonValue(crypto, server.DeploymentUser.Password);
-                    }
-                }
+                EncryptJsonValue(crypto, token);
             }
-
-            EncryptJsonValue(crypto, config.DeploymentUser.Password);
         }
 
         private static void EncryptJsonValue(JsonPasswordCrypto crypto, JValue valueToEncrypt)
@@ -188,6 +156,12 @@ namespace ConDep.Dsl.Config
             valueToEncrypt.Replace(JObject.FromObject(encryptedValue));
         }
 
+        private static void EncryptTaggedValue(JsonPasswordCrypto crypto, dynamic valueToEncrypt)
+        {
+            var value = valueToEncrypt.encrypt.Value;
+            var encryptedValue = crypto.Encrypt("", value);
+            valueToEncrypt.Replace(JObject.FromObject(encryptedValue));
+        }
 
         public ConDepEnvConfig GetTypedEnvConfig(Stream stream, string cryptoKey)
         {
@@ -246,6 +220,111 @@ namespace ConDep.Dsl.Config
             {
                 var encoding = r.CurrentEncoding;
                 return new MemoryStream(encoding.GetBytes(r.ReadToEnd()));
+            }
+        }
+    }
+
+    public static class JsonExtensions
+    {
+        public static List<JToken> FindTokens(this JToken containerToken, string name)
+        {
+            var matches = new List<JToken>();
+            FindTokens(containerToken, name, matches);
+            return matches;
+        }
+
+        public static List<JToken> FindTaggedTokens(this JToken containerToken, string tag)
+        {
+            var matches = new List<JToken>();
+            FindTaggedTokens(containerToken, tag, matches);
+            return matches;
+        }
+
+        public static List<JToken> FindEncryptedTokens(this JToken containerToken)
+        {
+            var matches = new List<JToken>();
+            FindEncryptedTokens(containerToken, matches);
+            return matches;
+        }
+
+        private static void FindTokens(JToken containerToken, string name, List<JToken> matches)
+        {
+            if (containerToken.Type == JTokenType.Object)
+            {
+                foreach (JProperty child in containerToken.Children<JProperty>())
+                {
+                    if (child.Name == name)
+                    {
+                        matches.Add(child.Value);
+                    }
+                    FindTokens(child.Value, name, matches);
+                }
+            }
+            else if (containerToken.Type == JTokenType.Array)
+            {
+                foreach (JToken child in containerToken.Children())
+                {
+                    FindTokens(child, name, matches);
+                }
+            }
+        }
+
+        private static void FindTaggedTokens(JToken containerToken, string tag, List<JToken> matches)
+        {
+            if (containerToken.Type == JTokenType.Object)
+            {
+                foreach (JProperty child in containerToken.Children<JProperty>())
+                {
+                    if (child.Name == tag)
+                    {
+                        matches.Add(containerToken);
+                    }
+                    FindTaggedTokens(child.Value, tag, matches);
+                }
+            }
+            else if (containerToken.Type == JTokenType.Array)
+            {
+                foreach (JToken child in containerToken.Children())
+                {
+                    FindTaggedTokens(child, tag, matches);
+                }
+            }
+        }
+
+        private static void FindEncryptedTokens(JToken containerToken, List<JToken> matches)
+        {
+            if (containerToken.Type == JTokenType.Object)
+            {
+                var children = containerToken.Children<JProperty>();
+                if (children.Count() == 2)
+                {
+                    if(children.First().Name == "IV" && children.Last().Name == "Value")
+                    {
+                        matches.Add(containerToken);
+                    }
+                    else
+                    {
+                        foreach (JProperty child in children)
+                        {
+                            FindEncryptedTokens(child.Value, matches);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (JProperty child in containerToken.Children<JProperty>())
+                    {
+                        FindEncryptedTokens(child.Value, matches);
+                    }
+                }
+
+            }
+            else if (containerToken.Type == JTokenType.Array)
+            {
+                foreach (JToken child in containerToken.Children())
+                {
+                    FindEncryptedTokens(child, matches);
+                }
             }
         }
     }

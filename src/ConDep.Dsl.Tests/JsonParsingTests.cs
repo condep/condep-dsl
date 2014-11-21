@@ -10,6 +10,52 @@ namespace ConDep.Dsl.Tests
     [TestFixture]
     public class JsonParsingTests
     {
+        private string _encryptJson =
+            @"{
+    ""Servers"" :
+    [
+        {
+		    ""Name"" : ""jat-web01""
+        }
+    ],
+    ""OperationsConfig"":
+    {
+        ""NServiceBusOperation"": 
+        {
+            ""ServiceUserName"": ""torresdal\\nservicebususer"",
+            ""ServicePassword"": 
+            {
+                ""encrypt"" : ""verySecureP@ssw0rd""
+            },
+            ""IV"" : ""asdf"",
+            ""SomeSecret1"":
+            {
+                ""encrypt"" : ""asdfasdfasdfasdfwer2343453456""
+            },
+            ""test"" :
+            [
+                {
+                    ""asldkjf"":
+                    {
+                        ""encrypt"" : ""92873492734""
+                    }
+                },
+                {
+                    ""asdfasdfasdf"":
+                    {
+                        ""encrypt"" : ""abc""
+                    }
+                }
+            ]
+        },
+        ""SomeOtherOperation"":
+        {
+            ""SomeOtherSetting1"": ""asdfasdf"",
+            ""SomeOtherSetting2"": ""34tsdfg""
+        }
+    }
+}";
+
         private string _tiersJson =
             @"{
 	""Tiers"" :
@@ -397,7 +443,8 @@ namespace ConDep.Dsl.Tests
 
             dynamic config;
             parser.Encrypted(_json, out config);
-            string password = config.DeploymentUser.Password;
+            string deploymentPassword = config.DeploymentUser.Password;
+            string lbPassword = config.LoadBalancer.Password;
 
             var key = JsonPasswordCrypto.GenerateKey(256);
             var crypto = new JsonPasswordCrypto(key);
@@ -409,8 +456,31 @@ namespace ConDep.Dsl.Tests
             using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(encryptedJson)))
             {
                 var decryptedConfig = parser.GetTypedEnvConfig(memStream, key);
-                Assert.That(decryptedConfig.DeploymentUser.Password, Is.EqualTo(password));
+                Assert.That(decryptedConfig.DeploymentUser.Password, Is.EqualTo(deploymentPassword));
+                Assert.That(decryptedConfig.LoadBalancer.Password, Is.EqualTo(lbPassword));
             }
+        }
+
+        [Test]
+        public void TestThatEncryptTagGetsEncrypted()
+        {
+            var parser = new EnvConfigParser();
+
+            dynamic config;
+            parser.Encrypted(_encryptJson, out config);
+
+            var key = JsonPasswordCrypto.GenerateKey(256);
+            var crypto = new JsonPasswordCrypto(key);
+            parser.EncryptJsonConfig(config, crypto);
+
+            var encryptedJson = parser.ConvertToJsonText(config);
+            //Assert.That(parser.Encrypted(encryptedJson, out config), Is.True);
+
+            //using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(encryptedJson)))
+            //{
+            //    var decryptedConfig = parser.GetTypedEnvConfig(memStream, key);
+            //    Assert.That(decryptedConfig.DeploymentUser.Password, Is.EqualTo(password));
+            //}
         }
     }
 }

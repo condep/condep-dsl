@@ -32,7 +32,7 @@ namespace ConDep.Dsl.Security
             return true;
         }
 
-        public EncryptedPassword Encrypt(string password)
+        public EncryptedValue Encrypt(string password)
         {
             var aes = new AesManaged
                 {
@@ -46,21 +46,38 @@ namespace ConDep.Dsl.Security
 
             var encryptedBytes = encryptor.TransformFinalBlock(passwordBytes, 0, passwordBytes.Length);
 
-            return new EncryptedPassword(Convert.ToBase64String(aes.IV), Convert.ToBase64String(encryptedBytes));
+            return new EncryptedValue(Convert.ToBase64String(aes.IV), Convert.ToBase64String(encryptedBytes));
         }
 
-        public string Decrypt(EncryptedPassword password)
+        public EncryptedValue Encrypt(string key, string value)
+        {
+            var aes = new AesManaged
+            {
+                Key = Convert.FromBase64String(_key),
+                Mode = CipherMode.CBC,
+                Padding = PaddingMode.ISO10126
+            };
+
+            var valueBytes = Encoding.UTF8.GetBytes(value);
+            var encryptor = aes.CreateEncryptor();
+
+            var encryptedBytes = encryptor.TransformFinalBlock(valueBytes, 0, valueBytes.Length);
+
+            return new EncryptedValue(Convert.ToBase64String(aes.IV), Convert.ToBase64String(encryptedBytes));
+        }
+
+        public string Decrypt(EncryptedValue encryptedValue)
         {
             var aes = new AesManaged
             {
                 Key = Convert.FromBase64String(_key),
                 Mode = CipherMode.CBC,
                 Padding = PaddingMode.ISO10126,
-                IV = Convert.FromBase64String(password.IV)
+                IV = Convert.FromBase64String(encryptedValue.IV)
             };
 
             var decryptor = aes.CreateDecryptor();
-            var passwordBytes = Convert.FromBase64String(password.Password);
+            var passwordBytes = Convert.FromBase64String(encryptedValue.Value);
 
             var decryptedBytes = decryptor.TransformFinalBlock(passwordBytes, 0, passwordBytes.Length);
             return Encoding.UTF8.GetString(decryptedBytes);

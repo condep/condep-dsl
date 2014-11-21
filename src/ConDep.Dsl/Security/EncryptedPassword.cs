@@ -1,15 +1,15 @@
 ﻿namespace ConDep.Dsl.Security
 {
-    public class EncryptedPassword
+    public class EncryptedValue
     {
-        public EncryptedPassword(string iv, string encryptedPassword)
+        public EncryptedValue(string iv, string value)
         {
             IV = iv;
-            Password = encryptedPassword;
+            Value = value;
         }
 
         public string IV { get; private set; }
 
-        public string Password { get; private set; }
+        public string Value { get; private set; }
     }
 }
