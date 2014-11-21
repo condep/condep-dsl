@@ -37,6 +37,22 @@ namespace ConDep.Dsl.Config
                  );
         }
 
+        public string GetConDepConfigFile(string env, string directory = null)
+        {
+            var dir = string.IsNullOrWhiteSpace(directory) ? Directory.GetCurrentDirectory() : directory;
+            if (!Directory.Exists(dir))
+                throw new DirectoryNotFoundException(string.Format("Tried to find ConDep config files in directory [{0}], but directory does not exist.", dir));
+
+            var dirInfo = new DirectoryInfo(dir);
+            var fileName = string.Format("{0}.env.json", env);
+            var configFiles = dirInfo.GetFiles(fileName);
+
+            if (configFiles.Any())
+                throw new FileNotFoundException(string.Format("No ConDep configuration files found in directory [{0}] with name {1}", dir, fileName));
+
+            return configFiles.Single().FullName;
+        }
+
         public IEnumerable<string> GetConDepConfigFiles(string directory = null)
         {
             var dir = string.IsNullOrWhiteSpace(directory) ? Directory.GetCurrentDirectory() : directory;
