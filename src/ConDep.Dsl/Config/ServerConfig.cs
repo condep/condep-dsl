@@ -12,6 +12,7 @@ namespace ConDep.Dsl.Config
 
         public string Name { get; set; }
         public bool StopServer { get; set; }
+        public bool SSL { get; set; }
         public IList<WebSiteConfig> WebSites { get; set; }
         public DeploymentUserConfig DeploymentUser 
         { 
@@ -21,6 +22,7 @@ namespace ConDep.Dsl.Config
 
         public string LoadBalancerFarm { get; set; }
         internal ServerLoadBalancerState LoadBalancerState { get { return _loadBalancerState; } }
+        public int? PowerShellPort { get; set; }
 
         public ServerInfo GetServerInfo()
         {

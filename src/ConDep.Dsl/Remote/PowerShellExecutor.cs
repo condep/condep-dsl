@@ -32,18 +32,11 @@ namespace ConDep.Dsl.Remote
             return ExecuteCommand(commandOrScript, connectionInfo, parameters, logOutput);
         }
 
-        public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool useSsl = false, int port = -1, bool logOutput = true)
+        public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
-            if (port == -1) port = useSsl ? 5986 : 5985;
-
             var remoteCredential = new PSCredential(_server.DeploymentUser.UserName, GetPasswordAsSecString(_server.DeploymentUser.Password));
-            var connectionInfo = new WSManConnectionInfo(useSsl, _server.Name, port, "/wsman", SHELL_URI,
-                                             remoteCredential)
-            {
-                //SkipCACheck = true,
-                //SkipCNCheck = true,
-                //SkipRevocationCheck = true
-            };
+            var connectionInfo = new WSManConnectionInfo(_server.SSL, _server.Name, ResolvePort(_server), "/wsman", SHELL_URI,
+                                             remoteCredential);
 
             if (UseCredSSP)
             {
@@ -54,8 +47,13 @@ namespace ConDep.Dsl.Remote
             }
 
             return ExecuteCommand(commandOrScript, connectionInfo, parameters, logOutput);
+        }
 
-            //{AuthenticationMechanism = AuthenticationMechanism.Negotiate, SkipCACheck = true, SkipCNCheck = true, SkipRevocationCheck = true};
+        private int ResolvePort(ServerConfig server)
+        {
+            if (server.PowerShellPort != null) return server.PowerShellPort.Value;
+
+            return server.SSL ? 5986 : 5985;
         }
 
         internal IEnumerable<dynamic> ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, IEnumerable<CommandParameter> parameters = null, bool logOutput = true )
