@@ -330,8 +330,9 @@ namespace ConDep.Dsl.Remote.Node
                 Logger.Verbose("Successfully validated ConDep Node.");
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Logger.Error("Failed to connect to ConDep Node!", ex);
                 return false;
             }
         }
