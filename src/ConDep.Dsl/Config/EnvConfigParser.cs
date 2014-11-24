@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using ConDep.Dsl.Logging;
 using ConDep.Dsl.Security;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -158,7 +159,7 @@ namespace ConDep.Dsl.Config
             ((JObject) config).FindTaggedTokens("encrypt")
                 .ForEach(x => EncryptTaggedValue(crypto, x));
 
-            var passwordTokens = ((JObject) config).SelectTokens("$..Password").OfType<JValue>();
+            var passwordTokens = ((JObject) config).SelectTokens("$..Password").OfType<JValue>().ToList();
             foreach (var token in passwordTokens)
             {
                 EncryptJsonValue(crypto, token);
@@ -318,6 +319,19 @@ namespace ConDep.Dsl.Config
                     if(children.First().Name == "IV" && children.Last().Name == "Value")
                     {
                         matches.Add(containerToken);
+                    }
+                    else if (children.First().Name == "IV" && children.Last().Name == "Password")
+                    {
+                        throw new ConDepCryptoException(@"
+Looks like you have an older environment encryption from an earlier version of ConDep. To correct this please replace ""Password"" key with ""Value"" in your Environment file(s). Example : 
+    ""IV"": ""SaHK0yzgwDSAtE/oOhW0qg=="",
+    ""Password"": ""Dcyn8fXnGnIG5rUw0BufzA==""
+
+    replace ""Password"" key with ""Value"" like this:
+
+    ""IV"": ""SaHK0yzgwDSAtE/oOhW0qg=="",
+    ""Value"": ""Dcyn8fXnGnIG5rUw0BufzA==""
+");
                     }
                     else
                     {
