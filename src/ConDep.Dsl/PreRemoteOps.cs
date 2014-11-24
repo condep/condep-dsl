@@ -11,7 +11,6 @@ namespace ConDep.Dsl
     internal class PreRemoteOps : IExecuteRemotely
     {
         const string TMP_FOLDER = @"{0}\temp\ConDep";
-        const string NODE_LISTEN_URL = "http://{0}:{1}/ConDepNode/";
 
         public void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
@@ -72,10 +71,9 @@ namespace ConDep.Dsl
                         path = executionPath;
                     }
 
-                    var nodeUrl = string.Format(NODE_LISTEN_URL, server.Name, settings.Options.NodePort);
-                    var nodeLocalhostUrl = string.Format(NODE_LISTEN_URL, "localhost", settings.Options.NodePort);
+                    var nodeUrl = new ConDepNodeUrl(server, settings);
 
-                    var nodePublisher = new ConDepNodePublisher(path, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), nodeLocalhostUrl, settings);
+                    var nodePublisher = new ConDepNodePublisher(path, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), nodeUrl, settings.Options.ApiTimout);
                     nodePublisher.Execute(server);
                     if (!nodePublisher.ValidateNode(nodeUrl, server.DeploymentUser.UserName, server.DeploymentUser.Password))
                     {
@@ -83,7 +81,7 @@ namespace ConDep.Dsl
                     }
 
                     Logger.Info(string.Format("ConDep Node successfully validated on {0}", server.Name));
-                    Logger.Info(string.Format("Node listening on {0}", nodeUrl));
+                    Logger.Info(string.Format("Node listening on {0}", nodeUrl.ListenUrl));
                 });
         }
 

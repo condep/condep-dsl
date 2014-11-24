@@ -1,5 +1,8 @@
 using System;
 using System.Linq;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using ConDep.Dsl.Config;
@@ -65,6 +68,8 @@ namespace ConDep.Dsl.Execution
             if (serverValidator == null) { throw new ArgumentException("serverValidator"); }
             if (execManager == null) { throw new ArgumentException("execManager"); }
 
+            ServicePointManager.ServerCertificateValidationCallback = ValidateConDepNodeServerCert;
+
             var status = new StatusReporter();
 
             try
@@ -123,6 +128,13 @@ namespace ConDep.Dsl.Execution
             {
                 if (!_cancelled) ExecutePostOps(settings, status, token);
             }
+        }
+
+        private bool ValidateConDepNodeServerCert(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            var cert = new X509Certificate2(certificate);
+            return DateTime.UtcNow <= cert.NotAfter
+                   && DateTime.UtcNow >= cert.NotBefore;
         }
 
         private void Cancel(ConDepSettings settings, StatusReporter status, CancellationToken token)

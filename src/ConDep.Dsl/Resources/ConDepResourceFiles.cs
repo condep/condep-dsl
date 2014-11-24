@@ -1,8 +1,8 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using ConDep.Dsl.PSScripts.PfxInstaller;
 
 namespace ConDep.Dsl.Resources
 {
@@ -22,6 +22,53 @@ namespace ConDep.Dsl.Resources
                 }
             }
             return null;
+        }
+
+        public static string GetResourceText(Assembly assembly, ConDepResource resource)
+        {
+            try
+            {
+                using (var stream = assembly.GetManifestResourceStream(resource.Namespace + "." + resource.Resource))
+                {
+                    if (stream == null)
+                    {
+                        throw new ConDepResourceNotFoundException(string.Format("Unable to find resource [{0}]", resource.Resource));
+                    }
+
+                    using (var reader = new StreamReader(stream))
+                    {
+                        return reader.ReadToEnd();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ConDepResourceNotFoundException(string.Format("Resource [{0}]", resource.Resource), ex);
+            }
+        }
+
+        public static byte[] GetResourceBytes(Assembly assembly, ConDepResource resource)
+        {
+            try
+            {
+                using (var stream = assembly.GetManifestResourceStream(resource.Namespace + "." + resource.Resource))
+                {
+                    if (stream == null)
+                    {
+                        throw new ConDepResourceNotFoundException(string.Format("Unable to find resource [{0}]", resource.Resource));
+                    }
+
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        stream.CopyTo(memoryStream);
+                        return memoryStream.ToArray();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ConDepResourceNotFoundException(string.Format("Resource [{0}]", resource.Resource), ex);
+            }
         }
 
         public static string GetFilePath(Assembly assembly, string resourceNamespace, string resourceName, string dirPath = "", bool keepOriginalFileName = false)

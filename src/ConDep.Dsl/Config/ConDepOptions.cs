@@ -7,7 +7,7 @@ namespace ConDep.Dsl.Config
     [Serializable]
     public class ConDepOptions
     {
-        private int _nodePort = 80;
+        private int _nodePort = 4444;
 
         public ConDepOptions()
         {

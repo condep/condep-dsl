@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Artifact.cs" />
     <Compile Include="ConDepInvalidEnumValueException.cs" />
+    <Compile Include="ConDepNodeUrl.cs" />
     <Compile Include="Config\ConDepConfigurationException.cs" />
     <Compile Include="Config\ServerLoadBalancerState.cs" />
     <Compile Include="Execution\ArtifactConfigurationHandler.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Logging\TeamCityLogger.cs" />
     <Compile Include="Logging\TeamCityMessageStatus.cs" />
     <Compile Include="IOfferRemoteConfiguration.cs" />
+    <Compile Include="PSScripts\PfxInstaller\PfxInstallerResource.cs" />
     <Compile Include="RemoteServerOperation.cs" />
     <Compile Include="RemoteCompositeOperation.cs" />
     <Compile Include="RemoteCompositeOperationBase.cs" />
@@ -269,6 +271,8 @@
     </None>
     <None Include="PSScripts\ConDepNode.ps1" />
     <EmbeddedResource Include="PSScripts\ConDepNode\ConDepNode.psm1" />
+    <EmbeddedResource Include="PSScripts\PfxInstaller\PfxInstaller.script" />
+    <EmbeddedResource Include="Resources\node.con-dep.net.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

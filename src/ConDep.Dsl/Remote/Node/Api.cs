@@ -16,10 +16,10 @@ namespace ConDep.Dsl.Remote.Node
     {
         private readonly HttpClient _client;
 
-        public Api(string url, string userName, string password, int timeoutInMs)
+        public Api(ConDepNodeUrl url, string userName, string password, int timeoutInMs)
         {
             var messageHandler = new HttpClientHandler { Credentials = new NetworkCredential(userName, password) };
-            _client = new HttpClient(messageHandler) { BaseAddress = new Uri(url) };
+            _client = new HttpClient(messageHandler) { BaseAddress = new Uri(url.RemoteUrl) };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             if(timeoutInMs > 0) _client.Timeout = TimeSpan.FromMilliseconds(timeoutInMs);
         }
