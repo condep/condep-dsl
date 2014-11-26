@@ -108,7 +108,7 @@ function Add-ConDepNode([string]$path, $data, $url, $port) {
     $filestream.Write( $data, 0, $data.Length )
     $filestream.Close()
 
-    write-host 'Adding firewall rule for ConDepNode'
+    write-host "Adding firewall rule for ConDepNode on port $port"
     netsh advfirewall firewall delete rule name='ConDepNode'
     netsh advfirewall firewall add rule name='ConDepNode' protocol=TCP localport=$port action=allow dir=IN
 

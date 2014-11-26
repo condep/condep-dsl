@@ -116,7 +116,7 @@ netsh http add sslcert ipport=0.0.0.0:{0} certhash=$certThumbprint appid=$appId"
             };
 
             var executor = new PowerShellExecutor(server) {LoadConDepNodeModule = true, LoadConDepModule = false};
-            executor.Execute("Param([string]$path, $data, $url)\n  Add-ConDepNode $path $data $url, $port", parameters: parameters,
+            executor.Execute("Param([string]$path, $data, $url, $port)\n  Add-ConDepNode $path $data $url $port", parameters: parameters,
                 logOutput: false);
         }
 
