@@ -90,7 +90,7 @@ function Remove-ConDepNodeService() {
 	}
 }
 
-function Add-ConDepNode([string]$path, $data, $url) {
+function Add-ConDepNode([string]$path, $data, $url, $port) {
     $path = $ExecutionContext.InvokeCommand.ExpandString($path)
 
     $dir = Split-Path $path
@@ -110,7 +110,7 @@ function Add-ConDepNode([string]$path, $data, $url) {
 
     write-host 'Adding firewall rule for ConDepNode'
     netsh advfirewall firewall delete rule name='ConDepNode'
-    netsh advfirewall firewall add rule name='ConDepNode' protocol=TCP localport=80 action=allow dir=IN
+    netsh advfirewall firewall add rule name='ConDepNode' protocol=TCP localport=$port action=allow dir=IN
 
 	New-ConDepNodeService $path $url
 	Start-ConDepNode

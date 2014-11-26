@@ -7,12 +7,11 @@ namespace ConDep.Dsl.Config
     public class ServerConfig
     {
         private DeploymentUserConfig _deploymentUserRemote;
-        private ServerInfo _serverInfo = new ServerInfo();
-        private ServerLoadBalancerState _loadBalancerState = new ServerLoadBalancerState();
+        private readonly ServerInfo _serverInfo = new ServerInfo();
+        private readonly ServerLoadBalancerState _loadBalancerState = new ServerLoadBalancerState();
 
         public string Name { get; set; }
         public bool StopServer { get; set; }
-        public bool SSL { get; set; }
         public IList<WebSiteConfig> WebSites { get; set; }
         public DeploymentUserConfig DeploymentUser 
         { 
@@ -22,7 +21,10 @@ namespace ConDep.Dsl.Config
 
         public string LoadBalancerFarm { get; set; }
         internal ServerLoadBalancerState LoadBalancerState { get { return _loadBalancerState; } }
-        public int? PowerShellPort { get; set; }
+
+        public PowerShellConfig PowerShell { get; set; }
+
+        public NodeConfig Node { get; set; }
 
         public ServerInfo GetServerInfo()
         {

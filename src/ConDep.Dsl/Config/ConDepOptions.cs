@@ -7,8 +7,6 @@ namespace ConDep.Dsl.Config
     [Serializable]
     public class ConDepOptions
     {
-        private int _nodePort = 4444;
-
         public ConDepOptions()
         {
             SkipHarvesting = true;
@@ -30,14 +28,7 @@ namespace ConDep.Dsl.Config
         public string AssemblyName { get; set; }
         public string CryptoKey { get; set; }
         public bool DryRun { get; set; }
-        public int ApiTimout { get; set; }
         public bool SkipHarvesting { get; set; }
-
-        public int NodePort
-        {
-            get { return _nodePort; }
-            set { _nodePort = value; }
-        }
 
         public bool HasApplicationDefined()
         {

@@ -14,8 +14,8 @@ namespace ConDep.Dsl
             _settings = settings;
         }
 
-        public string RemoteUrl { get { return string.Format(NODE_LISTEN_URL, _server.Name, _settings.Options.NodePort); } }
-        public string ListenUrl { get { return string.Format(NODE_LISTEN_URL, "localhost", _settings.Options.NodePort); } }
-        public int Port { get { return _settings.Options.NodePort; } }
+        public string RemoteUrl { get { return string.Format(NODE_LISTEN_URL, _server.Name, _server.Node.Port); } }
+        public string ListenUrl { get { return string.Format(NODE_LISTEN_URL, "localhost", _server.Node.Port); } }
+        public int Port { get { return _server.Node.Port.Value; } }
     }
 }

@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ConDep.Dsl.Config;
@@ -24,19 +23,12 @@ namespace ConDep.Dsl.Remote
         private readonly string _srcPath;
         private readonly string _destPath;
         private readonly ConDepNodeUrl _url;
-        private readonly int _timeout;
-        //private readonly string _listenUrl;
 
-        //private readonly ConDepSettings _settings;
-
-        public ConDepNodePublisher(string srcPath, string destPath, ConDepNodeUrl url, int timeout)
+        public ConDepNodePublisher(string srcPath, string destPath, ConDepNodeUrl url)
         {
             _srcPath = srcPath;
             _destPath = destPath;
             _url = url;
-            _timeout = timeout;
-            //_listenUrl = listenUrl;
-            //_settings = settings;
         }
 
         public void Execute(ServerConfig server)
@@ -119,11 +111,12 @@ netsh http add sslcert ipport=0.0.0.0:{0} certhash=$certThumbprint appid=$appId"
             {
                 new CommandParameter("path", _destPath),
                 new CommandParameter("data", byteArray),
-                new CommandParameter("url", _url.ListenUrl)
+                new CommandParameter("url", _url.ListenUrl),
+                new CommandParameter("port", _url.Port),
             };
 
             var executor = new PowerShellExecutor(server) {LoadConDepNodeModule = true, LoadConDepModule = false};
-            executor.Execute("Param([string]$path, $data, $url)\n  Add-ConDepNode $path $data $url", parameters: parameters,
+            executor.Execute("Param([string]$path, $data, $url)\n  Add-ConDepNode $path $data $url, $port", parameters: parameters,
                 logOutput: false);
         }
 
@@ -144,9 +137,9 @@ netsh http add sslcert ipport=0.0.0.0:{0} certhash=$certThumbprint appid=$appId"
             startServiceExecutor.Execute("Start-ConDepNode", logOutput: false);
         }
 
-        public bool ValidateNode(ConDepNodeUrl url, string userName, string password)
+        public bool ValidateNode(ConDepNodeUrl url, string userName, string password, ServerConfig server)
         {
-            var api = new Node.Api(url, userName, password, _timeout);
+            var api = new Node.Api(url, userName, password, server.Node.TimeoutInSeconds.Value * 1000);
             if (!api.Validate())
             {
                 Thread.Sleep(1000);

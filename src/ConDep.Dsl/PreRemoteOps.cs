@@ -73,9 +73,9 @@ namespace ConDep.Dsl
 
                     var nodeUrl = new ConDepNodeUrl(server, settings);
 
-                    var nodePublisher = new ConDepNodePublisher(path, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), nodeUrl, settings.Options.ApiTimout);
+                    var nodePublisher = new ConDepNodePublisher(path, Path.Combine(server.GetServerInfo().OperatingSystem.ProgramFilesFolder, "ConDepNode", Path.GetFileName(path)), nodeUrl);
                     nodePublisher.Execute(server);
-                    if (!nodePublisher.ValidateNode(nodeUrl, server.DeploymentUser.UserName, server.DeploymentUser.Password))
+                    if (!nodePublisher.ValidateNode(nodeUrl, server.DeploymentUser.UserName, server.DeploymentUser.Password, server))
                     {
                         throw new ConDepNodeValidationException("Unable to make contact with ConDep Node or return content from API.");
                     }

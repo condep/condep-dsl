@@ -35,7 +35,7 @@ namespace ConDep.Dsl.Remote
         public IEnumerable<dynamic> Execute(string commandOrScript, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
             var remoteCredential = new PSCredential(_server.DeploymentUser.UserName, GetPasswordAsSecString(_server.DeploymentUser.Password));
-            var connectionInfo = new WSManConnectionInfo(_server.SSL, _server.Name, ResolvePort(_server), "/wsman", SHELL_URI,
+            var connectionInfo = new WSManConnectionInfo(_server.PowerShell.SSL, _server.Name, ResolvePort(_server), "/wsman", SHELL_URI,
                                              remoteCredential);
 
             if (UseCredSSP)
@@ -51,9 +51,17 @@ namespace ConDep.Dsl.Remote
 
         private int ResolvePort(ServerConfig server)
         {
-            if (server.PowerShellPort != null) return server.PowerShellPort.Value;
+            if (server.PowerShell.SSL && server.PowerShell.HttpsPort != null)
+            {
+                return server.PowerShell.HttpsPort.Value;
+            }
+                
+            if (server.PowerShell.HttpPort != null)
+            {
+                return server.PowerShell.HttpPort.Value;
+            }
 
-            return server.SSL ? 5986 : 5985;
+            return server.PowerShell.SSL ? 5986 : 5985;
         }
 
         internal IEnumerable<dynamic> ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, IEnumerable<CommandParameter> parameters = null, bool logOutput = true )

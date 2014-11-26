@@ -8,7 +8,7 @@ namespace ConDep.Dsl.Remote
     {
         public void PublishFile(string srcFile, string dstFile, ServerConfig server, ConDepSettings settings)
         {
-            var api = new Api(new ConDepNodeUrl(server, settings), server.DeploymentUser.UserName, server.DeploymentUser.Password, settings.Options.ApiTimout);
+            var api = new Api(new ConDepNodeUrl(server, settings), server.DeploymentUser.UserName, server.DeploymentUser.Password, server.Node.TimeoutInSeconds.Value * 1000);
             var result = api.SyncFile(srcFile, dstFile);
 
             if (result == null) return;
@@ -30,7 +30,7 @@ namespace ConDep.Dsl.Remote
 
         public void PublishDirectory(string srcDir, string dstDir, ServerConfig server, ConDepSettings settings)
         {
-            var api = new Api(new ConDepNodeUrl(server, settings), server.DeploymentUser.UserName, server.DeploymentUser.Password, settings.Options.ApiTimout);
+            var api = new Api(new ConDepNodeUrl(server, settings), server.DeploymentUser.UserName, server.DeploymentUser.Password, server.Node.TimeoutInSeconds.Value * 1000);
             var result = api.SyncDir(srcDir, dstDir);
 
             if (result == null) return;
