@@ -248,7 +248,6 @@ namespace ConDep.Dsl.Config
             {
                 foreach (var server in config.Tiers.SelectMany(tier => tier.Servers.Where(server => !server.DeploymentUser.IsDefined())))
                 {
-                    config.Servers.Add(server);
                     server.DeploymentUser = config.DeploymentUser;
                 }
             }

@@ -1,4 +1,5 @@
-﻿using ConDep.Dsl.Builders;
+﻿using System.Linq;
+using ConDep.Dsl.Builders;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Sequence;
 
@@ -25,6 +26,8 @@ namespace ConDep.Dsl.Execution
             _artifactDependencyHandler.PopulateWithDependencies(artifact, settings);
 
             var servers = _serverHandler.GetServers(artifact, settings);
+            settings.Config.Servers = servers.ToList();
+
             var sequenceManager = new ExecutionSequenceManager(servers, _loadBalancer);
 
             if (artifact.Dependencies != null)
