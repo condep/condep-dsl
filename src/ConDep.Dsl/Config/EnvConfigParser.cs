@@ -219,7 +219,7 @@ namespace ConDep.Dsl.Config
             if (config.PowerShell.HttpPort == null) config.PowerShell.HttpPort = 5985;
             if (config.PowerShell.HttpsPort == null) config.PowerShell.HttpsPort = 5986;
 
-            foreach (var server in config.Servers)
+            foreach (var server in config.UsingTiers ? config.Tiers.SelectMany(x => x.Servers) : config.Servers)
             {
                 if (server.Node == null)
                 {
@@ -231,28 +231,15 @@ namespace ConDep.Dsl.Config
                     server.PowerShell = config.PowerShell;
                 }
 
+                if(!server.DeploymentUser.IsDefined()) server.DeploymentUser = config.DeploymentUser;
+
                 if (server.Node.Port == null) server.Node.Port = config.Node.Port;
                 if (server.Node.TimeoutInSeconds == null) server.Node.TimeoutInSeconds = config.Node.TimeoutInSeconds;
 
                 if (server.PowerShell.HttpPort == null) server.PowerShell.HttpPort = config.PowerShell.HttpPort;
                 if (server.PowerShell.HttpsPort == null) server.PowerShell.HttpsPort = config.PowerShell.HttpsPort;
             }
-            if (config.Tiers == null)
-            {
-                foreach (var server in config.Servers.Where(server => !server.DeploymentUser.IsDefined()))
-                {
-                    server.DeploymentUser = config.DeploymentUser;
-                }
-            }
-            else
-            {
-                foreach (var server in config.Tiers.SelectMany(tier => tier.Servers.Where(server => !server.DeploymentUser.IsDefined())))
-                {
-                    server.DeploymentUser = config.DeploymentUser;
-                }
-            }
             return config;
-
         }
 
         private static MemoryStream GetMemoryStreamWithCorrectEncoding(Stream stream)

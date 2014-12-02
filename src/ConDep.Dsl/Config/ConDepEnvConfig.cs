@@ -1,5 +1,6 @@
 ﻿using System;   
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConDep.Dsl.Config
 {
@@ -34,6 +35,14 @@ namespace ConDep.Dsl.Config
         {
             get { return _powerShell; }
             set { _powerShell = value; }
+        }
+    }
+
+    public static class TiersExentsions
+    {
+        public static bool Exists(this IList<TiersConfig> tiers, string tierName)
+        {
+            return tiers.SingleOrDefault(x => x.Name.Equals(tierName, StringComparison.OrdinalIgnoreCase)) != null;
         }
     }
 

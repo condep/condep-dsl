@@ -94,6 +94,7 @@
     <Compile Include="Execution\ArtifactHandler.cs" />
     <Compile Include="Execution\ConDepNoArtifactDefinedException.cs" />
     <Compile Include="Execution\ConDepNoArtifactTierDefinedException.cs" />
+    <Compile Include="Execution\ConDepTierDoesNotExistInConfigException.cs" />
     <Compile Include="Execution\IDiscoverArtifacts.cs" />
     <Compile Include="Execution\IDiscoverServers.cs" />
     <Compile Include="Execution\IResolveArtifactDependencies.cs" />

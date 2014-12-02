@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Security;
@@ -26,16 +27,16 @@ namespace ConDep.Dsl.Execution
             {
                 if (conDepSettings.Options.Assembly == null) throw new ArgumentException("assembly");
 
+                var lbLookup = new LoadBalancerLookup(conDepSettings.Config.LoadBalancer);
+                var artifactConfigHandler = new ArtifactConfigurationHandler(new ArtifactHandler(), new ArtifactDependencyHandler(), new ServerHandler(), lbLookup.GetLoadBalancer());
+                var sequenceManager = artifactConfigHandler.CreateExecutionSequence(conDepSettings);
+
                 var clientValidator = new ClientValidator();
 
                 var serverInfoHarvester = HarvesterFactory.GetHarvester(conDepSettings);
                 var serverValidator = new RemoteServerValidator(conDepSettings.Config.Servers,
                                                                 serverInfoHarvester);
 
-                var lbLookup = new LoadBalancerLookup(conDepSettings.Config.LoadBalancer);
-
-                var artifactConfigHandler = new ArtifactConfigurationHandler(new ArtifactHandler(), new ArtifactDependencyHandler(), new ServerHandler(), lbLookup.GetLoadBalancer());
-                var sequenceManager = artifactConfigHandler.CreateExecutionSequence(conDepSettings);
 
                 if (conDepSettings.Options.DryRun)
                 {

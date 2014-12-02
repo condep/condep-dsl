@@ -14,6 +14,10 @@ namespace ConDep.Dsl.Execution
                 ValidateApplicationTier(application, settings);
 
                 var tier = application.GetType().GetCustomAttributes(typeof(TierAttribute), false).Single() as TierAttribute;
+                if (!settings.Config.Tiers.Exists(tier.TierName))
+                {
+                    throw new ConDepTierDoesNotExistInConfigException(string.Format("Tier {0} does not exist in {1}.env.config", tier.TierName, settings.Options.Environment));
+                }
                 return
                     settings.Config.Tiers.Single(x => x.Name.Equals(tier.TierName, StringComparison.OrdinalIgnoreCase))
                         .Servers;
