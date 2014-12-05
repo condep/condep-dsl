@@ -14,38 +14,50 @@ namespace ConDep.Dsl.Harvesters
         public void Harvest(ServerConfig server)
         {
             var psExecutor = new PowerShellExecutor(server) { LoadConDepModule = false };
-            var osInfo = @"$perfData = Get-WmiObject win32_perfformatteddata_perfos_system -Property SystemUpTime
-$compSystem = Get-WmiObject win32_computersystem -Property Name,SystemType
-$os = Get-WmiObject win32_operatingsystem -Property Caption,Version,BuildNumber
+            var osInfo = @"
+    $osInfo = @{}
 
-$osInfo = @{}
-$osInfo.SystemUpTime = $perfData.SystemUpTime
-$osInfo.HostName = $compSystem.Name
-$osInfo.SystemType = $compSystem.SystemType
-$osInfo.Name = $os.Caption
-$osInfo.Version = $os.Version
-$osInfo.BuildNumber = $os.BuildNumber
-$osInfo.ProgramFilesFolder = ${Env:ProgramFiles}
-$osInfo.ProgramFilesX86Folder = ${Env:ProgramFiles(x86)}
+    try {
+        $perfData = Get-WmiObject win32_perfformatteddata_perfos_system -Property SystemUpTime
+        $osInfo.SystemUpTime = $perfData.SystemUpTime
+    }
+    catch {
+        write-warning 'Failed to retreive SystemUpTime through WMI. Probably because of a bug in Windows/WMI when the server has been running close to a year without reboot.'
+    }
 
-$regKeys = @()
+    $compSystem = Get-WmiObject win32_computersystem -Property Name,SystemType
+    $os = Get-WmiObject win32_operatingsystem -Property Caption,Version,BuildNumber
 
-if(Test-Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall) {
-    $regKeys += 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+    $osInfo.HostName = $compSystem.Name
+    $osInfo.SystemType = $compSystem.SystemType
+    $osInfo.Name = $os.Caption
+    $osInfo.Version = $os.Version
+    $osInfo.BuildNumber = $os.BuildNumber
+    $osInfo.ProgramFilesFolder = ${Env:ProgramFiles}
+    $osInfo.ProgramFilesX86Folder = ${Env:ProgramFiles(x86)}
+
+    $regKeys = @()
+
+    if(Test-Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall) {
+        $regKeys += 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+    }
+
+    if(Test-Path HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall) {
+        $regKeys += 'HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
+    }
+
+    if(Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall) {
+        $regKeys += 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+    }
+
+    $packages = Get-ChildItem -Path $regKeys | Get-ItemProperty | where-object { $_.DisplayName -ne $null } | select-object -Property DisplayName,DisplayVersion | foreach{$_.DisplayName + "";"" + $_.DisplayVersion}
+    $osInfo.InstalledSoftwarePackages = $packages
+
+    return $osInfo
 }
-
-if(Test-Path HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall) {
-    $regKeys += 'HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
+catch {
+    throw 'Failed to harvest server information. Exception message: '
 }
-
-if(Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall) {
-    $regKeys += 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
-}
-
-$packages = Get-ChildItem -Path $regKeys | Get-ItemProperty | where-object { $_.DisplayName -ne $null } | select-object -Property DisplayName,DisplayVersion | foreach{$_.DisplayName + "";"" + $_.DisplayVersion}
-$osInfo.InstalledSoftwarePackages = $packages
-
-return $osInfo
 ";
 
             var osInfoResult = psExecutor.Execute(osInfo, logOutput: false).FirstOrDefault();
