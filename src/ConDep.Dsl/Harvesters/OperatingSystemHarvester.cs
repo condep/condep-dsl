@@ -54,10 +54,6 @@ namespace ConDep.Dsl.Harvesters
     $osInfo.InstalledSoftwarePackages = $packages
 
     return $osInfo
-}
-catch {
-    throw 'Failed to harvest server information. Exception message: '
-}
 ";
 
             var osInfoResult = psExecutor.Execute(osInfo, logOutput: false).FirstOrDefault();
