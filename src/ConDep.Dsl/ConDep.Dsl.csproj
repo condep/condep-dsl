@@ -73,21 +73,35 @@
       <HintPath>..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\WindowsPowerShell\3.0\System.Management.Automation.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
       <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="YamlDotNet">
+      <HintPath>..\packages\YamlDotNet.3.5.0\lib\net35\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Artifact.cs" />
     <Compile Include="ConDepInvalidEnumValueException.cs" />
     <Compile Include="ConDepNodeUrl.cs" />
     <Compile Include="Config\ConDepConfigurationException.cs" />
+    <Compile Include="Config\ConDepFileReader.cs" />
+    <Compile Include="Config\ConfigJsonSerializer.cs" />
+    <Compile Include="Config\ConfigYamlSerializer.cs" />
+    <Compile Include="Config\IHandleConfigCrypto.cs" />
+    <Compile Include="Config\ISerializerConDepConfig.cs" />
+    <Compile Include="Config\JsonConfigCrypto.cs" />
     <Compile Include="Config\JsonExtensions.cs" />
     <Compile Include="Config\ServerLoadBalancerState.cs" />
     <Compile Include="Execution\ArtifactConfigurationHandler.cs" />

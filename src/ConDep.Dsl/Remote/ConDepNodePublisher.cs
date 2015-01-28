@@ -17,9 +17,6 @@ namespace ConDep.Dsl.Remote
 {
     public class ConDepNodePublisher
     {
-        private const string APP_ID = "{bdffda97-dafa-4213-961b-96686a4ce9c2}";
-        private const string CERT_PASS = "open source forever!";
-        private const string CERT_THUMBPRINT = "03deb9c0ffd578dd6255b52132dcc2dd5612940c";
         private readonly string _srcPath;
         private readonly string _destPath;
         private readonly ConDepNodeUrl _url;
@@ -33,10 +30,14 @@ namespace ConDep.Dsl.Remote
 
         public void Execute(ServerConfig server)
         {
-            ConfigureSsl(server);
             DeployNodeModuleScript(server);
             var nodeState = GetNodeState(server);
 
+            Logger.WithLogSection("Node State", () =>
+            {
+                Logger.Info("Running : " + nodeState.IsNodeServiceRunning);
+                Logger.Info("Need Update : " + nodeState.NeedNodeDeployment);
+            });
             if(nodeState.NeedNodeDeployment)
             {
                 DeployNode(server);
@@ -44,63 +45,6 @@ namespace ConDep.Dsl.Remote
             else if (!nodeState.IsNodeServiceRunning)
             {
                 StartNode(server);
-            }
-        }
-
-        private void ConfigureSsl(ServerConfig server)
-        {
-            var resource = PfxInstallerResource.PfxInstallerScript;
-            var script = ConDepResourceFiles.GetResourceText(GetType().Assembly, resource);
-
-            var dstPathDos = Path.Combine(server.GetServerInfo().TempFolderDos, "node.con-dep.net.pfx");
-            var dstPathPs = Path.Combine(server.GetServerInfo().TempFolderPowerShell, "node.con-dep.net.pfx");
-
-            var certBytes = ConDepResourceFiles.GetResourceBytes(GetType().Assembly,
-                new ConDepResource
-                {
-                    Resource = "node.con-dep.net.pfx",
-                    Namespace = typeof (ConDepResourceFiles).Namespace
-                });
-
-            var executor = new PowerShellExecutor(server) { LoadConDepModule = false };
-
-            var scriptResult = executor.Execute(string.Format(@"
-$conDepReturnValues = New-Object PSObject -Property @{{         
-    ConDepResult    = $false 
-}}     
-
-$cert = Get-ChildItem Cert:\LocalMachine\My\{0} -ErrorAction SilentlyContinue
-$conDepReturnValues.ConDepResult = !($cert -eq $null)
-return $conDepReturnValues
-", CERT_THUMBPRINT), logOutput:false);
-
-            var certExist = false;
-            foreach (var psObject in scriptResult)
-            {
-                if (psObject.ConDepResult == null) continue;
-
-                if (psObject.ConDepResult)
-                {
-                    certExist = true;
-                }
-            }
-
-            if (!certExist)
-            {
-                Logger.Info("No SSL cert for ConDepNode found. Publishing now.");
-                PublishFile(certBytes, dstPathPs, server);
-
-                executor.Execute(script, new List<CommandParameter>
-                {
-                    new CommandParameter("filePath", dstPathDos),
-                    new CommandParameter("password", CERT_PASS),
-                });
-                var cmd = string.Format(@"
-$certThumbprint = ""{1}""
-$appId = ""{2}""
-netsh http add sslcert ipport=0.0.0.0:{0} certhash=$certThumbprint appid=$appId", _url.Port, CERT_THUMBPRINT, APP_ID);
-                executor.Execute(cmd, logOutput: false);
-                Logger.Info("SSL cert for ConDepNode published.");
             }
         }
 
@@ -126,7 +70,7 @@ netsh http add sslcert ipport=0.0.0.0:{0} certhash=$certThumbprint appid=$appId"
             var nodeCheckResult =
                 nodeCheckExecutor.Execute(
                     string.Format("Get-ConDepNodeState \"{0}\" \"{1}\"", _destPath, FileHashGenerator.GetFileHash(_srcPath)),
-                    logOutput: false);
+                    logOutput: true);
 
             return nodeCheckResult.Single(psObject => psObject.ConDepResult != null).ConDepResult;
         }

@@ -49,23 +49,6 @@ namespace ConDep.Dsl.Security
             return new EncryptedValue(Convert.ToBase64String(aes.IV), Convert.ToBase64String(encryptedBytes));
         }
 
-        public EncryptedValue Encrypt(string key, string value)
-        {
-            var aes = new AesManaged
-            {
-                Key = Convert.FromBase64String(_key),
-                Mode = CipherMode.CBC,
-                Padding = PaddingMode.ISO10126
-            };
-
-            var valueBytes = Encoding.UTF8.GetBytes(value);
-            var encryptor = aes.CreateEncryptor();
-
-            var encryptedBytes = encryptor.TransformFinalBlock(valueBytes, 0, valueBytes.Length);
-
-            return new EncryptedValue(Convert.ToBase64String(aes.IV), Convert.ToBase64String(encryptedBytes));
-        }
-
         public string Decrypt(EncryptedValue encryptedValue)
         {
             var aes = new AesManaged

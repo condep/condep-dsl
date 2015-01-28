@@ -74,7 +74,7 @@ namespace ConDep.Dsl.Remote
                 var ps = PowerShell.Create();
                 ps.Runspace = runspace;
 
-                using (var pipeline = ps.Runspace.CreatePipeline("set-executionpolicy remotesigned -force"))
+                using (var pipeline = ps.Runspace.CreatePipeline("set-executionpolicy remotesigned -force; $VerbosePreference = 'continue'; $DebugPreference = 'continue'"))
                 {
                     ConfigureConDepModule(pipeline);
                     ConfigureConDepNodeModule(pipeline);

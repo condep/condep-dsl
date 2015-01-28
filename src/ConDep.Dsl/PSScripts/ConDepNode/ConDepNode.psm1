@@ -6,12 +6,15 @@ function Get-ConDepNodeState([string]$path, $hash) {
     $conDepReturnValues = New-Object PSObject -Property @{         
         ConDepResult    = New-Object PSObject -Property @{
 			IsNodeServiceRunning = $false
-			NeedNodeDeployment = $true
+			NeedNodeDeployment = $false
         }                 
     }                     
 
     if(Test-Path $path) {
 		$localHash = Get-ConDepFileHash $path
+		write-verbose "Node Hash Client : $hash"
+		write-verbose "Node Hash Server : $localHash"
+
 		if($localHash -ne $hash) {
 			$conDepReturnValues.ConDepResult.NeedNodeDeployment = $true
 			return $conDepReturnValues
@@ -24,10 +27,9 @@ function Get-ConDepNodeState([string]$path, $hash) {
 			$conDepReturnValues.ConDepResult.IsNodeServiceRunning = ($wmiService.State -eq "Running")
 			return $conDepReturnValues
 		}
-
-        $conDepReturnValues.ConDepResult.NeedNodeDeployment = $true
     }
 
+    $conDepReturnValues.ConDepResult.NeedNodeDeployment = $true
     return $conDepReturnValues    
 }
 

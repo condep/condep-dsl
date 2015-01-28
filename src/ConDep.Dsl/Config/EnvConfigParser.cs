@@ -1,41 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Management.Automation;
-using ConDep.Dsl.Logging;
-using ConDep.Dsl.Security;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace ConDep.Dsl.Config
 {
     public class EnvConfigParser
     {
-        private JsonSerializerSettings _jsonSettings;
+        private readonly ISerializerConDepConfig _configSerializer;
+
+        public EnvConfigParser(ISerializerConDepConfig configSerializer)
+        {
+            _configSerializer = configSerializer;
+        }
 
         public void UpdateConfig(string filePath, dynamic config)
         {
-            File.WriteAllText(filePath, ConvertToJsonText(config));
-        }
-
-        public string ConvertToJsonText(dynamic config)
-        {
-            return JsonConvert.SerializeObject(config, JsonSettings);
-        }
-
-        public bool Encrypted(string jsonConfig, out dynamic jsonModel)
-        {
-            jsonModel = JObject.Parse(jsonConfig);
-
-            var ivTokens = ((JObject)jsonModel).FindEncryptedTokens();
-
-            return ivTokens
-                .Select(token => token.ToObject<EncryptedValue>())
-                .Any(value => 
-                    value != null && 
-                    !string.IsNullOrWhiteSpace(value.IV) && 
-                    !string.IsNullOrWhiteSpace(value.Value)
-                 );
+            File.WriteAllText(filePath, _configSerializer.Serialize(config));
         }
 
         public string GetConDepConfigFile(string env, string directory = null)
@@ -45,8 +25,9 @@ namespace ConDep.Dsl.Config
                 throw new DirectoryNotFoundException(string.Format("Tried to find ConDep config files in directory [{0}], but directory does not exist.", dir));
 
             var dirInfo = new DirectoryInfo(dir);
-            var fileName = string.Format("{0}.env.json", env);
-            var configFiles = dirInfo.GetFiles(fileName);
+            var fileName = string.Format("{0}.env.*", env);
+            var configFiles = dirInfo.GetFiles(fileName, SearchOption.TopDirectoryOnly);
+            configFiles = configFiles.Where(x => ConfigHandler.SupportedFileExtensions.Exists(ext => ext.Equals(x.Extension))).ToArray();
 
             if (!configFiles.Any())
                 throw new FileNotFoundException(string.Format("No ConDep configuration file found in directory [{0}] with name {1}", dir, fileName));
@@ -61,7 +42,8 @@ namespace ConDep.Dsl.Config
                 throw new DirectoryNotFoundException(string.Format("Tried to find ConDep config files in directory [{0}], but directory does not exist.", dir));
 
             var dirInfo = new DirectoryInfo(dir);
-            var configFiles = dirInfo.GetFiles("*.env.json");
+            var configFiles = dirInfo.GetFiles("*.env.*", SearchOption.TopDirectoryOnly);
+            configFiles = configFiles.Where(x => ConfigHandler.SupportedFileExtensions.Exists(ext => ext.Equals(x.Extension))).ToArray();
 
             if (!configFiles.Any())
                 throw new FileNotFoundException(string.Format("No ConDep configuration files found in directory [{0}]", dir));
@@ -83,129 +65,25 @@ namespace ConDep.Dsl.Config
             }
         }
 
-        public string GetConDepConfigAsJsonText(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException(string.Format("[{0}] not found.", filePath), filePath);
-            }
-
-            using (var fileStream = File.OpenRead(filePath))
-            {
-                using (var memStream = GetMemoryStreamWithCorrectEncoding(fileStream))
-                {
-                    using (var reader = new StreamReader(memStream))
-                    {
-                        return reader.ReadToEnd();
-                    }
-                }
-            }
-        }
-
-        private JsonSerializerSettings JsonSettings
-        {
-            get
-            {
-                return _jsonSettings ?? (_jsonSettings = new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        Formatting = Formatting.Indented,
-                    });
-            }
-        }
-
-        public void DecryptFile(string file, JsonPasswordCrypto crypto)
-        {
-            var json = GetConDepConfigAsJsonText(file);
-            dynamic config;
-
-            if (!Encrypted(json, out config))
-            {
-                throw new ConDepCryptoException("Unable to decrypt. No content in file [{0}] is encrypted.");                
-            }
-
-            DecryptJsonConfig(config, crypto);
-            UpdateConfig(file, config);
-        }
-
-        public void DecryptJsonConfig(dynamic config, JsonPasswordCrypto crypto)
-        {
-            ((JObject)config).FindEncryptedTokens()
-                .ForEach(x => DecryptJsonValue(crypto, x));
-        }
-
-        private void DecryptJsonValue(JsonPasswordCrypto crypto, dynamic originalValue)
-        {
-            var valueToDecrypt = new EncryptedValue(originalValue.IV.Value, originalValue.Value.Value);
-            var decryptedValue = crypto.Decrypt(valueToDecrypt);
-            JObject valueToReplace = originalValue;
-            valueToReplace.Replace(decryptedValue);
-        }
-
-        public void EncryptFile(string file, JsonPasswordCrypto crypto)
-        {
-            var json = GetConDepConfigAsJsonText(file);
-            dynamic config;
-
-            if (Encrypted(json, out config))
-                throw new ConDepCryptoException(string.Format("File [{0}] already encrypted.", file));
-
-            EncryptJsonConfig(config, crypto);
-            UpdateConfig(file, config);
-        }
-
-        public void EncryptJsonConfig(dynamic config, JsonPasswordCrypto crypto)
-        {
-            ((JObject) config).FindTaggedTokens("encrypt")
-                .ForEach(x => EncryptTaggedValue(crypto, x));
-
-            var passwordTokens = ((JObject) config).SelectTokens("$..Password").OfType<JValue>().ToList();
-            foreach (var token in passwordTokens)
-            {
-                EncryptJsonValue(crypto, token);
-            }
-        }
-
-        private static void EncryptJsonValue(JsonPasswordCrypto crypto, JValue valueToEncrypt)
-        {
-            var value = valueToEncrypt.Value<string>();
-            var encryptedValue = crypto.Encrypt(value);
-            valueToEncrypt.Replace(JObject.FromObject(encryptedValue));
-        }
-
-        private static void EncryptTaggedValue(JsonPasswordCrypto crypto, dynamic valueToEncrypt)
-        {
-            var value = valueToEncrypt.encrypt.Value;
-            var encryptedValue = crypto.Encrypt("", value);
-            valueToEncrypt.Replace(JObject.FromObject(encryptedValue));
-        }
-
         public ConDepEnvConfig GetTypedEnvConfig(Stream stream, string cryptoKey)
         {
-            ConDepEnvConfig config;
-            using (var memStream = GetMemoryStreamWithCorrectEncoding(stream))
-            {
-                using (var reader = new StreamReader(memStream))
-                {
-                    var json = reader.ReadToEnd();
-                    dynamic jsonModel;
-                    if (Encrypted(json, out jsonModel))
-                    {
-                        if (string.IsNullOrWhiteSpace(cryptoKey))
-                        {
-                            throw new ConDepCryptoException(
-                                "ConDep configuration is encrypted, so a decryption key is needed. Specify using -k switch.");
-                        }
-                        var crypto = new JsonPasswordCrypto(cryptoKey);
-                        DecryptJsonConfig(jsonModel, crypto);
-                        config = ((JObject) jsonModel).ToObject<ConDepEnvConfig>();
-                    }
-                    else
-                    {
-                        config = JsonConvert.DeserializeObject<ConDepEnvConfig>(json, JsonSettings);
-                    }
-                }
-            }
+            ConDepEnvConfig config = _configSerializer.DeSerialize(stream);
+
+            //if (Encrypted(json, out jsonModel))
+            //{
+            //    if (string.IsNullOrWhiteSpace(cryptoKey))
+            //    {
+            //        throw new ConDepCryptoException(
+            //            "ConDep configuration is encrypted, so a decryption key is needed. Specify using -k switch.");
+            //    }
+            //    var crypto = new JsonPasswordCrypto(cryptoKey);
+            //    DecryptJsonConfig(jsonModel, crypto);
+            //    config = ((JObject)jsonModel).ToObject<ConDepEnvConfig>();
+            //}
+            //else
+            //{
+            //    config = JsonConvert.DeserializeObject<ConDepEnvConfig>(json, JsonSettings);
+            //}
 
             if (config.Servers != null && config.Tiers != null)
                 throw new ConDepConfigurationException(
@@ -240,15 +118,6 @@ namespace ConDep.Dsl.Config
                 if (server.PowerShell.HttpsPort == null) server.PowerShell.HttpsPort = config.PowerShell.HttpsPort;
             }
             return config;
-        }
-
-        private static MemoryStream GetMemoryStreamWithCorrectEncoding(Stream stream)
-        {
-            using (var r = new StreamReader(stream, true))
-            {
-                var encoding = r.CurrentEncoding;
-                return new MemoryStream(encoding.GetBytes(r.ReadToEnd()));
-            }
         }
     }
 }
