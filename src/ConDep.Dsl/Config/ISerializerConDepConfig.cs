@@ -4,8 +4,8 @@ namespace ConDep.Dsl.Config
 {
     public interface ISerializerConDepConfig
     {
-        string Serialize(dynamic config);
+        string Serialize(ConDepEnvConfig config);
         ConDepEnvConfig DeSerialize(Stream stream);
-        ConDepEnvConfig DeSerialize(string json);
+        ConDepEnvConfig DeSerialize(string config);
     }
 }

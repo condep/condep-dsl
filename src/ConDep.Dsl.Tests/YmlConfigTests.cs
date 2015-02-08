@@ -1,9 +1,8 @@
 ﻿using System.IO;
 using ConDep.Dsl.Config;
+using ConDep.Dsl.Security;
 using NUnit.Framework;
-using YamlDotNet.Dynamic;
 using YamlDotNet.RepresentationModel;
-using YamlDotNet.Serialization;
 
 namespace ConDep.Dsl.Tests
 {
@@ -17,11 +16,9 @@ namespace ConDep.Dsl.Tests
   Password : verySecureP@ssw0rd
   Mode : Sticky
   SuspendMode : Graceful
-
-  CustomValues :
+  CustomConfig :
     - Key : AwsSuspendWaitTime
       Value : 30
-
     - Key : AwsActivateWaitTime
       Value : 40
 
@@ -73,6 +70,9 @@ Servers :
 
 - Name : jat-web02
   LoadBalancerFarm : farm1
+  DeploymentUser :
+    UserName : torresdal\\asdfasdf
+    Password : lakjlskjdfkwe
   WebSites : 
     - Name : WebSite1
       Bindings :
@@ -114,27 +114,110 @@ DeploymentUser :
 OperationsConfig :
   NServiceBusOperation : 
     ServiceUserName : torresdal\\nservicebususer
-    ServicePassword : verySecureP@ssw0rd
+    ServicePassword : !!encrypt verySecureP@ssw0rd
 
   SomeOtherOperation :
     SomeOtherSetting1 : asdfasdf
     SomeOtherSetting2 : 34tsdfg";
 
         [Test]
-        public void TestThat_()
+        public void TestThat_YamlCanBeLoadedIntoModel()
         {
-            var reader = new StringReader(_yml);
+            var key = JsonPasswordCrypto.GenerateKey(256);
+            var serializer = new ConfigYamlSerializer(new YamlConfigCrypto(key));
 
-            dynamic dynYml = new DynamicYaml(reader);
-            var lb = dynYml.LoadBalancer;
+            var condepConfig = serializer.DeSerialize(_yml);
         }
 
         [Test]
-        public void TestThat_LoadYamlIntoModel()
+        public void TestThat_CanEncryptYaml()
         {
-            var reader = new StringReader(_yml);
-            var deserialize = new Deserializer(ignoreUnmatched: true);
-            var config = deserialize.Deserialize<ConDepEnvConfig>(reader);
+            var key = JsonPasswordCrypto.GenerateKey(256);
+            var crypto = new YamlConfigCrypto(key);
+
+            var encryptedYml = crypto.Encrypt(_yml);
+            Assert.That(crypto.IsEncrypted(encryptedYml));
+        }
+
+        [Test]
+        public void TestThat_CanDecryptYaml()
+        {
+            var key = JsonPasswordCrypto.GenerateKey(256);
+            var crypto = new YamlConfigCrypto(key);
+
+            var encryptedYml = crypto.Encrypt(_yml);
+            Assert.That(crypto.IsEncrypted(encryptedYml));
+
+            var decryptedYml = crypto.Decrypt(encryptedYml);
+            Assert.That(!crypto.IsEncrypted(decryptedYml));
+        }
+
+        [Test]
+        public void TestThat_CanEncryptPassword()
+        {
+            string yml = @"UserName : Administrator
+Password : !!encrypt SomePassword";
+
+            var key = JsonPasswordCrypto.GenerateKey(256);
+            var crypto = new YamlConfigCrypto(key);
+
+            var encryptedYml = crypto.Encrypt(yml);
+            Assert.That(crypto.IsEncrypted(encryptedYml));
+        }
+
+        [Test]
+        public void TestThat_CanDecryptPassword()
+        {
+            var key = "RYqIgFuJQA5E9LeKRY+F7uJKD7qjs97jcsJ0IYrOAOs=";
+            string yml = @"UserName: Administrator
+Password:
+    IV: BYmlG/ynplh5JZ3mZTbfaQ==
+    Value: QAjlFzJPk1q5+qnqaEybpQ==";
+
+            var crypto = new YamlConfigCrypto(key);
+            Assert.That(crypto.IsEncrypted(yml));
+
+            var decryptedYml = crypto.Decrypt(yml);
+            Assert.That(!crypto.IsEncrypted(decryptedYml));
+
+            using (var reader = new StringReader(decryptedYml))
+            {
+                var stream = new YamlStream();
+                stream.Load(reader);
+
+                var node = ((YamlMappingNode) stream.Documents[0].RootNode).Children[new YamlScalarNode("Password")] as YamlScalarNode;
+                Assert.That(node.Value, Is.EqualTo("SomePassword"));
+            }
+        }
+
+        [Test]
+        public void TestThat_CanEncryptTaggedForEncryption()
+        {
+            string yml = @"SomeKey : Administrator
+SomeSensitiveKey : !!encrypt SomeSensitiveValue";
+
+            var key = JsonPasswordCrypto.GenerateKey(256);
+            var crypto = new YamlConfigCrypto(key);
+
+            var encryptedYml = crypto.Encrypt(yml);
+            Assert.That(crypto.IsEncrypted(encryptedYml));
+        }
+
+        [Test]
+        public void TestThat_CanDecryptTaggedForEncryption()
+        {
+            var key = "fbxgmcR6eyxA1DIDHbFj2H3HNWopsjYL1hhx3DUALAk=";
+            string yml = @"SomeKey: Administrator
+SomeSensitiveKey:
+    IV: QQm4IgHsOVLyoA0izfzfGw==
+    Value: tBkEGpVzcNpommpdPWVa8X9QQJkaTnFSW0Q5yGJicL8=";
+
+            var crypto = new YamlConfigCrypto(key);
+            Assert.That(crypto.IsEncrypted(yml));
+
+            var decryptedYml = crypto.Decrypt(yml);
+            Assert.That(!crypto.IsEncrypted(decryptedYml));
+
         }
     }
 }

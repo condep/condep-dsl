@@ -1,9 +1,11 @@
 namespace ConDep.Dsl.Config
 {
-    public interface IHandleConfigCrypto<T>
+    public interface IHandleConfigCrypto
     {
-        T Decrypt(T config);
-        T Encrypt(T config);
+        string Decrypt(string config);
+        void DecryptFile(string filePath);
+        string Encrypt(string config);
+        void EncryptFile(string filePath);
         bool IsEncrypted(string config);
     }
 }

@@ -1,11 +1,13 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using ConDep.Dsl.Security;
 using Newtonsoft.Json.Linq;
 
 namespace ConDep.Dsl.Config
 {
-    public class JsonConfigCrypto : IHandleConfigCrypto<JObject>
+    public class JsonConfigCrypto : IHandleConfigCrypto
     {
+        private readonly ISerializerConDepConfig _serializer;
         private readonly JsonPasswordCrypto _valueHandler;
 
         public JsonConfigCrypto(string key)
@@ -13,25 +15,80 @@ namespace ConDep.Dsl.Config
             _valueHandler = new JsonPasswordCrypto(key);
         }
 
-        public JObject Decrypt(JObject config)
+        public string Decrypt(string config)
         {
-            config.FindEncryptedTokens()
-                .ForEach(x => DecryptJsonValue(_valueHandler, x));
-
-            return config;
+            var jsonConfig = JToken.Parse(config);
+            Decrypt(jsonConfig);
+            return jsonConfig.ToString();
         }
 
-        public JObject Encrypt(JObject config)
+        public void DecryptFile(string filePath)
         {
-            config.FindTaggedTokens("encrypt")
+            var json = GetConDepConfigAsJsonText(filePath);
+
+            if (!IsEncrypted(json))
+            {
+                throw new ConDepCryptoException("Unable to decrypt. No content in file [{0}] is encrypted.");
+            }
+
+            var decryptedJson = Decrypt(json);
+            UpdateConfig(filePath, decryptedJson);
+        }
+
+        private void Decrypt(JToken token)
+        {
+            token.FindEncryptedTokens()
+                .ForEach(x => DecryptJsonValue(_valueHandler, x));
+        }
+
+
+        private void UpdateConfig(string filePath, string json)
+        {
+            File.WriteAllText(filePath, json);
+        }
+
+        private string GetConDepConfigAsJsonText(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException(string.Format("[{0}] not found.", filePath), filePath);
+            }
+
+            using (var fileStream = File.OpenRead(filePath))
+            {
+                using (var memStream = GetMemoryStreamWithCorrectEncoding(fileStream))
+                {
+                    using (var reader = new StreamReader(memStream))
+                    {
+                        return reader.ReadToEnd();
+                    }
+                }
+            }
+        }
+        public string Encrypt(string config)
+        {
+            var jsonConfig = JToken.Parse(config);
+
+            jsonConfig.FindTaggedTokens("encrypt")
                 .ForEach(x => EncryptTaggedValue(_valueHandler, x));
 
-            var passwordTokens = config.SelectTokens("$..Password").OfType<JValue>().ToList();
+            var passwordTokens = jsonConfig.SelectTokens("$..Password").OfType<JValue>().ToList();
             foreach (var token in passwordTokens)
             {
                 EncryptJsonValue(_valueHandler, token);
             }
-            return config;
+            return jsonConfig.ToString();
+        }
+
+        public void EncryptFile(string filePath)
+        {
+            var json = GetConDepConfigAsJsonText(filePath);
+
+            if (IsEncrypted(json))
+                throw new ConDepCryptoException(string.Format("File [{0}] already encrypted.", filePath));
+
+            var encryptedJson = Encrypt(json);
+            UpdateConfig(filePath, encryptedJson);
         }
 
         public bool IsEncrypted(string jsonConfig)
@@ -47,6 +104,15 @@ namespace ConDep.Dsl.Config
                     !string.IsNullOrWhiteSpace(value.IV) &&
                     !string.IsNullOrWhiteSpace(value.Value)
                 );
+        }
+
+        private static MemoryStream GetMemoryStreamWithCorrectEncoding(Stream stream)
+        {
+            using (var r = new StreamReader(stream, true))
+            {
+                var encoding = r.CurrentEncoding;
+                return new MemoryStream(encoding.GetBytes(r.ReadToEnd()));
+            }
         }
 
         private static void DecryptJsonValue(JsonPasswordCrypto cryptoHandler, dynamic originalValue)

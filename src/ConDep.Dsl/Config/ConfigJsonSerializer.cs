@@ -1,5 +1,4 @@
 using System.IO;
-using ConDep.Dsl.Security;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -7,17 +6,19 @@ namespace ConDep.Dsl.Config
 {
     public class ConfigJsonSerializer : ISerializerConDepConfig
     {
-        private readonly IHandleConfigCrypto<JObject> _crypto;
+        private readonly IHandleConfigCrypto _crypto;
         private JsonSerializerSettings _jsonSettings;
 
-        public ConfigJsonSerializer(IHandleConfigCrypto<JObject> crypto )
+        public ConfigJsonSerializer(IHandleConfigCrypto crypto )
         {
             _crypto = crypto;
         }
 
-        public string Serialize(dynamic config)
+        public string Serialize(ConDepEnvConfig config)
         {
-            return JsonConvert.SerializeObject(config, JsonSettings);
+            var json = JsonConvert.SerializeObject(config, JsonSettings);
+            var encryptedJson = _crypto.Encrypt(json);
+            return encryptedJson;
         }
 
         public ConDepEnvConfig DeSerialize(Stream stream)
@@ -38,8 +39,7 @@ namespace ConDep.Dsl.Config
         {
             if (_crypto.IsEncrypted(json))
             {
-                var jsonModel = _crypto.Decrypt(JObject.Parse(json));
-                return jsonModel.ToObject<ConDepEnvConfig>();
+                json = _crypto.Decrypt(json);
             }
             return JsonConvert.DeserializeObject<ConDepEnvConfig>(json, JsonSettings);
         }

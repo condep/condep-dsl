@@ -1,12 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ConDep.Dsl.Config
 {
     public static class ConfigHandler
     {
         public static List<string> SupportedFileExtensions = new List<string> { ".json", ".yml", ".yaml" };
+
+        public static string GetConDepConfigFile(string env, string directory = null)
+        {
+            var dir = string.IsNullOrWhiteSpace(directory) ? Directory.GetCurrentDirectory() : directory;
+            if (!Directory.Exists(dir))
+                throw new DirectoryNotFoundException(string.Format("Tried to find ConDep config files in directory [{0}], but directory does not exist.", dir));
+
+            var dirInfo = new DirectoryInfo(dir);
+            var fileName = string.Format("{0}.env.*", env);
+            var configFiles = dirInfo.GetFiles(fileName, SearchOption.TopDirectoryOnly);
+            configFiles = configFiles.Where(x => ConfigHandler.SupportedFileExtensions.Exists(ext => ext.Equals(x.Extension))).ToArray();
+
+            if (!configFiles.Any())
+                throw new FileNotFoundException(string.Format("No ConDep configuration file found in directory [{0}] with name {1}", dir, fileName));
+
+            return configFiles.Single().FullName;
+        }
+
+        public static IEnumerable<string> GetConDepConfigFiles(string directory = null)
+        {
+            var dir = string.IsNullOrWhiteSpace(directory) ? Directory.GetCurrentDirectory() : directory;
+            if (!Directory.Exists(dir))
+                throw new DirectoryNotFoundException(string.Format("Tried to find ConDep config files in directory [{0}], but directory does not exist.", dir));
+
+            var dirInfo = new DirectoryInfo(dir);
+            var configFiles = dirInfo.GetFiles("*.env.*", SearchOption.TopDirectoryOnly);
+            configFiles = configFiles.Where(x => ConfigHandler.SupportedFileExtensions.Exists(ext => ext.Equals(x.Extension))).ToArray();
+
+            if (!configFiles.Any())
+                throw new FileNotFoundException(string.Format("No ConDep configuration files found in directory [{0}]", dir));
+
+            return configFiles.Select(x => x.FullName);
+        }
 
         public static ConDepEnvConfig GetEnvConfig(ConDepSettings settings)
         {
@@ -23,7 +57,7 @@ namespace ConDep.Dsl.Config
             return envConfig;
         }
 
-        private static ISerializerConDepConfig ResolveConfigParser(ConDepSettings settings, out string filePath)
+        public static ISerializerConDepConfig ResolveConfigParser(ConDepSettings settings, out string filePath)
         {
             var searchDir = Path.GetDirectoryName(settings.Options.Assembly.Location);
             var searchPattern = string.Format("{0}.env.*", settings.Options.Environment);
@@ -46,13 +80,40 @@ namespace ConDep.Dsl.Config
 
             filePath = file.FullName;
 
-            switch (file.Extension.ToLower())
+            return ResolveConfigParser(filePath, settings.Options.CryptoKey);
+        }
+
+        public static ISerializerConDepConfig ResolveConfigParser(string filePath, string cryptoKey)
+        {
+            if (!File.Exists(filePath)) throw new FileNotFoundException(string.Format("File [{0}] not found.", filePath));
+
+            var fileInfo = new FileInfo(filePath);
+
+            switch (fileInfo.Extension.ToLower())
             {
                 case ".json":
-                    return new ConfigJsonSerializer(new JsonConfigCrypto(settings.Options.CryptoKey));
+                    return new ConfigJsonSerializer(new JsonConfigCrypto(cryptoKey));
                 case ".yml":
                 case ".yaml":
-                    return new ConfigYamlSerializer();
+                    return new ConfigYamlSerializer(new JsonConfigCrypto(cryptoKey));
+                default:
+                    throw new FileNotFoundException();
+            }
+        }
+
+        public static IHandleConfigCrypto ResolveConfigCrypto(string filePath, string cryptoKey)
+        {
+            if (!File.Exists(filePath)) throw new FileNotFoundException(string.Format("File [{0}] not found.", filePath));
+
+            var fileInfo = new FileInfo(filePath);
+
+            switch (fileInfo.Extension.ToLower())
+            {
+                case ".json":
+                    return new JsonConfigCrypto(cryptoKey);
+                case ".yml":
+                case ".yaml":
+                    return new YamlConfigCrypto(cryptoKey);
                 default:
                     throw new FileNotFoundException();
             }

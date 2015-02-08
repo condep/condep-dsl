@@ -2,7 +2,6 @@
 using System.Text;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Security;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System.Linq;
 
@@ -451,41 +450,29 @@ namespace ConDep.Dsl.Tests
             string deploymentPassword = config.DeploymentUser.Password;
             string lbPassword = config.LoadBalancer.Password;
 
-            var key = JsonPasswordCrypto.GenerateKey(256);
-            var crypto = new JsonPasswordCrypto(key);
-            var encryptedJson = cryptoHandler.Encrypt(JObject.Parse(_json));
+            var encryptedJson = cryptoHandler.Encrypt(_json);
 
             //parser.EncryptJsonConfig(config, crypto);
 
             //var encryptedJson = parser.ConvertToJsonText(config);
-            Assert.That(cryptoHandler.IsEncrypted(encryptedJson.ToString()), Is.True);
+            Assert.That(cryptoHandler.IsEncrypted(encryptedJson), Is.True);
 
-            var decryptedConfig = serializer.DeSerialize(encryptedJson.ToString());
+            var decryptedConfig = serializer.DeSerialize(encryptedJson);
 
             Assert.That(decryptedConfig.DeploymentUser.Password, Is.EqualTo(deploymentPassword));
             Assert.That(decryptedConfig.LoadBalancer.Password, Is.EqualTo(lbPassword));
         }
 
-        //[Test]
-        //public void TestThatEncryptTagGetsEncrypted()
-        //{
-        //    var parser = new EnvConfigParser();
+        [Test]
+        public void TestThatEncryptTagGetsEncrypted()
+        {
+            var crypto = new JsonConfigCrypto(_cryptoKey);
+            var encryptedJson = crypto.Encrypt(_encryptJson);
 
-        //    dynamic config;
-        //    parser.Encrypted(_encryptJson, out config);
+            var decryptedJson = crypto.Decrypt(encryptedJson);
 
-        //    var key = JsonPasswordCrypto.GenerateKey(256);
-        //    var crypto = new JsonPasswordCrypto(key);
-        //    parser.EncryptJsonConfig(config, crypto);
-
-        //    var encryptedJson = parser.ConvertToJsonText(config);
-        //    //Assert.That(parser.Encrypted(encryptedJson, out config), Is.True);
-
-        //    //using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(encryptedJson)))
-        //    //{
-        //    //    var decryptedConfig = parser.GetTypedEnvConfig(memStream, key);
-        //    //    Assert.That(decryptedConfig.DeploymentUser.Password, Is.EqualTo(password));
-        //    //}
-        //}
+            var serializer = new ConfigJsonSerializer(crypto);
+            serializer.DeSerialize(decryptedJson);
+        }
     }
 }

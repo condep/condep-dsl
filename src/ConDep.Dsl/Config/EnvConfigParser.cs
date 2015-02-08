@@ -18,40 +18,6 @@ namespace ConDep.Dsl.Config
             File.WriteAllText(filePath, _configSerializer.Serialize(config));
         }
 
-        public string GetConDepConfigFile(string env, string directory = null)
-        {
-            var dir = string.IsNullOrWhiteSpace(directory) ? Directory.GetCurrentDirectory() : directory;
-            if (!Directory.Exists(dir))
-                throw new DirectoryNotFoundException(string.Format("Tried to find ConDep config files in directory [{0}], but directory does not exist.", dir));
-
-            var dirInfo = new DirectoryInfo(dir);
-            var fileName = string.Format("{0}.env.*", env);
-            var configFiles = dirInfo.GetFiles(fileName, SearchOption.TopDirectoryOnly);
-            configFiles = configFiles.Where(x => ConfigHandler.SupportedFileExtensions.Exists(ext => ext.Equals(x.Extension))).ToArray();
-
-            if (!configFiles.Any())
-                throw new FileNotFoundException(string.Format("No ConDep configuration file found in directory [{0}] with name {1}", dir, fileName));
-
-            return configFiles.Single().FullName;
-        }
-
-        public IEnumerable<string> GetConDepConfigFiles(string directory = null)
-        {
-            var dir = string.IsNullOrWhiteSpace(directory) ? Directory.GetCurrentDirectory() : directory;
-            if (!Directory.Exists(dir))
-                throw new DirectoryNotFoundException(string.Format("Tried to find ConDep config files in directory [{0}], but directory does not exist.", dir));
-
-            var dirInfo = new DirectoryInfo(dir);
-            var configFiles = dirInfo.GetFiles("*.env.*", SearchOption.TopDirectoryOnly);
-            configFiles = configFiles.Where(x => ConfigHandler.SupportedFileExtensions.Exists(ext => ext.Equals(x.Extension))).ToArray();
-
-            if (!configFiles.Any())
-                throw new FileNotFoundException(string.Format("No ConDep configuration files found in directory [{0}]", dir));
-
-            return configFiles.Select(x => x.FullName);
-        }
-
-
         public ConDepEnvConfig GetTypedEnvConfig(string filePath, string cryptoKey)
         {
             if (!File.Exists(filePath))
