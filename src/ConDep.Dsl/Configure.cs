@@ -55,6 +55,12 @@ namespace ConDep.Dsl
             throw new Exception(string.Format("Type {0} not currently supported.", remote.GetType().Name));
         }
 
+        public static void Operation(IOfferRemoteOperations remote, RemoteCompositeOperation operation)
+        {
+            var seqContainer = remote as RemoteCompositeBuilder;
+            seqContainer.CompositeSequence.NewCompositeSequence(operation);
+        }
+
 
         public static void Operation(IOfferRemoteInstallation installation, IExecuteRemotely operation)
         {
