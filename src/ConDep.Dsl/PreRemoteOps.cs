@@ -28,12 +28,35 @@ namespace ConDep.Dsl
                     //Logger.WithLogSection("Copying internal ConDep scripts", () => scriptPublisher.PublishDslScripts(server));
 
                     PublishConDepNode(server, settings);
-
+                    InstallChocolatey(server, settings);
+                    
                     var scriptPublisher = new PowerShellScriptPublisher(settings);
                     Logger.WithLogSection("Copying external scripts", () => scriptPublisher.PublishScripts(server));
                     Logger.WithLogSection("Copying remote helper assembly", () => scriptPublisher.PublishRemoteHelperAssembly(server));
                     //Logger.WithLogSection("Copying external scripts", () => scriptPublisher.PublishExternalScripts(server));
                 });
+        }
+
+        private void InstallChocolatey(ServerConfig server, ConDepSettings settings)
+        {
+            Logger.WithLogSection("Installing Chocolatey", () =>
+            {
+                var psExecutor = new PowerShellExecutor(server);
+                psExecutor.Execute(@"
+try {
+    if(!(Test-Path $env:ProgramData\chocolatey)) {
+        iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+    }
+    else {
+        Write-Host 'Chocolatey allready installed.'
+    }
+}
+catch {
+    Write-Warning 'Failed to install Chocolatey! This could break operations depending on Chocolatey.'
+    Write-Warning ""Error message: $($_.Exception.Message)""
+}
+");
+            });
         }
 
         public bool IsValid(Notification notification)
