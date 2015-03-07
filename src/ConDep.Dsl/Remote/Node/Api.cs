@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using ConDep.Dsl.Logging;
 using ConDep.Dsl.Remote.Node.Model;
 using ConDep.Dsl.Resources;
@@ -19,11 +21,21 @@ namespace ConDep.Dsl.Remote.Node
 
         public Api(ConDepNodeUrl url, string userName, string password, int timeoutInMs)
         {
+            ServicePointManager.ServerCertificateValidationCallback = ValidateConDepNodeServerCert;
+
             var messageHandler = new HttpClientHandler { Credentials = new NetworkCredential(userName, password) };
             _client = new HttpClient(messageHandler) { BaseAddress = new Uri(url.RemoteUrl) };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             if(timeoutInMs > 0) _client.Timeout = TimeSpan.FromMilliseconds(timeoutInMs);
         }
+
+        private bool ValidateConDepNodeServerCert(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            var cert = new X509Certificate2(certificate);
+            return DateTime.Now <= cert.NotAfter
+                   && DateTime.Now >= cert.NotBefore;
+        }
+
 
         public SyncResult SyncDir(string srcPath, string dstPath)
         {

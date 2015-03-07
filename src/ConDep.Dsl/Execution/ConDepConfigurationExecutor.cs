@@ -134,8 +134,8 @@ namespace ConDep.Dsl.Execution
         private bool ValidateConDepNodeServerCert(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             var cert = new X509Certificate2(certificate);
-            return DateTime.UtcNow <= cert.NotAfter
-                   && DateTime.UtcNow >= cert.NotBefore;
+            return DateTime.Now <= cert.NotAfter
+                   && DateTime.Now >= cert.NotBefore;
         }
 
         private void Cancel(ConDepSettings settings, StatusReporter status, CancellationToken token)

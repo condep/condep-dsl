@@ -28,11 +28,12 @@ namespace ConDep.Dsl
                     //Logger.WithLogSection("Copying internal ConDep scripts", () => scriptPublisher.PublishDslScripts(server));
 
                     PublishConDepNode(server, settings);
-                    InstallChocolatey(server, settings);
                     
                     var scriptPublisher = new PowerShellScriptPublisher(settings);
                     Logger.WithLogSection("Copying external scripts", () => scriptPublisher.PublishScripts(server));
                     Logger.WithLogSection("Copying remote helper assembly", () => scriptPublisher.PublishRemoteHelperAssembly(server));
+
+                    InstallChocolatey(server, settings);
                     //Logger.WithLogSection("Copying external scripts", () => scriptPublisher.PublishExternalScripts(server));
                 });
         }
