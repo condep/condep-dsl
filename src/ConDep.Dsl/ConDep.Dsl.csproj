@@ -223,12 +223,6 @@
     <Compile Include="Harvesters\NetworkHarvester.cs" />
     <Compile Include="Harvesters\OperatingSystemHarvester.cs" />
     <Compile Include="PreRemoteOps.cs" />
-    <Compile Include="Remote\Registry\RegistryBinaryValue.cs" />
-    <Compile Include="Remote\Registry\RegistryDWordValue.cs" />
-    <Compile Include="Remote\Registry\RegistryExpandedStringValue.cs" />
-    <Compile Include="Remote\Registry\RegistryMultiStringValue.cs" />
-    <Compile Include="Remote\Registry\RegistryStringValue.cs" />
-    <Compile Include="Remote\Registry\RegistryValue.cs" />
     <Compile Include="Remote\RemoteServerValidator.cs" />
     <Compile Include="IOfferRemoteComposition.cs" />
     <Compile Include="Configure.cs" />
