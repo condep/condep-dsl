@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using ConDep.Dsl.Config;
@@ -43,20 +44,46 @@ namespace ConDep.Dsl
             Logger.WithLogSection("Installing Chocolatey", () =>
             {
                 var psExecutor = new PowerShellExecutor(server);
-                psExecutor.Execute(@"
+                var result = psExecutor.Execute(@"
+$conDepReturnValues = New-Object PSObject -Property @{         
+    ConDepResult    = New-Object PSObject -Property @{
+		Installed = $false
+        NeedUpdate = $false
+    }                 
+}    
+
 try {
-    if(!(Test-Path $env:ProgramData\chocolatey)) {
+    if(!((Test-Path $env:ProgramData\chocolatey) -or (Test-Path $env:HOMEDRIVE\chocolatey))) {
+        Write-Host 'Chocolatey not found. Installing now.'
         iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+		$conDepReturnValues.ConDepResult.NeedUpdate = $false
+		$conDepReturnValues.ConDepResult.Installed = $true
     }
     else {
+		$conDepReturnValues.ConDepResult.NeedUpdate = $true
+		$conDepReturnValues.ConDepResult.Installed = $true
         Write-Host 'Chocolatey allready installed.'
     }
+    return $conDepReturnValues    
 }
 catch {
     Write-Warning 'Failed to install Chocolatey! This could break operations depending on Chocolatey.'
     Write-Warning ""Error message: $($_.Exception.Message)""
 }
 ");
+
+                var resultObj = result.SingleOrDefault(psObject => psObject.ConDepResult != null);
+                if (resultObj == null) return;
+                
+                var condepResult = resultObj.ConDepResult;
+                if (condepResult == null) return;
+
+                if (condepResult.NeedUpdate)
+                {
+                    psExecutor.Execute(@"
+write-host 'Updating chocolatey'
+chocolatey update");
+                }
             });
         }
 
