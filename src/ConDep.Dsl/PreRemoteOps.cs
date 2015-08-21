@@ -25,9 +25,6 @@ namespace ConDep.Dsl
                     server.GetServerInfo().TempFolderPowerShell = string.Format(TMP_FOLDER, "$env:windir");
                     Logger.Info(string.Format("PowerShell temp folder is {0}", server.GetServerInfo().TempFolderPowerShell));
 
-                    //var scriptPublisher = new PowerShellScriptPublisher(settings);
-                    //Logger.WithLogSection("Copying internal ConDep scripts", () => scriptPublisher.PublishDslScripts(server));
-
                     PublishConDepNode(server, settings);
                     
                     var scriptPublisher = new PowerShellScriptPublisher(settings);
@@ -35,7 +32,6 @@ namespace ConDep.Dsl
                     Logger.WithLogSection("Copying remote helper assembly", () => scriptPublisher.PublishRemoteHelperAssembly(server));
 
                     InstallChocolatey(server, settings);
-                    //Logger.WithLogSection("Copying external scripts", () => scriptPublisher.PublishExternalScripts(server));
                 });
         }
 
@@ -44,27 +40,14 @@ namespace ConDep.Dsl
             Logger.WithLogSection("Installing Chocolatey", () =>
             {
                 var psExecutor = new PowerShellExecutor(server);
-                var result = psExecutor.Execute(@"
-$conDepReturnValues = New-Object PSObject -Property @{         
-    ConDepResult    = New-Object PSObject -Property @{
-		Installed = $false
-        NeedUpdate = $false
-    }                 
-}    
-
+                psExecutor.Execute(@"
 try {
-    if(!((Test-Path $env:ProgramData\chocolatey) -or (Test-Path $env:HOMEDRIVE\chocolatey))) {
-        Write-Host 'Chocolatey not found. Installing now.'
-        iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
-		$conDepReturnValues.ConDepResult.NeedUpdate = $false
-		$conDepReturnValues.ConDepResult.Installed = $true
+    if(ConDep-ChocoExist) {
+        ConDep-ChocoUpgrade
     }
     else {
-		$conDepReturnValues.ConDepResult.NeedUpdate = $true
-		$conDepReturnValues.ConDepResult.Installed = $true
-        Write-Host 'Chocolatey allready installed.'
+        ConDep-ChocoInstall
     }
-    return $conDepReturnValues    
 }
 catch {
     Write-Warning 'Failed to install Chocolatey! This could break operations depending on Chocolatey.'
@@ -72,18 +55,6 @@ catch {
 }
 ");
 
-                var resultObj = result.SingleOrDefault(psObject => psObject.ConDepResult != null);
-                if (resultObj == null) return;
-                
-                var condepResult = resultObj.ConDepResult;
-                if (condepResult == null) return;
-
-                if (condepResult.NeedUpdate)
-                {
-                    psExecutor.Execute(@"
-write-host 'Updating chocolatey'
-chocolatey update");
-                }
             });
         }
 
@@ -91,14 +62,6 @@ chocolatey update");
         {
             return true;
         }
-
-        //private void CopyResourceFiles(Assembly assembly, IEnumerable<string> resources, ServerConfig server, ConDepSettings settings)
-        //{
-        //    if (resources == null || assembly == null) return;
-
-        //    var scriptPublisher = new PowerShellScriptPublisher(settings);
-        //    scriptPublisher.PublishDslScripts(server);
-        //}
 
         private void PublishConDepNode(ServerConfig server, ConDepSettings settings)
         {
