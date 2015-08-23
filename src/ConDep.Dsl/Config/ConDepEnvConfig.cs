@@ -19,7 +19,7 @@ namespace ConDep.Dsl.Config
         }
 
         public LoadBalancerConfig LoadBalancer { get; set; }
-        public IList<ServerConfig> Servers { get; set; }
+        public IList<IServerConfig> Servers { get; set; }
         public IList<TiersConfig> Tiers { get; set; }
         public DeploymentUserConfig DeploymentUser { get; set; }
         public dynamic OperationsConfig { get; set; }

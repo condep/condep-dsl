@@ -12,10 +12,10 @@ namespace ConDep.Dsl.Remote
 {
     public class RemoteServerValidator : IValidateServer
     {
-        private readonly IEnumerable<ServerConfig> _servers;
+        private readonly IEnumerable<IServerConfig> _servers;
         private readonly ServerInfoHarvester _serverInfoHarvester;
 
-        public RemoteServerValidator(IEnumerable<ServerConfig> servers, ServerInfoHarvester serverInfoHarvester)
+        public RemoteServerValidator(IEnumerable<IServerConfig> servers, ServerInfoHarvester serverInfoHarvester)
         {
             _servers = servers;
             _serverInfoHarvester = serverInfoHarvester;
@@ -28,7 +28,7 @@ namespace ConDep.Dsl.Remote
                 bool isValid = true;
                 foreach (var server in _servers)
                 {
-                    ServerConfig currentServer = server;
+                    IServerConfig currentServer = server;
                     Logger.WithLogSection(string.Format("Validating {0}", server.Name), () =>
                         {
                             if (!ValidateWinRm(currentServer))
@@ -59,7 +59,7 @@ namespace ConDep.Dsl.Remote
             });
         }
 
-        private bool ValidatePowerShellVersion(ServerConfig currentServer)
+        private bool ValidatePowerShellVersion(IServerConfig currentServer)
         {
             return Logger.WithLogSection("Validating remote PowerShell version (must be 3.0 or higher)", () =>
             {
@@ -76,7 +76,7 @@ namespace ConDep.Dsl.Remote
             });
         }
 
-        private static bool ValidateWinRm(ServerConfig server)
+        private static bool ValidateWinRm(IServerConfig server)
         {
             return Logger.WithLogSection("Validating WinRM", () =>
                 {
@@ -99,7 +99,7 @@ namespace ConDep.Dsl.Remote
                 });
         }
 
-        private static bool HaveAccessToServer(ServerConfig server)
+        private static bool HaveAccessToServer(IServerConfig server)
         {
             Logger.Info(
                 string.Format("Checking if WinRM (Remote PowerShell) can be used to reach remote server [{0}]...",
@@ -139,7 +139,7 @@ namespace ConDep.Dsl.Remote
             return success;
         }
 
-        private static bool HaveNet40(ServerConfig server)
+        private static bool HaveNet40(IServerConfig server)
         {
             Logger.Info(string.Format("Checking if .NET Framework 4.0 is installed on server [{0}]...", server.Name));
             var success = server.GetServerInfo().DotNetFrameworks.HasVersion(DotNetVersion.v4_0_full);

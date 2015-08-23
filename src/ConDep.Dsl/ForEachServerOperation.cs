@@ -6,7 +6,7 @@ namespace ConDep.Dsl
 {
     public abstract class ForEachServerOperation : IExecuteRemotely
     {
-        public abstract void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
+        public abstract void Execute(IServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
         public abstract string Name { get; }
         public abstract bool IsValid(Notification notification);
         public void DryRun() { }

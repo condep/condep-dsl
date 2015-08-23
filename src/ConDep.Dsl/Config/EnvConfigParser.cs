@@ -55,7 +55,7 @@ namespace ConDep.Dsl.Config
                 throw new ConDepConfigurationException(
                     "You cannot define both Tiers and Servers at the same level. Either you use Tiers and define servers for each tier or you use Servers without Tiers. Servers without Tiers would be the same as having just one Tier."); 
 
-            if(config.Servers == null) config.Servers = new List<ServerConfig>();
+            if(config.Servers == null) config.Servers = new List<IServerConfig>();
 
             if (config.Node.Port == null) config.Node.Port = 4444;
             if (config.Node.TimeoutInSeconds == null) config.Node.TimeoutInSeconds = 100;

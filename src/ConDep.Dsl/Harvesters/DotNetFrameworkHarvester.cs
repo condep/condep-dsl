@@ -5,7 +5,7 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class DotNetFrameworkHarvester : IHarvestServerInfo
     {
-        public void Harvest(ServerConfig server)
+        public void Harvest(IServerConfig server)
         {
             var psExecutor = new PowerShellExecutor(server) {LoadConDepModule = false};
             var result = psExecutor.Execute(@"$regKeys = @(

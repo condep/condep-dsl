@@ -11,11 +11,11 @@ namespace ConDep.Dsl.Remote
 {
     public class PowerShellExecutor
     {
-        private readonly ServerConfig _server;
+        private readonly IServerConfig _server;
 
         protected const string SHELL_URI = "http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
 
-        public PowerShellExecutor(ServerConfig server)
+        public PowerShellExecutor(IServerConfig server)
         {
             _server = server;
             LoadConDepModule = true;
@@ -49,7 +49,7 @@ namespace ConDep.Dsl.Remote
             return ExecuteCommand(commandOrScript, connectionInfo, parameters, logOutput);
         }
 
-        private int ResolvePort(ServerConfig server)
+        private int ResolvePort(IServerConfig server)
         {
             if (server.PowerShell.SSL && server.PowerShell.HttpsPort != null)
             {

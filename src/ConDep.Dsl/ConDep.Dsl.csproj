@@ -103,6 +103,7 @@
     <Compile Include="Config\ConfigYamlSerializer.cs" />
     <Compile Include="Config\IHandleConfigCrypto.cs" />
     <Compile Include="Config\ISerializerConDepConfig.cs" />
+    <Compile Include="Config\IServerConfig.cs" />
     <Compile Include="Config\JsonConfigCrypto.cs" />
     <Compile Include="Config\JsonExtensions.cs" />
     <Compile Include="Config\ServerLoadBalancerState.cs" />
@@ -162,8 +163,8 @@
     <Compile Include="Remote\ConDepPsHostRawUI.cs" />
     <Compile Include="Remote\ConDepPSHostUI.cs" />
     <Compile Include="Remote\CredSSPHandler.cs" />
-    <Compile Include="Remote\FilePublisher.cs" />
     <Compile Include="Remote\FileHashGenerator.cs" />
+    <Compile Include="Remote\IPublishFiles.cs" />
     <Compile Include="Remote\ImpersinatorNativeMethods.cs" />
     <Compile Include="Remote\Node\Api.cs" />
     <Compile Include="Remote\Node\Model\DirectoryInfoExtensions.cs" />
@@ -186,7 +187,6 @@
     <Compile Include="Remote\PowerShellExecutor.cs" />
     <Compile Include="Remote\ConDepNodePublisher.cs" />
     <Compile Include="LoadBalancer\ConDepLoadBalancerException.cs" />
-    <Compile Include="Remote\PowerShellScriptPublisher.cs" />
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />
     <Compile Include="Security\JsonPasswordCrypto.cs" />
@@ -199,7 +199,6 @@
     <Compile Include="Validation\ConDepValidationException.cs" />
     <Compile Include="ConDepGlobals.cs" />
     <Compile Include="LoadBalancer\ILookupLoadBalancer.cs" />
-    <Compile Include="PostRemoteOps.cs" />
     <Compile Include="Harvesters\DiskHarvester.cs" />
     <Compile Include="Harvesters\DotNetFrameworkHarvester.cs" />
     <Compile Include="IExecuteLocally.cs" />
@@ -208,7 +207,6 @@
     <Compile Include="Validation\IValidateServer.cs" />
     <Compile Include="Harvesters\NetworkHarvester.cs" />
     <Compile Include="Harvesters\OperatingSystemHarvester.cs" />
-    <Compile Include="PreRemoteOps.cs" />
     <Compile Include="Remote\RemoteServerValidator.cs" />
     <Compile Include="IOfferRemoteComposition.cs" />
     <Compile Include="Configure.cs" />
@@ -241,7 +239,6 @@
     <Compile Include="Config\DeploymentUserConfig.cs" />
     <Compile Include="Config\LoadBalancerConfig.cs" />
     <Compile Include="Config\ConDepNoServersFoundException.cs" />
-    <Compile Include="Config\ServerConfig.cs" />
     <Compile Include="Config\Extensions.cs" />
     <Compile Include="Config\WebSiteBindingConfig.cs" />
     <Compile Include="Config\WebSiteConfig.cs" />

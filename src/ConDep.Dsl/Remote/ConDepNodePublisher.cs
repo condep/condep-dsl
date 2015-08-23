@@ -28,7 +28,7 @@ namespace ConDep.Dsl.Remote
             _url = url;
         }
 
-        public void Execute(ServerConfig server)
+        public void Execute(IServerConfig server)
         {
             DeployNodeModuleScript(server);
             var nodeState = GetNodeState(server);
@@ -48,7 +48,7 @@ namespace ConDep.Dsl.Remote
             }
         }
 
-        private void DeployNode(ServerConfig server)
+        private void DeployNode(IServerConfig server)
         {
             var byteArray = File.ReadAllBytes(_srcPath);
             var parameters = new List<CommandParameter>
@@ -64,7 +64,7 @@ namespace ConDep.Dsl.Remote
                 logOutput: false);
         }
 
-        private dynamic GetNodeState(ServerConfig server)
+        private dynamic GetNodeState(IServerConfig server)
         {
             var nodeCheckExecutor = new PowerShellExecutor(server) {LoadConDepModule = false, LoadConDepNodeModule = true};
             var nodeCheckResult =
@@ -75,13 +75,13 @@ namespace ConDep.Dsl.Remote
             return nodeCheckResult.Single(psObject => psObject.ConDepResult != null).ConDepResult;
         }
 
-        public static void StartNode(ServerConfig server)
+        public static void StartNode(IServerConfig server)
         {
             var startServiceExecutor = new PowerShellExecutor(server) { LoadConDepNodeModule = true, LoadConDepModule = false };
             startServiceExecutor.Execute("Start-ConDepNode", logOutput: false);
         }
 
-        public bool ValidateNode(ConDepNodeUrl url, string userName, string password, ServerConfig server)
+        public bool ValidateNode(ConDepNodeUrl url, string userName, string password, IServerConfig server)
         {
             var api = new Node.Api(url, userName, password, server.Node.TimeoutInSeconds.Value * 1000);
             if (!api.Validate())
@@ -92,7 +92,7 @@ namespace ConDep.Dsl.Remote
             return true;
         }
 
-        private void DeployNodeModuleScript(ServerConfig server)
+        private void DeployNodeModuleScript(IServerConfig server)
         {
             var resource = ConDepNodeResources.ConDepNodeModule;
 
@@ -105,12 +105,12 @@ namespace ConDep.Dsl.Remote
             }
         }
 
-        private void PublishFile(string srcPath, string dstPath, ServerConfig server)
+        private void PublishFile(string srcPath, string dstPath, IServerConfig server)
         {
             PublishFile(File.ReadAllBytes(srcPath), dstPath, server);
         }
 
-        private void PublishFile(byte[] srcBytes, string dstPath, ServerConfig server)
+        private void PublishFile(byte[] srcBytes, string dstPath, IServerConfig server)
         {
             const string publishScript = @"Param([string]$path, $data)
     $path = $ExecutionContext.InvokeCommand.ExpandString($path)
@@ -136,7 +136,7 @@ namespace ConDep.Dsl.Remote
             scriptExecutor.Execute(publishScript, parameters: scriptParameters, logOutput: false);
         }
 
-        private bool NeedToDeployScript(ServerConfig server, string localFile)
+        private bool NeedToDeployScript(IServerConfig server, string localFile)
         {
             const string script = @"Param($fileWithHash, $dir)
 $dir = $ExecutionContext.InvokeCommand.ExpandString($dir)

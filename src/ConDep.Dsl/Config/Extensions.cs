@@ -5,7 +5,7 @@ namespace ConDep.Dsl.Config
 {
     public static class Extensions
     {
-        public static void RemoveAllExcept(this IList<ServerConfig> servers, string serverName)
+        public static void RemoveAllExcept(this IList<IServerConfig> servers, string serverName)
         {
 
             if (servers.All(x => x.Name.ToLower() != serverName))

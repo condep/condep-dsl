@@ -14,10 +14,10 @@ namespace ConDep.Dsl.Remote
         private const string REG_KEY_ALLOW_FRESH_CREDENTIALS_WHEN_NTLM_ONLY = @"SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\AllowFreshCredentialsWhenNTLMOnly";
         private readonly List<Action> _cleanupFunctions = new List<Action>();
  
-        private readonly ServerConfig _server;
+        private readonly IServerConfig _server;
         private readonly WSManConnectionInfo _connectionInfo;
 
-        public CredSSPHandler(WSManConnectionInfo connectionInfo, ServerConfig server)
+        public CredSSPHandler(WSManConnectionInfo connectionInfo, IServerConfig server)
         {
             _server = server;
             connectionInfo.AuthenticationMechanism = AuthenticationMechanism.Credssp;

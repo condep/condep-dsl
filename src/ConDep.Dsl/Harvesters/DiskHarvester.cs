@@ -6,7 +6,7 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class DiskHarvester : IHarvestServerInfo
     {
-        public void Harvest(ServerConfig server)
+        public void Harvest(IServerConfig server)
         {
             var psExecutor = new PowerShellExecutor(server) { LoadConDepModule = false };
             var diskInfo = @"$disks = Get-WmiObject win32_logicaldisk

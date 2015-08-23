@@ -17,6 +17,13 @@ namespace ConDep.Dsl
 {
     public abstract class RemoteServerOperation : IExecuteRemotely
     {
+        private readonly IPublishFiles _filePublisher;
+
+        protected RemoteServerOperation(IPublishFiles filePublisher)
+        {
+            _filePublisher = filePublisher;
+        }
+
         protected RemoteServerOperation(params object[] constructorArguments)
         {
             ConstructorArguments = constructorArguments.ToList();
@@ -26,13 +33,12 @@ namespace ConDep.Dsl
 
         public abstract void Execute(ILogForConDep logger);
 
-        public void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
+        public void Execute(IServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
             var assemblyLocalDir = Path.GetDirectoryName(GetType().Assembly.Location);
             var assemblyRemoteDir = Path.Combine(server.GetServerInfo().TempFolderDos, "Assemblies");
 
-            var publisher = new FilePublisher();
-            publisher.PublishDirectory(assemblyLocalDir, assemblyRemoteDir, server, settings);
+            _filePublisher.PublishDirectory(assemblyLocalDir, assemblyRemoteDir, server, settings);
 
             var remoteAssemblyFileName = Path.Combine(Path.Combine(server.GetServerInfo().TempFolderPowerShell, "Assemblies"), Path.GetFileName(GetType().Assembly.Location));
             var remoteJsonAssembly = Path.Combine(Path.Combine(server.GetServerInfo().TempFolderPowerShell, "Assemblies"), "Newtonsoft.Json.dll");
