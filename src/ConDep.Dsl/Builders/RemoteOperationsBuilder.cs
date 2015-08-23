@@ -4,7 +4,7 @@ using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
-    internal class RemoteOperationsBuilder : IOfferRemoteOperations
+    public class RemoteOperationsBuilder : IOfferRemoteOperations
     {
         private readonly IOfferRemoteSequence _remoteSequence;
 

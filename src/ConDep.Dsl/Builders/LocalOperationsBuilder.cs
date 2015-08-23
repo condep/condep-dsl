@@ -3,11 +3,11 @@ using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
-    internal class LocalOperationsBuilder : IOfferLocalOperations, IConfigureLocalOperations
+    public class LocalOperationsBuilder : IOfferLocalOperations, IConfigureLocalOperations
     {
-        private readonly LocalSequence _localSequence;
+        private readonly IOfferLocalSequence _localSequence;
 
-        public LocalOperationsBuilder(LocalSequence localSequence)
+        public LocalOperationsBuilder(IOfferLocalSequence localSequence)
         {
             _localSequence = localSequence;
         }

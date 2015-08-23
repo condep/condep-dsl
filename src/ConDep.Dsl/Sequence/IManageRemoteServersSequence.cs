@@ -3,10 +3,10 @@ using ConDep.Dsl.Config;
 
 namespace ConDep.Dsl.Sequence
 {
-    internal interface IManageRemoteServersSequence : IManageSequence<IExecuteRemotely>
+    public interface IManageRemoteServersSequence : IManageSequence<IExecuteRemotely>
     {
-        CompositeServersSequence NewCompositeServersSequence(RemoteCompositeOperation operation);
-        CompositeServersSequence NewConditionalCompositeServersSequence(Predicate<ServerInfo> condition);
+        IManageRemoteServersSequence NewCompositeServersSequence(RemoteCompositeOperation operation);
+        IManageRemoteServersSequence NewConditionalCompositeServersSequence(Predicate<ServerInfo> condition);
         void DryRun();
     }
 }
