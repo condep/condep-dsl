@@ -15,18 +15,6 @@ namespace ConDep.Dsl.Logging
             _log = log;
         }
            
-        public void AutoResolveLogger()
-        {
-            if (RunningOnTeamCity)
-            {
-                Initialize(new TeamCityLogger(LogManager.GetLogger("condep-teamcity")));
-            }
-            else
-            {
-                Initialize(new ConsoleLogger(LogManager.GetLogger("condep-default")));
-            }
-        }
-
         public static ILogForConDep InternalLogger
         {
             get { return _log; }

@@ -108,16 +108,6 @@
     <Compile Include="Config\ServerLoadBalancerState.cs" />
     <Compile Include="Config\YamlConfigCrypto.cs" />
     <Compile Include="Config\YamlExtensions.cs" />
-    <Compile Include="Execution\ArtifactConfigurationHandler.cs" />
-    <Compile Include="Execution\ArtifactHandler.cs" />
-    <Compile Include="Execution\ConDepNoArtifactDefinedException.cs" />
-    <Compile Include="Execution\ConDepNoArtifactTierDefinedException.cs" />
-    <Compile Include="Execution\ConDepTierDoesNotExistInConfigException.cs" />
-    <Compile Include="Execution\IDiscoverArtifacts.cs" />
-    <Compile Include="Execution\IDiscoverServers.cs" />
-    <Compile Include="Execution\IResolveArtifactDependencies.cs" />
-    <Compile Include="Execution\ServerHandler.cs" />
-    <Compile Include="Execution\TimedException.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
     <Compile Include="Builders\RemoteConfigurationBuilder.cs" />
@@ -137,7 +127,6 @@
     <Compile Include="Config\OperatingSystemInfo.cs" />
     <Compile Include="Config\ServerInfo.cs" />
     <Compile Include="Config\WindowsOperatingSystem.cs" />
-    <Compile Include="Execution\ArtifactDependencyHandler.cs" />
     <Compile Include="IDependOn.cs" />
     <Compile Include="Config\LbMode.cs" />
     <Compile Include="IConfigureLocalOperations.cs" />
@@ -154,13 +143,10 @@
     <Compile Include="IOfferOnlyIf.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
     <Compile Include="IProvideArtifact.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogForCondep.cs" />
     <Compile Include="Logging\Log4NetLoggerBase.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LoggerBase.cs" />
-    <Compile Include="Logging\TeamCityLogger.cs" />
-    <Compile Include="Logging\TeamCityMessageStatus.cs" />
     <Compile Include="IOfferRemoteConfiguration.cs" />
     <Compile Include="PSScripts\PfxInstaller\PfxInstallerResource.cs" />
     <Compile Include="RemoteServerOperation.cs" />
@@ -209,7 +195,6 @@
     <Compile Include="Tier.cs" />
     <Compile Include="TierAttribute.cs" />
     <Compile Include="Validation\ClientValidator.cs" />
-    <Compile Include="Execution\ConDepExecutionResult.cs" />
     <Compile Include="Validation\ConDepValidationException.cs" />
     <Compile Include="ConDepGlobals.cs" />
     <Compile Include="LoadBalancer\ILookupLoadBalancer.cs" />
@@ -270,7 +255,6 @@
     <Compile Include="Validation\ConDepInvalidSetupException.cs" />
     <Compile Include="Resources\ConDepResourceFiles.cs" />
     <Compile Include="Config\Configuration.cs" />
-    <Compile Include="Execution\ConDepConfigurationExecutor.cs" />
     <Compile Include="LocalOperation.cs" />
     <Compile Include="Validation\IValidate.cs" />
     <Compile Include="Validation\Notification.cs" />
