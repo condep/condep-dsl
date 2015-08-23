@@ -7,9 +7,17 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class NetworkHarvester : IHarvestServerInfo
     {
+        private readonly IExecuteRemotePowerShell _executor;
+
+        public NetworkHarvester(IExecuteRemotePowerShell executor)
+        {
+            _executor = executor;
+        }
+
         public void Harvest(IServerConfig server)
         {
-            var psExecutor = new PowerShellExecutor(server) { LoadConDepModule = false };
+            _executor.LoadConDepModule = false;
+            
             var networkInfo = @"$result = @()
 $networkInterfaces = Get-WmiObject win32_networkadapterconfiguration | where { $_.IPEnabled }
 foreach($interface in $networkInterfaces) {
@@ -29,7 +37,7 @@ foreach($interface in $networkInterfaces) {
 
 return $result";
 
-            var networkInfoResult = psExecutor.Execute(networkInfo, logOutput: false);
+            var networkInfoResult = _executor.Execute(networkInfo, logOutput: false);
             if (networkInfoResult != null)
             {
                 foreach (var network in networkInfoResult)

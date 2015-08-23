@@ -9,7 +9,7 @@ using ConDep.Dsl.Logging;
 
 namespace ConDep.Dsl.Remote
 {
-    public class PowerShellExecutor
+    public class PowerShellExecutor : IExecuteRemotePowerShell
     {
         private readonly IServerConfig _server;
 

@@ -5,10 +5,18 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class DotNetFrameworkHarvester : IHarvestServerInfo
     {
+        private readonly IExecuteRemotePowerShell _executor;
+
+        public DotNetFrameworkHarvester(IExecuteRemotePowerShell executor)
+        {
+            _executor = executor;
+        }
+
         public void Harvest(IServerConfig server)
         {
-            var psExecutor = new PowerShellExecutor(server) {LoadConDepModule = false};
-            var result = psExecutor.Execute(@"$regKeys = @(
+            _executor.LoadConDepModule = false;
+
+            var result = _executor.Execute(@"$regKeys = @(
         ""HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client"", 
         ""HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"", 
         ""HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5"",

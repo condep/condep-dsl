@@ -11,9 +11,17 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class OperatingSystemHarvester : IHarvestServerInfo
     {
+        private readonly IExecuteRemotePowerShell _executor;
+
+        public OperatingSystemHarvester(IExecuteRemotePowerShell executor)
+        {
+            _executor = executor;
+        }
+
         public void Harvest(IServerConfig server)
         {
-            var psExecutor = new PowerShellExecutor(server) { LoadConDepModule = false };
+            _executor.LoadConDepModule = false;
+
             var osInfo = @"
     $osInfo = @{}
 
@@ -56,7 +64,7 @@ namespace ConDep.Dsl.Harvesters
     return $osInfo
 ";
 
-            var osInfoResult = psExecutor.Execute(osInfo, logOutput: false).FirstOrDefault();
+            var osInfoResult = _executor.Execute(osInfo, logOutput: false).FirstOrDefault();
 
             if (osInfoResult != null)
             {

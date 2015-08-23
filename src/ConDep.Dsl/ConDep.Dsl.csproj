@@ -106,7 +106,6 @@
     <Compile Include="Config\IServerConfig.cs" />
     <Compile Include="Config\JsonConfigCrypto.cs" />
     <Compile Include="Config\JsonExtensions.cs" />
-    <Compile Include="Config\ServerLoadBalancerState.cs" />
     <Compile Include="Config\YamlConfigCrypto.cs" />
     <Compile Include="Config\YamlExtensions.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
@@ -144,6 +143,7 @@
     <Compile Include="IOfferOnlyIf.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
     <Compile Include="IProvideArtifact.cs" />
+    <Compile Include="LoadBalancer\ServerLoadBalancerState.cs" />
     <Compile Include="Logging\ILogForCondep.cs" />
     <Compile Include="Logging\Log4NetLoggerBase.cs" />
     <Compile Include="Logging\Logger.cs" />
@@ -163,7 +163,7 @@
     <Compile Include="Remote\ConDepPsHostRawUI.cs" />
     <Compile Include="Remote\ConDepPSHostUI.cs" />
     <Compile Include="Remote\CredSSPHandler.cs" />
-    <Compile Include="Remote\FileHashGenerator.cs" />
+    <Compile Include="Remote\IExecuteRemotePowerShell.cs" />
     <Compile Include="Remote\IPublishFiles.cs" />
     <Compile Include="Remote\ImpersinatorNativeMethods.cs" />
     <Compile Include="Remote\Node\Api.cs" />
@@ -185,7 +185,6 @@
     <Compile Include="Remote\Node\SyncPostProcContent.cs" />
     <Compile Include="Remote\PowerShellErrors.cs" />
     <Compile Include="Remote\PowerShellExecutor.cs" />
-    <Compile Include="Remote\ConDepNodePublisher.cs" />
     <Compile Include="LoadBalancer\ConDepLoadBalancerException.cs" />
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />

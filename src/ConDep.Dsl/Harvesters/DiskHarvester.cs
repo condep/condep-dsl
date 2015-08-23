@@ -6,9 +6,16 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class DiskHarvester : IHarvestServerInfo
     {
+        private readonly IExecuteRemotePowerShell _executor;
+
+        public DiskHarvester(IExecuteRemotePowerShell executor)
+        {
+            _executor = executor;
+        }
+
         public void Harvest(IServerConfig server)
         {
-            var psExecutor = new PowerShellExecutor(server) { LoadConDepModule = false };
+            _executor.LoadConDepModule = false;
             var diskInfo = @"$disks = Get-WmiObject win32_logicaldisk
 $result = @()
 foreach($disk in $disks) {
@@ -25,7 +32,7 @@ foreach($disk in $disks) {
 
 return $result";
 
-            var diskInfoResult = psExecutor.Execute(diskInfo, logOutput: false);
+            var diskInfoResult = _executor.Execute(diskInfo, logOutput: false);
             if (diskInfoResult != null)
             {
                 foreach (var disk in diskInfoResult)

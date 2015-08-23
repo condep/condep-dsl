@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ConDep.Dsl.LoadBalancer;
 
 namespace ConDep.Dsl.Config
 {
@@ -12,5 +13,6 @@ namespace ConDep.Dsl.Config
         PowerShellConfig PowerShell { get; set; }
         NodeConfig Node { get; set; }
         ServerInfo GetServerInfo();
+        ServerLoadBalancerState LoadBalancerState { get; }
     }
 }
