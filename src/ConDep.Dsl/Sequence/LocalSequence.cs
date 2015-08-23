@@ -7,7 +7,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence
 {
-    internal class LocalSequence : IManageSequence<LocalOperation>, IExecuteLocally
+    internal class LocalSequence : IManageSequence<LocalOperation>, IOfferLocalSequence
     {
         private readonly string _name;
         private readonly ExecutionSequenceManager _sequenceManager;
@@ -32,7 +32,7 @@ namespace ConDep.Dsl.Sequence
             }
         }
 
-        public RemoteSequence NewRemoteSequence(string name, bool paralell = false)
+        public IOfferRemoteSequence NewRemoteSequence(string name, bool paralell = false)
         {
             return _sequenceManager.NewRemoteSequence(name);
         }
@@ -52,7 +52,7 @@ namespace ConDep.Dsl.Sequence
         public bool IsValid(Notification notification)
         {
             var isLocalOpsValid = _sequence.OfType<LocalOperation>().All(x => x.IsValid(notification));
-            var isRemoteSeqValid = _sequence.OfType<RemoteSequence>().All(x => x.IsValid(notification));
+            var isRemoteSeqValid = _sequence.OfType<IOfferRemoteSequence>().All(x => x.IsValid(notification));
             return isLocalOpsValid && isRemoteSeqValid;
         }
 

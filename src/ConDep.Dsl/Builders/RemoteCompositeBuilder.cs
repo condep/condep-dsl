@@ -6,9 +6,9 @@ namespace ConDep.Dsl.Builders
 {
     internal class RemoteCompositeBuilder : IOfferRemoteComposition
     {
-        private readonly CompositeSequence _compositeSequence;
+        private readonly IOfferCompositeSequence _compositeSequence;
 
-        public RemoteCompositeBuilder(CompositeSequence compositeSequence)
+        public RemoteCompositeBuilder(IOfferCompositeSequence compositeSequence)
         {
             _compositeSequence = compositeSequence;
             Deploy = new RemoteDeploymentBuilder(CompositeSequence);
@@ -22,7 +22,7 @@ namespace ConDep.Dsl.Builders
         public IOfferRemoteConfiguration Configure { get; private set; }
         public IOfferRemoteInstallation Install { get; private set; }
 
-        internal CompositeSequence CompositeSequence
+        internal IOfferCompositeSequence CompositeSequence
         {
             get { return _compositeSequence; }
         }

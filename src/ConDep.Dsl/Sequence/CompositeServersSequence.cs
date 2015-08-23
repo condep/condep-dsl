@@ -8,7 +8,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl.Sequence
 {
-    internal class CompositeServersSequence : IManageRemoteSequence, IExecuteRemotely
+    internal class CompositeServersSequence : IOfferRemoteSequence
     {
         private readonly string _compositeName;
         internal readonly List<IExecuteRemotely> _sequence = new List<IExecuteRemotely>();
@@ -48,21 +48,21 @@ namespace ConDep.Dsl.Sequence
             });
         }
 
-        public CompositeSequence NewCompositeSequence(RemoteCompositeOperation operation)
+        public IOfferCompositeSequence NewCompositeSequence(RemoteCompositeOperation operation)
         {
             var seq = new CompositeSequence(operation.Name);
             _sequence.Add(seq);
             return seq;
         }
 
-        public CompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition)
+        public IOfferCompositeSequence NewConditionalCompositeSequence(Predicate<ServerInfo> condition)
         {
             var sequence = new CompositeConditionalSequence(Name, condition, true);
             _sequence.Add(sequence);
             return sequence;
         }
 
-        public CompositeSequence NewConditionalCompositeSequence(string conditionScript)
+        public IOfferCompositeSequence NewConditionalCompositeSequence(string conditionScript)
         {
             var sequence = new CompositeConditionalSequence(Name, conditionScript);
             _sequence.Add(sequence);

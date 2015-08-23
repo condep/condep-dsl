@@ -6,9 +6,9 @@ namespace ConDep.Dsl.Builders
 {
     internal class RemoteInstallationBuilder : IOfferRemoteInstallation, IConfigureRemoteInstallation
     {
-        private readonly IManageRemoteSequence _remoteSequence;
+        private readonly IOfferRemoteSequence _remoteSequence;
 
-        public RemoteInstallationBuilder(IManageRemoteSequence remoteSequence)
+        public RemoteInstallationBuilder(IOfferRemoteSequence remoteSequence)
         {
             _remoteSequence = remoteSequence;
         }

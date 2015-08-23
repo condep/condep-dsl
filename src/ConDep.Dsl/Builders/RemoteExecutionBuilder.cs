@@ -6,9 +6,9 @@ namespace ConDep.Dsl.Builders
 {
     internal class RemoteExecutionBuilder : IOfferRemoteExecution, IConfigureRemoteExecution
     {
-        private readonly IManageRemoteSequence _remoteSequence;
+        private readonly IOfferRemoteSequence _remoteSequence;
 
-        public RemoteExecutionBuilder(IManageRemoteSequence remoteSequence)
+        public RemoteExecutionBuilder(IOfferRemoteSequence remoteSequence)
         {
             _remoteSequence = remoteSequence;
         }

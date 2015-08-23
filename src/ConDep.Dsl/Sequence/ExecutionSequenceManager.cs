@@ -12,8 +12,8 @@ namespace ConDep.Dsl.Sequence
     {
         private readonly IEnumerable<ServerConfig> _servers;
         private readonly ILoadBalance _loadBalancer;
-        internal readonly List<LocalSequence> _localSequences = new List<LocalSequence>();
-        internal readonly List<RemoteSequence> _remoteSequences = new List<RemoteSequence>();
+        internal readonly List<IOfferLocalSequence> _localSequences = new List<IOfferLocalSequence>();
+        internal readonly List<IOfferRemoteSequence> _remoteSequences = new List<IOfferRemoteSequence>();
         private readonly LoadBalancerExecutorBase _internalLoadBalancer;
 
         public ExecutionSequenceManager(IEnumerable<ServerConfig> servers, ILoadBalance loadBalancer)
@@ -23,14 +23,14 @@ namespace ConDep.Dsl.Sequence
             _internalLoadBalancer = GetLoadBalancer();
         }
 
-        public LocalSequence NewLocalSequence(string name)
+        public IOfferLocalSequence NewLocalSequence(string name)
         {
             var sequence = new LocalSequence(name, this);
             _localSequences.Add(sequence);
             return sequence;
         }
 
-        public RemoteSequence NewRemoteSequence(string name, bool paralell = false)
+        public IOfferRemoteSequence NewRemoteSequence(string name, bool paralell = false)
         {
             var sequence = new RemoteSequence(name);
             _remoteSequences.Add(sequence);
@@ -51,7 +51,7 @@ namespace ConDep.Dsl.Sequence
                 {
                     token.ThrowIfCancellationRequested();
 
-                    LocalSequence sequence = localSequence;
+                    IOfferLocalSequence sequence = localSequence;
                     Logger.WithLogSection(localSequence.Name, () => sequence.Execute(status, settings, token));
                 }
             });

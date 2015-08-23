@@ -192,6 +192,8 @@
     <Compile Include="Security\JsonPasswordCrypto.cs" />
     <Compile Include="Sequence\CompositeServersSequence.cs" />
     <Compile Include="Sequence\IManageRemoteServersSequence.cs" />
+    <Compile Include="Sequence\IOfferCompositeSequence.cs" />
+    <Compile Include="Sequence\IOfferLocalSequence.cs" />
     <Compile Include="Tier.cs" />
     <Compile Include="TierAttribute.cs" />
     <Compile Include="Validation\ClientValidator.cs" />
@@ -226,7 +228,7 @@
     <Compile Include="Config\ConDepOptions.cs" />
     <Compile Include="Resources\ConDepResourceNotFoundException.cs" />
     <Compile Include="Config\EnvConfigParser.cs" />
-    <Compile Include="Sequence\IManageRemoteSequence.cs">
+    <Compile Include="Sequence\IOfferRemoteSequence.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sequence\IManageSequence.cs" />

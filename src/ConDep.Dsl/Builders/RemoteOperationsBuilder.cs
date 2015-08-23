@@ -6,9 +6,9 @@ namespace ConDep.Dsl.Builders
 {
     internal class RemoteOperationsBuilder : IOfferRemoteOperations
     {
-        private readonly IManageRemoteSequence _remoteSequence;
+        private readonly IOfferRemoteSequence _remoteSequence;
 
-        public RemoteOperationsBuilder(IManageRemoteSequence remoteSequence)
+        public RemoteOperationsBuilder(IOfferRemoteSequence remoteSequence)
         {
             _remoteSequence = remoteSequence;
         }
