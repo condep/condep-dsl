@@ -16,8 +16,6 @@ namespace ConDep.Dsl.Harvesters
 
         public void Harvest(IServerConfig server)
         {
-            _executor.LoadConDepModule = false;
-            
             var networkInfo = @"$result = @()
 $networkInterfaces = Get-WmiObject win32_networkadapterconfiguration | where { $_.IPEnabled }
 foreach($interface in $networkInterfaces) {
@@ -37,7 +35,7 @@ foreach($interface in $networkInterfaces) {
 
 return $result";
 
-            var networkInfoResult = _executor.Execute(networkInfo, logOutput: false);
+            var networkInfoResult = _executor.Execute(server, networkInfo, mod => mod.LoadConDepModule = false, logOutput: false);
             if (networkInfoResult != null)
             {
                 foreach (var network in networkInfoResult)

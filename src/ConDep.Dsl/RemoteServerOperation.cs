@@ -18,10 +18,12 @@ namespace ConDep.Dsl
     public abstract class RemoteServerOperation : IExecuteRemotely
     {
         private readonly IPublishFiles _filePublisher;
+        private readonly IExecuteRemotePowerShell _psExecutor;
 
-        protected RemoteServerOperation(IPublishFiles filePublisher)
+        protected RemoteServerOperation(IPublishFiles filePublisher, IExecuteRemotePowerShell psExecutor)
         {
             _filePublisher = filePublisher;
+            _psExecutor = psExecutor;
         }
 
         protected RemoteServerOperation(params object[] constructorArguments)
@@ -50,7 +52,6 @@ namespace ConDep.Dsl
             var argumentList = string.Join(",", GetType().GetConstructor(ConstructorArguments.Select(x => x.GetType()).ToArray()).GetParameters().Select(x => "$" + x.Name));
             var deserializeScript = GetDeserializationScript(GetType().GetConstructor(ConstructorArguments.Select(x => x.GetType()).ToArray()));
 
-            var psExecutor = new PowerShellExecutor(server);
             var script = string.Format(@"
 Param({3})
 add-type -path {0}
@@ -61,7 +62,7 @@ $logger = new-object -typename {2} -ArgumentList (Get-Host).UI
 $operation.Execute($logger)
 ", remoteAssemblyFileName, typeName, loggerTypeName, scriptParams, deserializeScript, remoteJsonAssembly, argumentList);
 
-            psExecutor.Execute(script, parameters);
+            _psExecutor.Execute(server, script, mod => mod.LoadConDepModule = false, parameters);
         }
 
         private string GetDeserializationScript(ConstructorInfo constructor)

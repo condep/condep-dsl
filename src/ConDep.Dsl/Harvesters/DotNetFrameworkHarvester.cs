@@ -14,9 +14,7 @@ namespace ConDep.Dsl.Harvesters
 
         public void Harvest(IServerConfig server)
         {
-            _executor.LoadConDepModule = false;
-
-            var result = _executor.Execute(@"$regKeys = @(
+            var result = _executor.Execute(server, @"$regKeys = @(
         ""HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client"", 
         ""HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"", 
         ""HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5"",
@@ -47,7 +45,7 @@ foreach($regKeyPath in $regKeys) {
     }
 }
 
-return $result", logOutput: false);
+return $result", mod => mod.LoadConDepModule = false, logOutput: false);
             foreach (var element in result)
             {
                 server.GetServerInfo().DotNetFrameworks.Add(element);

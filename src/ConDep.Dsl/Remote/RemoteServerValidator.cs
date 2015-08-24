@@ -14,11 +14,13 @@ namespace ConDep.Dsl.Remote
     {
         private readonly IEnumerable<IServerConfig> _servers;
         private readonly ServerInfoHarvester _serverInfoHarvester;
+        private readonly IExecuteRemotePowerShell _psExecutor;
 
-        public RemoteServerValidator(IEnumerable<IServerConfig> servers, ServerInfoHarvester serverInfoHarvester)
+        public RemoteServerValidator(IEnumerable<IServerConfig> servers, ServerInfoHarvester serverInfoHarvester, IExecuteRemotePowerShell psExecutor)
         {
             _servers = servers;
             _serverInfoHarvester = serverInfoHarvester;
+            _psExecutor = psExecutor;
         }
 
         public bool IsValid()
@@ -63,8 +65,7 @@ namespace ConDep.Dsl.Remote
         {
             return Logger.WithLogSection("Validating remote PowerShell version (must be 3.0 or higher)", () =>
             {
-                var executor = new PowerShellExecutor(currentServer) { LoadConDepModule = false };
-                var versionResult = executor.Execute("$psVersionTable.PSVersion.Major", logOutput: false);
+                var versionResult = _psExecutor.Execute(currentServer, "$psVersionTable.PSVersion.Major", mod => mod.LoadConDepModule = false, logOutput: false);
                 if (versionResult == null)
                 {
                     Logger.Error("Unable to get remote PowerShell version.");

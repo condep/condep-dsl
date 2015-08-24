@@ -15,7 +15,6 @@ namespace ConDep.Dsl.Harvesters
 
         public void Harvest(IServerConfig server)
         {
-            _executor.LoadConDepModule = false;
             var diskInfo = @"$disks = Get-WmiObject win32_logicaldisk
 $result = @()
 foreach($disk in $disks) {
@@ -32,7 +31,7 @@ foreach($disk in $disks) {
 
 return $result";
 
-            var diskInfoResult = _executor.Execute(diskInfo, logOutput: false);
+            var diskInfoResult = _executor.Execute(server, diskInfo, mod => mod.LoadConDepModule = false, logOutput: false);
             if (diskInfoResult != null)
             {
                 foreach (var disk in diskInfoResult)

@@ -20,8 +20,6 @@ namespace ConDep.Dsl.Harvesters
 
         public void Harvest(IServerConfig server)
         {
-            _executor.LoadConDepModule = false;
-
             var osInfo = @"
     $osInfo = @{}
 
@@ -64,7 +62,7 @@ namespace ConDep.Dsl.Harvesters
     return $osInfo
 ";
 
-            var osInfoResult = _executor.Execute(osInfo, logOutput: false).FirstOrDefault();
+            var osInfoResult = _executor.Execute(server, osInfo, mod => mod.LoadConDepModule = false, logOutput: false).FirstOrDefault();
 
             if (osInfoResult != null)
             {

@@ -157,12 +157,6 @@
     <Compile Include="ForEachServerOperation.cs" />
     <Compile Include="PSScripts\ConDepNode\ConDepNodeResources.cs" />
     <Compile Include="PSScripts\ConDep\ConDepResources.cs" />
-    <Compile Include="Remote\ConDepCredSSPException.cs" />
-    <Compile Include="Remote\ConDepNodeValidationException.cs" />
-    <Compile Include="Remote\ConDepPSHost.cs" />
-    <Compile Include="Remote\ConDepPsHostRawUI.cs" />
-    <Compile Include="Remote\ConDepPSHostUI.cs" />
-    <Compile Include="Remote\CredSSPHandler.cs" />
     <Compile Include="Remote\IExecuteRemotePowerShell.cs" />
     <Compile Include="Remote\IPublishFiles.cs" />
     <Compile Include="Remote\ImpersinatorNativeMethods.cs" />
@@ -184,7 +178,6 @@
     <Compile Include="Remote\Node\MultipartSyncDirContent.cs" />
     <Compile Include="Remote\Node\SyncPostProcContent.cs" />
     <Compile Include="Remote\PowerShellErrors.cs" />
-    <Compile Include="Remote\PowerShellExecutor.cs" />
     <Compile Include="LoadBalancer\ConDepLoadBalancerException.cs" />
     <Compile Include="Security\ConDepCryptoException.cs" />
     <Compile Include="Security\EncryptedPassword.cs" />
