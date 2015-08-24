@@ -18,7 +18,7 @@ namespace ConDep.Dsl.Harvesters
             _mandatoryHarversters = mandatoryHarversters;
         }
 
-        public void Harvest(IServerConfig server)
+        public void Harvest(ServerConfig server)
         {
             Harvesters.ForEach(x => Logger.WithLogSection(x.GetType().Name, () => x.Harvest(server)));
         }

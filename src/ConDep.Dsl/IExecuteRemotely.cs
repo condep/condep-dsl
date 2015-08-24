@@ -6,7 +6,7 @@ namespace ConDep.Dsl
 {
     public interface IExecuteRemotely : IValidate
     {
-        void Execute(IServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
+        void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token);
         string Name { get; }
         void DryRun();
     }

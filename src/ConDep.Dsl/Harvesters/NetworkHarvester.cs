@@ -14,7 +14,7 @@ namespace ConDep.Dsl.Harvesters
             _executor = executor;
         }
 
-        public void Harvest(IServerConfig server)
+        public void Harvest(ServerConfig server)
         {
             var networkInfo = @"$result = @()
 $networkInterfaces = Get-WmiObject win32_networkadapterconfiguration | where { $_.IPEnabled }

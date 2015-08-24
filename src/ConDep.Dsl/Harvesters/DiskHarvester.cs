@@ -13,7 +13,7 @@ namespace ConDep.Dsl.Harvesters
             _executor = executor;
         }
 
-        public void Harvest(IServerConfig server)
+        public void Harvest(ServerConfig server)
         {
             var diskInfo = @"$disks = Get-WmiObject win32_logicaldisk
 $result = @()

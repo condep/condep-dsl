@@ -4,6 +4,6 @@ namespace ConDep.Dsl.Harvesters
 {
     internal interface IHarvestServerInfo
     {
-        void Harvest(IServerConfig server);
+        void Harvest(ServerConfig server);
     }
 }

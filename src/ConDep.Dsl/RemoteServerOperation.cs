@@ -35,7 +35,7 @@ namespace ConDep.Dsl
 
         public abstract void Execute(ILogForConDep logger);
 
-        public void Execute(IServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
+        public void Execute(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
             var assemblyLocalDir = Path.GetDirectoryName(GetType().Assembly.Location);
             var assemblyRemoteDir = Path.Combine(server.GetServerInfo().TempFolderDos, "Assemblies");

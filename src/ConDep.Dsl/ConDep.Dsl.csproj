@@ -97,17 +97,8 @@
     <Compile Include="Artifact.cs" />
     <Compile Include="ConDepInvalidEnumValueException.cs" />
     <Compile Include="ConDepNodeUrl.cs" />
-    <Compile Include="Config\ConDepConfigurationException.cs" />
-    <Compile Include="Config\ConDepFileReader.cs" />
-    <Compile Include="Config\ConfigJsonSerializer.cs" />
-    <Compile Include="Config\ConfigYamlSerializer.cs" />
-    <Compile Include="Config\IHandleConfigCrypto.cs" />
     <Compile Include="Config\ISerializerConDepConfig.cs" />
-    <Compile Include="Config\IServerConfig.cs" />
-    <Compile Include="Config\JsonConfigCrypto.cs" />
-    <Compile Include="Config\JsonExtensions.cs" />
-    <Compile Include="Config\YamlConfigCrypto.cs" />
-    <Compile Include="Config\YamlExtensions.cs" />
+    <Compile Include="Config\ServerConfig.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
     <Compile Include="Builders\RemoteConfigurationBuilder.cs" />
@@ -118,7 +109,6 @@
     <Compile Include="Builders\RemoteExecutionBuilder.cs" />
     <Compile Include="Builders\RemoteOperationsBuilder.cs" />
     <Compile Include="Config\ConDepSettings.cs" />
-    <Compile Include="Config\ConfigHandler.cs" />
     <Compile Include="Config\DiskInfo.cs" />
     <Compile Include="Config\DotNetFrameworks.cs" />
     <Compile Include="Config\DotNetFrameworkVersion.cs" />
@@ -134,8 +124,6 @@
     <Compile Include="IConfigureInfrastructure.cs" />
     <Compile Include="IConfigureRemoteDeployment.cs" />
     <Compile Include="IConfigureRemoteExecution.cs" />
-    <Compile Include="Config\ConDepAssemblyHandler.cs" />
-    <Compile Include="Config\ConDepAssemblyNotFoundException.cs" />
     <Compile Include="IExecuteRemotely.cs" />
     <Compile Include="IOfferArtifactExecutionOrder.cs" />
     <Compile Include="IOfferArtifactFollowedBy.cs" />
@@ -210,10 +198,8 @@
     <Compile Include="IOfferRemoteDeployment.cs" />
     <Compile Include="IOfferRemoteExecution.cs" />
     <Compile Include="IOfferLocalOperations.cs" />
-    <Compile Include="Config\ConDepConfigurationTypeNotFoundException.cs" />
     <Compile Include="Config\ConDepOptions.cs" />
     <Compile Include="Resources\ConDepResourceNotFoundException.cs" />
-    <Compile Include="Config\EnvConfigParser.cs" />
     <Compile Include="Sequence\IOfferRemoteSequence.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -224,19 +210,15 @@
     <Compile Include="Config\IRequireCustomConfiguration.cs" />
     <Compile Include="ILoadBalance.cs" />
     <Compile Include="LoadBalancer\DefaultLoadBalancer.cs" />
-    <Compile Include="LoadBalancer\LoadBalancerLookup.cs" />
     <Compile Include="LoadBalancer\LoadBalanceState.cs" />
     <Compile Include="Config\ConDepEnvConfig.cs" />
     <Compile Include="Config\OperationConfig.cs" />
     <Compile Include="Config\DeploymentUserConfig.cs" />
     <Compile Include="Config\LoadBalancerConfig.cs" />
-    <Compile Include="Config\ConDepNoServersFoundException.cs" />
-    <Compile Include="Config\Extensions.cs" />
     <Compile Include="Config\WebSiteBindingConfig.cs" />
     <Compile Include="Config\WebSiteConfig.cs" />
     <Compile Include="Validation\ConDepInvalidSetupException.cs" />
     <Compile Include="Resources\ConDepResourceFiles.cs" />
-    <Compile Include="Config\Configuration.cs" />
     <Compile Include="LocalOperation.cs" />
     <Compile Include="Validation\IValidate.cs" />
     <Compile Include="Validation\Notification.cs" />

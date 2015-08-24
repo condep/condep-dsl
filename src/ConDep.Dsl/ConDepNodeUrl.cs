@@ -4,11 +4,11 @@ namespace ConDep.Dsl
 {
     public class ConDepNodeUrl
     {
-        private readonly IServerConfig _server;
+        private readonly ServerConfig _server;
         private readonly ConDepSettings _settings;
         const string NODE_LISTEN_URL = "https://{0}:{1}/ConDepNode/";
 
-        public ConDepNodeUrl(IServerConfig server, ConDepSettings settings)
+        public ConDepNodeUrl(ServerConfig server, ConDepSettings settings)
         {
             _server = server;
             _settings = settings;
