@@ -97,7 +97,6 @@
     <Compile Include="Artifact.cs" />
     <Compile Include="ConDepInvalidEnumValueException.cs" />
     <Compile Include="ConDepNodeUrl.cs" />
-    <Compile Include="Config\ISerializerConDepConfig.cs" />
     <Compile Include="Config\ServerConfig.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="IConfigureRemoteInstallation.cs" />
@@ -207,7 +206,6 @@
     <Compile Include="IReportStatus.cs" />
     <Compile Include="Harvesters\ServerInfoHarvester.cs" />
     <Compile Include="Validation\StatusReporter.cs" />
-    <Compile Include="Config\IRequireCustomConfiguration.cs" />
     <Compile Include="ILoadBalance.cs" />
     <Compile Include="LoadBalancer\DefaultLoadBalancer.cs" />
     <Compile Include="LoadBalancer\LoadBalanceState.cs" />
