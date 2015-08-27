@@ -5,9 +5,9 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class DotNetFrameworkHarvester : IHarvestServerInfo
     {
-        private readonly IExecuteRemotePowerShell _executor;
+        private readonly PowerShellExecutor _executor;
 
-        public DotNetFrameworkHarvester(IExecuteRemotePowerShell executor)
+        public DotNetFrameworkHarvester(PowerShellExecutor executor)
         {
             _executor = executor;
         }

@@ -21,6 +21,5 @@ namespace ConDep.Dsl
         /// Provide operations for remote installation
         /// </summary>
         IOfferRemoteInstallation Install { get; }
-
     }
 }

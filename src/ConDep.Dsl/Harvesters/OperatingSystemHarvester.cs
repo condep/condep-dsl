@@ -11,9 +11,9 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class OperatingSystemHarvester : IHarvestServerInfo
     {
-        private readonly IExecuteRemotePowerShell _executor;
+        private readonly PowerShellExecutor _executor;
 
-        public OperatingSystemHarvester(IExecuteRemotePowerShell executor)
+        public OperatingSystemHarvester(PowerShellExecutor executor)
         {
             _executor = executor;
         }

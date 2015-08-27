@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Linq;
 
 namespace ConDep.Dsl.Config
 {
@@ -34,5 +36,24 @@ namespace ConDep.Dsl.Config
         {
             return !string.IsNullOrWhiteSpace(Application);
         }
+
+        public void ValidateMandatoryOptions()
+        {
+            var missingOptions = new List<string>();
+            if (string.IsNullOrWhiteSpace(AssemblyName)) missingOptions.Add("AssemblyName");
+            if (string.IsNullOrWhiteSpace(Environment)) missingOptions.Add("Environment");
+            if (string.IsNullOrWhiteSpace(Application)) missingOptions.Add("Application");
+
+            if (missingOptions.Any())
+            {
+                throw new ConDepMissingOptionsException(missingOptions);
+            }
+        }
+    }
+
+    public class ConDepMissingOptionsException : Exception
+    {
+        public ConDepMissingOptionsException(IEnumerable<string> missingOptions) 
+            : base("Missing mandatory options for " + string.Join(", ", missingOptions)) { }
     }
 }

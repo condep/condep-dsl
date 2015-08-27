@@ -37,7 +37,7 @@ namespace ConDep.Dsl.Tests
         }
     }
 
-    public class MyRemoteOpWithSingleConstructor : RemoteServerOperation
+    public class MyRemoteOpWithSingleConstructor : RemoteCodeOperation
     {
         private readonly string _someMessage;
         private readonly int _someVal;
@@ -69,7 +69,7 @@ namespace ConDep.Dsl.Tests
         public string Value { get; set; }
     }
 
-    public class MyRemoteOpWithWrongConstructorOrder : RemoteServerOperation
+    public class MyRemoteOpWithWrongConstructorOrder : RemoteCodeOperation
     {
         public MyRemoteOpWithWrongConstructorOrder(string val, ComplexObj complx)
             : base(complx, val)
@@ -87,7 +87,7 @@ namespace ConDep.Dsl.Tests
         }
     }
 
-    public class MyRemoteOpWithMultipleConstructors : RemoteServerOperation
+    public class MyRemoteOpWithMultipleConstructors : RemoteCodeOperation
     {
         public MyRemoteOpWithMultipleConstructors()
         {

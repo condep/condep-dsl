@@ -15,18 +15,18 @@ using Newtonsoft.Json;
 
 namespace ConDep.Dsl
 {
-    public abstract class RemoteServerOperation : IExecuteRemotely
+    public abstract class RemoteCodeOperation : IExecuteRemotely
     {
         private readonly IPublishFiles _filePublisher;
-        private readonly IExecuteRemotePowerShell _psExecutor;
+        private readonly PowerShellExecutor _psExecutor;
 
-        protected RemoteServerOperation(IPublishFiles filePublisher, IExecuteRemotePowerShell psExecutor)
+        protected RemoteCodeOperation(IPublishFiles filePublisher, PowerShellExecutor psExecutor)
         {
             _filePublisher = filePublisher;
             _psExecutor = psExecutor;
         }
 
-        protected RemoteServerOperation(params object[] constructorArguments)
+        protected RemoteCodeOperation(params object[] constructorArguments)
         {
             ConstructorArguments = constructorArguments.ToList();
         }

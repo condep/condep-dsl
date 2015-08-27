@@ -6,9 +6,9 @@ namespace ConDep.Dsl.Harvesters
 {
     internal class DiskHarvester : IHarvestServerInfo
     {
-        private readonly IExecuteRemotePowerShell _executor;
+        private readonly PowerShellExecutor _executor;
 
-        public DiskHarvester(IExecuteRemotePowerShell executor)
+        public DiskHarvester(PowerShellExecutor executor)
         {
             _executor = executor;
         }
