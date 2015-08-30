@@ -94,7 +94,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Artifact.cs" />
+    <Compile Include="ExecutionPlan.cs" />
     <Compile Include="ConDepInvalidEnumValueException.cs" />
     <Compile Include="ConDepNodeUrl.cs" />
     <Compile Include="Config\ServerConfig.cs" />
@@ -124,12 +124,9 @@
     <Compile Include="IConfigureRemoteDeployment.cs" />
     <Compile Include="IConfigureRemoteExecution.cs" />
     <Compile Include="IExecuteRemotely.cs" />
-    <Compile Include="IOfferArtifactExecutionOrder.cs" />
-    <Compile Include="IOfferArtifactFollowedBy.cs" />
-    <Compile Include="IOfferArtifactPrecededBy.cs" />
     <Compile Include="IOfferOnlyIf.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
-    <Compile Include="IProvideArtifact.cs" />
+    <Compile Include="IProvideExecutionPlan.cs" />
     <Compile Include="LoadBalancer\ServerLoadBalancerState.cs" />
     <Compile Include="Logging\ILogForCondep.cs" />
     <Compile Include="Logging\Log4NetLoggerBase.cs" />

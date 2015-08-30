@@ -1,12 +1,7 @@
 ﻿namespace ConDep.Dsl
 {
-    public interface IDependOn<T> where T : IProvideArtifact
+    public interface IDependOn<T> where T : IProvideExecutionPlan
     {
          
-    }
-
-    public interface IdependOnSequence
-    {
-        void Configure(IOfferArtifactExecutionOrder sequence);
     }
 }
