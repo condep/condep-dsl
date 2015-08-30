@@ -17,42 +17,34 @@ namespace ConDep.Dsl.Tests
 
         public override void Warn(string message, object[] formatArgs)
         {
-            throw new NotImplementedException();
         }
 
         public override void Warn(string message, Exception ex, object[] formatArgs)
         {
-            throw new NotImplementedException();
         }
 
         public override void Verbose(string message, object[] formatArgs)
         {
-            throw new NotImplementedException();
         }
 
         public override void Verbose(string message, Exception ex, object[] formatArgs)
         {
-            throw new NotImplementedException();
         }
 
         public override void Info(string message, object[] formatArgs)
         {
-            throw new NotImplementedException();
         }
 
         public override void Info(string message, Exception ex, object[] formatArgs)
         {
-            throw new NotImplementedException();
         }
 
         public override void Error(string message, object[] formatArgs)
         {
-            throw new NotImplementedException();
         }
 
         public override void Error(string message, Exception ex, object[] formatArgs)
         {
-            throw new NotImplementedException();
         }
 
         public override void Progress(string message, params object[] formatArgs)
@@ -65,12 +57,10 @@ namespace ConDep.Dsl.Tests
 
         public override void LogSectionStart(string name)
         {
-            throw new NotImplementedException();
         }
 
         public override void LogSectionEnd(string name)
         {
-            throw new NotImplementedException();
         }
 
         public LoggingEvent[] Events { get { return _memAppender.GetEvents(); } }

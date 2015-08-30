@@ -19,27 +19,12 @@ namespace ConDep.Dsl.Logging
         {
             get { return _log; }
         }
-      
-        private bool RunningOnTeamCity
-        {
-            get
-            {
-                if(_tcServiceExist == null)
-                {
-                    try
-                    {
-                        var tcService = new ServiceController("TCBuildAgent");
-                        _tcServiceExist = tcService.Status == ServiceControllerStatus.Running;
-                    }
-                    catch
-                    {
-                        _tcServiceExist = false;
-                    }
-                }
-                return _tcServiceExist.Value;
-            }
-        }
 
+        public void ResolveLogger(IResolveLogger resolver)
+        {
+            Initialize(resolver.GetLogger());
+        }
+      
         public static void Info(string message, params object[] formatArgs)
         {
             _log.Info(message, formatArgs);
@@ -150,5 +135,10 @@ namespace ConDep.Dsl.Logging
             }
         }
 
+    }
+
+    public interface IResolveLogger
+    {
+        ILogForConDep GetLogger();
     }
 }

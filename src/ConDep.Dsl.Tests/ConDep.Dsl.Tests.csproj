@@ -117,14 +117,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppDependencyTests.cs" />
     <Compile Include="CertTests.cs" />
     <Compile Include="CompositeProviders\NServiceBus.cs" />
     <Compile Include="ConDepResourceFilesTests.cs" />
     <Compile Include="ImpersonatorTests.cs" />
-    <Compile Include="JsonParsingTests.cs" />
     <Compile Include="LoadBalancerTests.cs" />
-    <Compile Include="LoggerTests.cs" />
     <Compile Include="MockLoadBalancer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -134,11 +131,8 @@
     <Compile Include="CompositeProviders\PowerShell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteServerOperationTests.cs" />
-    <Compile Include="TeamCityLoggerTests.cs" />
-    <Compile Include="TiersTests.cs" />
-    <Compile Include="UnitTestLogger.cs" />
     <Compile Include="SimpleTestFixtureBase.cs" />
-    <Compile Include="YmlConfigTests.cs" />
+    <Compile Include="UnitTestLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConDep.Dsl\ConDep.Dsl.csproj">
