@@ -1,6 +1,6 @@
 condep-dsl
 ==========
-This is the core Domain Specific Language (DSL) in ConDep. You use the ConDep.Dsl when creating your own/community remote or local operations for ConDep. For details of how to do this cehck out [http://www.condep.io/docs/3-0/custom-operations/](http://www.condep.io/docs/3-0/custom-operations/).
+This is the core Domain Specific Language (DSL) in ConDep. You use the ConDep.Dsl when creating your own/community remote or local operations for ConDep. For details of how to do this check out [http://www.condep.io/docs/3-0/custom-operations/](http://www.condep.io/docs/3-0/custom-operations/).
 
 Need help?
 ----------
