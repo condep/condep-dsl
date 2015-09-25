@@ -8,6 +8,11 @@ namespace ConDep.Dsl.Harvesters
     {
         private readonly PowerShellExecutor _executor;
 
+        public DiskHarvester()
+        {
+            _executor = new PowerShellExecutor();
+        }
+
         public DiskHarvester(PowerShellExecutor executor)
         {
             _executor = executor;

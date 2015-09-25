@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
-using ConDep.Dsl.PSScripts.ConDep;
-
-namespace ConDep.Dsl.PSScripts.PfxInstaller
+﻿namespace ConDep.Dsl.PSScripts.PfxInstaller
 {
     public class PfxInstallerResource
     {

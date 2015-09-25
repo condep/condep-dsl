@@ -7,6 +7,11 @@ namespace ConDep.Dsl.Harvesters
     {
         private readonly PowerShellExecutor _executor;
 
+        public DotNetFrameworkHarvester()
+        {
+            _executor = new PowerShellExecutor();
+        }
+
         public DotNetFrameworkHarvester(PowerShellExecutor executor)
         {
             _executor = executor;

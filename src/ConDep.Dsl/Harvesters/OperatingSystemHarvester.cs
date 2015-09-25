@@ -13,6 +13,11 @@ namespace ConDep.Dsl.Harvesters
     {
         private readonly PowerShellExecutor _executor;
 
+        public OperatingSystemHarvester()
+        {
+            _executor = new PowerShellExecutor();
+        }
+
         public OperatingSystemHarvester(PowerShellExecutor executor)
         {
             _executor = executor;

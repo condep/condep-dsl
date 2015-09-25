@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace ConDep.Dsl.Config
 {
@@ -14,12 +15,14 @@ namespace ConDep.Dsl.Config
             SkipHarvesting = true;
         }
 
-        public string Application { get; set; }
+        public string Runbook { get; set; }
         public bool DeployOnly { get; set; }
         public bool StopAfterMarkedServer { get; set; }
         public bool ContinueAfterMarkedServer { get; set; }
         public bool DeployAllApps { get; set; }
+
         public Assembly Assembly { get; set; }
+        
         public LoadBalancerSuspendMethod SuspendMode { get; set; }
         public TraceLevel TraceLevel { get; set; }
         public string WebQAddress { get; set; }
@@ -34,7 +37,7 @@ namespace ConDep.Dsl.Config
 
         public bool HasApplicationDefined()
         {
-            return !string.IsNullOrWhiteSpace(Application);
+            return !string.IsNullOrWhiteSpace(Runbook);
         }
 
         public void ValidateMandatoryOptions()
@@ -42,18 +45,12 @@ namespace ConDep.Dsl.Config
             var missingOptions = new List<string>();
             if (string.IsNullOrWhiteSpace(AssemblyName)) missingOptions.Add("AssemblyName");
             if (string.IsNullOrWhiteSpace(Environment)) missingOptions.Add("Environment");
-            if (string.IsNullOrWhiteSpace(Application)) missingOptions.Add("Application");
+            if (string.IsNullOrWhiteSpace(Runbook)) missingOptions.Add("Runbook");
 
             if (missingOptions.Any())
             {
                 throw new ConDepMissingOptionsException(missingOptions);
             }
         }
-    }
-
-    public class ConDepMissingOptionsException : Exception
-    {
-        public ConDepMissingOptionsException(IEnumerable<string> missingOptions) 
-            : base("Missing mandatory options for " + string.Join(", ", missingOptions)) { }
     }
 }

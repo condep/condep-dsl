@@ -179,15 +179,12 @@ namespace ConDep.Dsl.Remote
 
     internal class RemoteScriptFolders
     {
-        public RemoteScriptFolders()
-        {
-        }
-
         public RemoteScriptFolders(ServerConfig server)
         {
-            PSTempFolder = server.GetServerInfo().TempFolderPowerShell;
-            NodeScriptFolder = server.GetServerInfo().ConDepNodeScriptsFolder;
-            ConDepScriptFolder = server.GetServerInfo().ConDepScriptsFolder;
+            var serverInfo = server.GetServerInfo();
+            PSTempFolder = string.IsNullOrWhiteSpace(serverInfo.TempFolderPowerShell) ? string.Empty : serverInfo.TempFolderPowerShell;
+            NodeScriptFolder = serverInfo.ConDepNodeScriptsFolder;
+            ConDepScriptFolder = serverInfo.ConDepScriptsFolder;
         }
 
         public string PSTempFolder { get; set; }

@@ -25,7 +25,7 @@ namespace ConDep.Dsl.Config
         {
             get
             {
-                return Path.Combine(TempFolderPowerShell, RELATIVE_CONDEP_SCRIPTS_FOLDER);
+                return string.IsNullOrWhiteSpace(TempFolderPowerShell) ? string.Empty : Path.Combine(TempFolderPowerShell, RELATIVE_CONDEP_SCRIPTS_FOLDER);
             }
         }
 
@@ -33,7 +33,7 @@ namespace ConDep.Dsl.Config
         {
             get
             {
-                return Path.Combine(TempFolderDos, RELATIVE_CONDEP_SCRIPTS_FOLDER);
+                return string.IsNullOrWhiteSpace(TempFolderDos) ? string.Empty : Path.Combine(TempFolderDos, RELATIVE_CONDEP_SCRIPTS_FOLDER);
             }
         }
 
@@ -41,7 +41,7 @@ namespace ConDep.Dsl.Config
         {
             get
             {
-                return Path.Combine(TempFolderPowerShell, RELATIVE_CONDEPNODE_SCRIPTS_FOLDER);
+                return string.IsNullOrWhiteSpace(TempFolderPowerShell) ? string.Empty : Path.Combine(TempFolderPowerShell, RELATIVE_CONDEPNODE_SCRIPTS_FOLDER);
             }
         }
 

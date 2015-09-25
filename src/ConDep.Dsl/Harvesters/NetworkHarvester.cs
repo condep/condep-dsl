@@ -9,6 +9,11 @@ namespace ConDep.Dsl.Harvesters
     {
         private readonly PowerShellExecutor _executor;
 
+        public NetworkHarvester()
+        {
+            _executor = new PowerShellExecutor();
+        }
+
         public NetworkHarvester(PowerShellExecutor executor)
         {
             _executor = executor;
