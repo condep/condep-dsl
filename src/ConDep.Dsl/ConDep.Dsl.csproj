@@ -134,7 +134,6 @@
     <Compile Include="PSScripts\PfxInstaller\PfxInstallerResource.cs" />
     <Compile Include="RemoteCodeOperation.cs" />
     <Compile Include="RemoteCompositeOperation.cs" />
-    <Compile Include="RemoteCompositeOperationBase.cs" />
     <Compile Include="Logging\RemotePowerShellLogger.cs" />
     <Compile Include="ForEachServerOperation.cs" />
     <Compile Include="Remote\ConDepCredSSPException.cs" />

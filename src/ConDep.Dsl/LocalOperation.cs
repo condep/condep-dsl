@@ -5,7 +5,7 @@ using ConDep.Dsl.Validation;
 
 namespace ConDep.Dsl
 {
-    public abstract class LocalOperation : IValidate, IExecuteLocally
+    public abstract class LocalOperation : IExecuteLocally
 	{
         public abstract void Execute(IReportStatus status, ConDepSettings settings, CancellationToken token);
         public abstract string Name { get; }
