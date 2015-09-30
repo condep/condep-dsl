@@ -1,4 +1,4 @@
-properties {
+﻿properties {
 	$pwd = Split-Path $psake.build_script_file	
 	$build_directory  = "$pwd\output\condep-dsl"
 	$configuration = "Release"
@@ -56,7 +56,7 @@ task Create-BuildSpec-ConDep-Dsl {
 			@{ Name="log4net"; Version="[2.0.0]"},
 			@{ Name="Newtonsoft.Json"; Version="[6.0.6,7)"},
 			@{ Name="SlowCheetah.Tasks.Unofficial"; Version="[1.0.0]"},
-			@{ Name="Microsoft.AspNet.WebApi.Client"; Version="[4.0.20710.0]"}
+			@{ Name="Microsoft.AspNet.WebApi.Client"; Version="[4.0.30506]"}
 		) `
 		-files @(
 			@{ Path="ConDep.Dsl\ConDep.Dsl.dll"; Target="lib/net40"}, 
