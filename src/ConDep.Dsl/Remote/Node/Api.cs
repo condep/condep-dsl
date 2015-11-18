@@ -39,6 +39,7 @@ namespace ConDep.Dsl.Remote.Node
 
         public SyncResult SyncDir(string srcPath, string dstPath)
         {
+            Logger.Verbose(string.Format("Syncing directory from [{0}] to [{1}]", srcPath, dstPath));
             var urlTemplate = DiscoverUrl("http://www.con-dep.net/rels/sync/dir_template");
             var url = string.Format(urlTemplate, dstPath);
             Logger.Verbose(string.Format("Using this url to sync: {0}", url));
@@ -47,6 +48,7 @@ namespace ConDep.Dsl.Remote.Node
 
         public SyncResult SyncFile(string srcPath, string dstPath)
         {
+            Logger.Verbose(string.Format("Syncing file from [{0}] to [{1}]", srcPath, dstPath));
             var url = DiscoverUrl("http://www.con-dep.net/rels/sync/file_template");
             var syncResponse = _client.GetAsync(string.Format(url, dstPath)).Result;
 
@@ -269,7 +271,12 @@ namespace ConDep.Dsl.Remote.Node
             var message = new HttpRequestMessage();
             var content = new MultipartSyncDirContent();
 
+            Logger.Verbose("Current working directory is " + Directory.GetCurrentDirectory());
             var clientDir = new DirectoryInfo(srcRoot);
+            if (!clientDir.Exists)
+            {
+                throw new FileNotFoundException("File not found.", srcRoot);
+            }
 
             Logger.Verbose("Diffing server file structure with client...");
             var diffs = nodeDir.Diff(clientDir);
