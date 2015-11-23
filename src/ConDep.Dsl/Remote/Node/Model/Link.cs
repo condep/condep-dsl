@@ -41,9 +41,9 @@ namespace ConDep.Dsl.Remote.Node.Model
         public bool Equals(Link other)
         {
             if (other == null) return false;
-            if (Rel != other.Rel) return false;
-            if (Href != other.Href) return false;
-            if (Method != other.Method) return false;
+            if (!Rel.Equals(other.Rel, StringComparison.InvariantCultureIgnoreCase)) return false;
+            if (!Href.Equals(other.Href, StringComparison.InvariantCultureIgnoreCase)) return false;
+            if (!Method.Equals(other.Method, StringComparison.InvariantCultureIgnoreCase)) return false;
             if (Links.Intersect(other.Links).Any()) return false;
             return true;
         }

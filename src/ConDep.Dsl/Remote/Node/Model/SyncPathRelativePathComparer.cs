@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ConDep.Dsl.Remote.Node.Model
@@ -6,7 +7,7 @@ namespace ConDep.Dsl.Remote.Node.Model
     {
         public bool Equals(SyncPath x, SyncPath y)
         {
-            return x.RelativePath.Equals(y.RelativePath);
+            return x.RelativePath.Equals(y.RelativePath, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public int GetHashCode(SyncPath obj)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace ConDep.Dsl.Remote.Node.Model
         public bool EqualTo(DirectoryInfo dirInfo, string dirInfoRootPath)
         {
             if(dirInfo == null) return false;
-            if (RelativePath != dirInfo.TrimPath(dirInfoRootPath)) return false;
+            if (RelativePath.Equals(dirInfo.TrimPath(dirInfoRootPath), StringComparison.InvariantCultureIgnoreCase)) return false;
             if (Attributes != dirInfo.Attributes.ToString()) return false;
             return true;
         }
@@ -41,7 +42,7 @@ namespace ConDep.Dsl.Remote.Node.Model
 
         private SyncDirFile GetFileByRelativePath(string relativePath)
         {
-            foreach (var file in Files.Where(file => file.RelativePath == relativePath))
+            foreach (var file in Files.Where(file => file.RelativePath.Equals(relativePath, StringComparison.InvariantCultureIgnoreCase)))
             {
                 return file;
             }
@@ -51,7 +52,7 @@ namespace ConDep.Dsl.Remote.Node.Model
 
         private SyncDirDirectory GetDirByRelativePath(string relativePath)
         {
-            foreach (var dir in Directories.Where(dir => dir.RelativePath == relativePath))
+            foreach (var dir in Directories.Where(dir => dir.RelativePath.Equals(relativePath, StringComparison.InvariantCultureIgnoreCase)))
             {
                 return dir;
             }

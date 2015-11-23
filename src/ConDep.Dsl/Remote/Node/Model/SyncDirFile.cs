@@ -26,7 +26,7 @@ namespace ConDep.Dsl.Remote.Node.Model
         public bool EqualTo(FileInfo other, string fileInfoRootPath)
         {
             if (other == null) return false;
-            if (RelativePath != other.TrimPath(fileInfoRootPath)) return false;
+            if (!RelativePath.Equals(other.TrimPath(fileInfoRootPath))) return false;
             if (LastWriteTimeUtc != other.LastWriteTimeUtc) return false;
             if (Size != other.Length) return false;
             if (Attributes != other.Attributes.ToString()) return false;
