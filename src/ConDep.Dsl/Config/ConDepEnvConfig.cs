@@ -36,6 +36,17 @@ namespace ConDep.Dsl.Config
             get { return _powerShell; }
             set { _powerShell = value; }
         }
+
+        public void AddServer(string name)
+        {
+            Servers.Add(new ServerConfig
+            {
+                Name = name,
+                DeploymentUser = DeploymentUser,
+                Node = new NodeConfig() { Port = 4444, TimeoutInSeconds = 100 },
+                PowerShell = new PowerShellConfig() { HttpPort = 5985, HttpsPort = 5986 }
+            });            
+        }
     }
 
     public static class TiersExentsions
