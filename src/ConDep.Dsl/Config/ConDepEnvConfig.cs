@@ -10,6 +10,7 @@ namespace ConDep.Dsl.Config
         private string[] _powerShellScriptFolders = new string[0];
         private NodeConfig _node = new NodeConfig();
         private PowerShellConfig _powerShell = new PowerShellConfig();
+        private DeploymentUserConfig _deploymentUserRemote;
         public string EnvironmentName { get; set; }
 
         public string[] PowerShellScriptFolders
@@ -21,7 +22,11 @@ namespace ConDep.Dsl.Config
         public LoadBalancerConfig LoadBalancer { get; set; }
         public IList<ServerConfig> Servers { get; set; }
         public IList<TiersConfig> Tiers { get; set; }
-        public DeploymentUserConfig DeploymentUser { get; set; }
+        public DeploymentUserConfig DeploymentUser
+        {
+            get { return _deploymentUserRemote ?? (_deploymentUserRemote = new DeploymentUserConfig()); }
+            set { _deploymentUserRemote = value; }
+        }
         public dynamic OperationsConfig { get; set; }
         public bool UsingTiers { get { return Tiers != null && Tiers.Count > 0; } }
 
@@ -44,7 +49,8 @@ namespace ConDep.Dsl.Config
                 Name = name,
                 DeploymentUser = DeploymentUser,
                 Node = new NodeConfig() { Port = 4444, TimeoutInSeconds = 100 },
-                PowerShell = new PowerShellConfig() { HttpPort = 5985, HttpsPort = 5986 }
+                PowerShell = new PowerShellConfig() { HttpPort = 5985, HttpsPort = 5986 },
+                StopServer = false
             });            
         }
     }
