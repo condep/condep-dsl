@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.LoadBalancer;
+using ConDep.Dsl.Logging;
 
 namespace ConDep.Dsl.Sequence
 {
@@ -56,6 +57,12 @@ namespace ConDep.Dsl.Sequence
 
         public override void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
         {
+            if (_servers == null || !_servers.Any())
+            {
+                Logger.Warn("No servers available to load balancer.");
+                return;
+            }
+
             var servers = _servers.ToList();
             var roundRobinMaxOfflineServers = (int)Math.Ceiling(((double)servers.Count) / 2);
             var activeServerIndex = _servers.ToList().IndexOf(server);
