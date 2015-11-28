@@ -4,6 +4,33 @@ using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
+    public class RemoteOperationsBuilderNew : IOfferRemoteOperations
+    {
+        private readonly ServerConfig _server;
+
+        public RemoteOperationsBuilderNew(ServerConfig server)
+        {
+            _server = server;
+        }
+
+        public IOfferRemoteOperations OnlyIf(Predicate<ServerInfo> condition)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOfferRemoteOperations OnlyIf(string conditionScript)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOfferRemoteDeployment Deploy { get; }
+        public IOfferRemoteExecution Execute { get; }
+        public IOfferRemoteConfiguration Configure { get; }
+        public IOfferRemoteInstallation Install { get; }
+
+        public Result Result { get; set; }
+    }
+
     public class RemoteOperationsBuilder : IOfferRemoteOperations
     {
         private readonly IOfferRemoteSequence _remoteSequence;
