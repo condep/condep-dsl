@@ -111,7 +111,7 @@
     <Compile Include="Result.cs" />
     <Compile Include="Runbook.cs" />
     <Compile Include="ConDepInvalidEnumValueException.cs" />
-    <Compile Include="ConDepNodeUrl.cs" />
+    <Compile Include="Remote\Node\ConDepNodeUrl.cs" />
     <Compile Include="Config\ServerConfig.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
     <Compile Include="Builders\RemoteConfigurationBuilder.cs" />

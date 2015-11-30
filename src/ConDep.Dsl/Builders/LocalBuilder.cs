@@ -3,9 +3,9 @@ using ConDep.Dsl.Config;
 
 namespace ConDep.Dsl.Builders
 {
-    public class LocalBuilder : IOfferResult
+    public abstract class LocalBuilder : IOfferResult
     {
-        public LocalBuilder(ConDepSettings settings, CancellationToken token)
+        protected LocalBuilder(ConDepSettings settings, CancellationToken token)
         {
             Settings = settings;
             Token = token;
@@ -16,5 +16,7 @@ namespace ConDep.Dsl.Builders
         public CancellationToken Token { get; }
 
         public Result Result { get; set; }
+
+        public abstract IOfferLocalOperations Dsl { get; }
     }
 }

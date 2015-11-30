@@ -18,6 +18,6 @@ namespace ConDep.Dsl.Builders
             Install = new RemoteInstallationBuilder(this, server, settings, token);
         }
 
-        public override IOfferRemoteOperations Dsl { get { return this; } }
+        public override IOfferRemoteOperations Dsl => this;
     }
 }

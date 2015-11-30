@@ -5,7 +5,7 @@ namespace ConDep.Dsl.Builders
 {
     public abstract class RemoteBuilder : IOfferResult
     {
-        public RemoteBuilder(ServerConfig server, ConDepSettings settings, CancellationToken token)
+        protected RemoteBuilder(ServerConfig server, ConDepSettings settings, CancellationToken token)
         {
             Server = server;
             Settings = settings;

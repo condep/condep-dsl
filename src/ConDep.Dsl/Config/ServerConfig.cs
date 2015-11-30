@@ -12,7 +12,6 @@ namespace ConDep.Dsl.Config
 
         public string Name { get; set; }
         public bool StopServer { get; set; }
-        public IList<WebSiteConfig> WebSites { get; set; }
         public DeploymentUserConfig DeploymentUser
         {
             get { return _deploymentUserRemote ?? (_deploymentUserRemote = new DeploymentUserConfig()); }

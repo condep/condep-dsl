@@ -8,5 +8,7 @@ namespace ConDep.Dsl.Builders
         public LocalOperationsBuilder(ConDepSettings settings, CancellationToken token) : base(settings, token)
         {
         }
+
+        public override IOfferLocalOperations Dsl  => this;
     }
 }
