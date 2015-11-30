@@ -1,7 +1,5 @@
-using System;
 using System.Threading;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {

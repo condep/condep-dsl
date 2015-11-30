@@ -9,14 +9,13 @@ namespace ConDep.Dsl.Remote.Node.Model
     {
         private readonly List<SyncDirFile> _files = new List<SyncDirFile>();
         private readonly List<SyncDirDirectory> _dirs = new List<SyncDirDirectory>();
-        private readonly List<Link> _links = new List<Link>();
 
         public string FullPath { get; set; }
         public string RelativePath { get; set; }
         public string Attributes { get; set; }
         public IEnumerable<SyncDirFile> Files { get { return _files; } }
         public IEnumerable<SyncDirDirectory> Directories { get { return _dirs; } }
-        public List<Link> Links { get { return _links; } }
+        public List<Link> Links { get; } = new List<Link>();
 
         public bool EqualTo(DirectoryInfo dirInfo, string dirInfoRootPath)
         {

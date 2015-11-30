@@ -4,19 +4,17 @@ namespace ConDep.Dsl
 {
     public class TierAttribute : Attribute
     {
-        private readonly string _tierName;
-
         public TierAttribute(string tierName)
         {
-            _tierName = tierName;
+            TierName = tierName;
         }
 
         public TierAttribute(Tier tier)
         {
-            _tierName = GetTierName(tier);
+            TierName = GetTierName(tier);
         }
 
-        public string TierName { get { return _tierName; } }
+        public string TierName { get; }
 
         private string GetTierName(Tier tier)
         {

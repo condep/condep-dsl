@@ -9,7 +9,6 @@ namespace ConDep.Dsl.Config
     {
         private DeploymentUserConfig _deploymentUserRemote;
         private readonly ServerInfo _serverInfo = new ServerInfo();
-        private readonly ServerLoadBalancerState _loadBalancerState = new ServerLoadBalancerState();
 
         public string Name { get; set; }
         public bool StopServer { get; set; }
@@ -21,7 +20,7 @@ namespace ConDep.Dsl.Config
         }
 
         public string LoadBalancerFarm { get; set; }
-        public ServerLoadBalancerState LoadBalancerState { get { return _loadBalancerState; } }
+        public ServerLoadBalancerState LoadBalancerState { get; } = new ServerLoadBalancerState();
 
         public PowerShellConfig PowerShell { get; set; }
 

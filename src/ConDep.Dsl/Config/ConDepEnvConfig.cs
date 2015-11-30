@@ -1,4 +1,4 @@
-﻿using System;   
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,8 +48,8 @@ namespace ConDep.Dsl.Config
             {
                 Name = name,
                 DeploymentUser = DeploymentUser,
-                Node = new NodeConfig() { Port = 4444, TimeoutInSeconds = 100 },
-                PowerShell = new PowerShellConfig() { HttpPort = 5985, HttpsPort = 5986 },
+                Node = new NodeConfig { Port = 4444, TimeoutInSeconds = 100 },
+                PowerShell = new PowerShellConfig { HttpPort = 5985, HttpsPort = 5986 },
                 StopServer = false
             });            
         }

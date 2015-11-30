@@ -44,7 +44,7 @@ namespace ConDep.Dsl
         private static JsonSerializerSettings JsonSettings => new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
-            Formatting = Formatting.Indented,
+            Formatting = Formatting.Indented
         };
     }
 }

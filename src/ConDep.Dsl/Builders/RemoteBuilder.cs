@@ -5,31 +5,18 @@ namespace ConDep.Dsl.Builders
 {
     public abstract class RemoteBuilder : IOfferResult
     {
-        private readonly ServerConfig _server;
-        private readonly ConDepSettings _settings;
-        private readonly CancellationToken _token;
-
         public RemoteBuilder(ServerConfig server, ConDepSettings settings, CancellationToken token)
         {
-            _server = server;
-            _settings = settings;
-            _token = token;
+            Server = server;
+            Settings = settings;
+            Token = token;
         }
 
-        public ConDepSettings Settings
-        {
-            get { return _settings; }
-        }
+        public ConDepSettings Settings { get; }
 
-        public CancellationToken Token
-        {
-            get { return _token; }
-        }
+        public CancellationToken Token { get; }
 
-        public ServerConfig Server
-        {
-            get { return _server; }
-        }
+        public ServerConfig Server { get; }
 
         public Result Result { get; set; }
 

@@ -19,16 +19,13 @@ namespace ConDep.Dsl.Remote
             {
                 if (_exceptions.Count > 1)
                 {
-                    int counter = 1;
+                    var counter = 1;
                     return _exceptions.Aggregate("",
                                                  (current, exception) =>
                                                  current +
                                                  string.Format("Exception #{0}: " + exception + "\n", counter++));
                 }
-                else
-                {
-                    return _exceptions.Aggregate("", (current, exception) => current + exception);
-                }
+                return _exceptions.Aggregate("", (current, exception) => current + exception);
             }
         }
 

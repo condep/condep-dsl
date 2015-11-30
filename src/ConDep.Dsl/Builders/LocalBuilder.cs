@@ -5,24 +5,15 @@ namespace ConDep.Dsl.Builders
 {
     public class LocalBuilder : IOfferResult
     {
-        private readonly ConDepSettings _settings;
-        private readonly CancellationToken _token;
-
         public LocalBuilder(ConDepSettings settings, CancellationToken token)
         {
-            _settings = settings;
-            _token = token;
+            Settings = settings;
+            Token = token;
         }
 
-        public ConDepSettings Settings
-        {
-            get { return _settings; }
-        }
+        public ConDepSettings Settings { get; }
 
-        public CancellationToken Token
-        {
-            get { return _token; }
-        }
+        public CancellationToken Token { get; }
 
         public Result Result { get; set; }
     }

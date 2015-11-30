@@ -8,7 +8,7 @@ namespace ConDep.Dsl.Config
     [Serializable]
     public class DotNetFrameworks : IEnumerable<DotNetFrameworkVersion>
     {
-        private List<DotNetFrameworkVersion> _versions = new List<DotNetFrameworkVersion>(); 
+        private readonly List<DotNetFrameworkVersion> _versions = new List<DotNetFrameworkVersion>(); 
         public void Add(dynamic dotNetVersion)
         {
             _versions.Add(new DotNetFrameworkVersion

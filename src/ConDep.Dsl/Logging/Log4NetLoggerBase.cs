@@ -55,7 +55,7 @@ namespace ConDep.Dsl.Logging
             var level = GetLog4NetLevel(traceLevel);
             var formattedMessage = (formatArgs != null && formatArgs.Length > 0) ? string.Format(message, formatArgs) : message;
 
-            string[] lines = formattedMessage.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            var lines = formattedMessage.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             foreach (var inlineMessage in lines)
             {
                 _log4netLog.Logger.Log(typeof(Logger), level, inlineMessage, ex);

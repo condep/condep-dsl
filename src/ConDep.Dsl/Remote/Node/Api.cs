@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -247,7 +246,7 @@ namespace ConDep.Dsl.Remote.Node
             var content = new StreamContent(fileStream);
 
             var link = nodeFile.Links.GetByRel("http://www.con-dep.net/rels/sync/file_sync_template");
-            var url = string.Format(link.Href, clientFile.LastWriteTimeUtc.ToFileTime(), clientFile.Attributes.ToString());
+            var url = string.Format(link.Href, clientFile.LastWriteTimeUtc.ToFileTime(), clientFile.Attributes);
 
             message.Method = link.HttpMethod;
             message.Content = content;

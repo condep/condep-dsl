@@ -10,7 +10,7 @@ namespace ConDep.Dsl.Remote
 {
     internal class ConDepPSHostUI : PSHostUserInterface
     {
-        private ConDepPsHostRawUI _rawUi;
+        private readonly ConDepPsHostRawUI _rawUi;
 
         public ConDepPSHostUI()
         {

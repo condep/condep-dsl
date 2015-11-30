@@ -9,7 +9,7 @@ namespace ConDep.Dsl.Remote
         private readonly string _username;
         private readonly string _password;
         private readonly string _domain;
-        private bool _disposed = false;
+        private bool _disposed;
         private IntPtr _tokenDuplicate;
         private WindowsImpersonationContext _impersonationContext;
         private IntPtr _token;

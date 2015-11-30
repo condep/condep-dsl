@@ -11,7 +11,7 @@ namespace ConDep.Dsl.Remote
         /// <summary>
         /// The type of logon operation to perform.
         /// </summary>
-        internal enum LogonType : int
+        internal enum LogonType
         {
             /// <summary>
             /// This logon type is intended for users who will be interactively
@@ -84,7 +84,7 @@ namespace ConDep.Dsl.Remote
         /// <summary>
         /// Specifies the logon provider.
         /// </summary>
-        internal enum LogonProvider : int
+        internal enum LogonProvider
         {
             /// <summary>
             /// Use the standard logon provider for the system.
@@ -115,7 +115,7 @@ namespace ConDep.Dsl.Remote
         /// <summary>
         /// The type of logon operation to perform.
         /// </summary>
-        internal enum SecurityImpersonationLevel : int
+        internal enum SecurityImpersonationLevel
         {
             /// <summary>
             /// The server process cannot obtain identification information

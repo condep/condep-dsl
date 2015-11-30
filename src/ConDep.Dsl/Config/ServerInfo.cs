@@ -10,11 +10,7 @@ namespace ConDep.Dsl.Config
         private const string RELATIVE_CONDEP_SCRIPTS_FOLDER = @"PSScripts\ConDep";
         private const string RELATIVE_CONDEPNODE_SCRIPTS_FOLDER = @"PSScripts\ConDepNode";
 
-        private readonly DotNetFrameworks _dotNetFrameworks = new DotNetFrameworks();
-        private readonly IList<NetworkInfo> _network = new List<NetworkInfo>();
-        private readonly IList<DiskInfo> _disks = new List<DiskInfo>(); 
-
-        public DotNetFrameworks DotNetFrameworks { get { return _dotNetFrameworks; } }
+        public DotNetFrameworks DotNetFrameworks { get; } = new DotNetFrameworks();
         public OperatingSystemInfo OperatingSystem { get; set; }
 
         public string TempFolderPowerShell { get; set; }
@@ -45,14 +41,8 @@ namespace ConDep.Dsl.Config
             }
         }
 
-        public IList<NetworkInfo> Network
-        {
-            get { return _network; }
-        }
+        public IList<NetworkInfo> Network { get; } = new List<NetworkInfo>();
 
-        public IList<DiskInfo> Disks
-        {
-            get { return _disks; }
-        }
+        public IList<DiskInfo> Disks { get; } = new List<DiskInfo>();
     }
 }

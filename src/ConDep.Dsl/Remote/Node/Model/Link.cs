@@ -8,15 +8,9 @@ namespace ConDep.Dsl.Remote.Node.Model
 
     public class Link : IEquatable<Link>
     {
-        private IEnumerable<Link> _links = new List<Link>();
-
         public string Rel { get; set; }
         public string Href { get; set; }
-        public IEnumerable<Link> Links
-        {
-            get { return _links; }
-            set { _links = value; }
-        }
+        public IEnumerable<Link> Links { get; set; } = new List<Link>();
 
         public string Method { get; set; }
 

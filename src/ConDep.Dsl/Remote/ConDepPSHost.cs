@@ -8,12 +8,11 @@ namespace ConDep.Dsl.Remote
 {
     internal class ConDepPSHost : PSHost
     {
-        private readonly Guid _hostId;
-        private ConDepPSHostUI _hostUi;
+        private readonly ConDepPSHostUI _hostUi;
 
         public ConDepPSHost()
         {
-            _hostId = Guid.NewGuid();
+            InstanceId = Guid.NewGuid();
             _hostUi = new ConDepPSHostUI();
         }
 
@@ -52,10 +51,7 @@ namespace ConDep.Dsl.Remote
             get { return Assembly.GetExecutingAssembly().GetName().Version; }
         }
 
-        public override Guid InstanceId
-        {
-            get { return _hostId; }
-        }
+        public override Guid InstanceId { get; }
 
         public override PSHostUserInterface UI
         {

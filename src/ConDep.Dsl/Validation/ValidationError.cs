@@ -2,16 +2,11 @@ namespace ConDep.Dsl.Validation
 {
     public class ValidationError
 	{
-		private readonly string _message;
-
-		public ValidationError(string message)
+        public ValidationError(string message)
 		{
-			_message = message;
+			Message = message;
 		}
 
-		public string Message
-		{
-			get { return _message; }
-		}
+		public string Message { get; }
 	}
 }

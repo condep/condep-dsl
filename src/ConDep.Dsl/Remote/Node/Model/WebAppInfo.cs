@@ -4,9 +4,7 @@ namespace ConDep.Dsl.Remote.Node.Model
 {
     public class WebAppInfo
     {
-        private readonly List<Link> _links = new List<Link>();
-
-        public List<Link> Links { get { return _links; } }
+        public List<Link> Links { get; } = new List<Link>();
 
         public string PhysicalPath { get; set; }
 

@@ -40,7 +40,7 @@ namespace ConDep.Dsl.Remote.Node
                                                          {
                                                              Name = name,
                                                              FileName = fileName,
-                                                             FileNameStar = fileName,
+                                                             FileNameStar = fileName
                                                          };
                 var parameters = content.Headers.ContentDisposition.Parameters;
 
