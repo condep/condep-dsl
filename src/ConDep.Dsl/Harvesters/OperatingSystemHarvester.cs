@@ -64,10 +64,10 @@ namespace ConDep.Dsl.Harvesters
     $packages = Get-ChildItem -Path $regKeys | Get-ItemProperty | where-object { $_.DisplayName -ne $null } | select-object -Property DisplayName,DisplayVersion | foreach{$_.DisplayName + "";"" + $_.DisplayVersion}
     $osInfo.InstalledSoftwarePackages = $packages
 
-    return $osInfo
+    return @{ConDepResult = $osInfo}
 ";
 
-            var osInfoResult = _executor.Execute(server, osInfo, mod => mod.LoadConDepModule = false, logOutput: false).FirstOrDefault();
+            var osInfoResult = _executor.Execute(server, osInfo, mod => mod.LoadConDepModule = false, logOutput: false);
 
             if (osInfoResult != null)
             {

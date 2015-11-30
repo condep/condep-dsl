@@ -3,7 +3,7 @@ using ConDep.Dsl.Config;
 
 namespace ConDep.Dsl
 {
-    public interface IOfferRemoteConfiguration : IOfferOnlyIf<IOfferRemoteConfiguration>
+    public interface IOfferRemoteConfiguration : IOfferResult
     {
     }
 }

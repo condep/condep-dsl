@@ -96,17 +96,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Artifact.cs" />
+    <Compile Include="Builders\LocalBuilder.cs" />
+    <Compile Include="Builders\RemoteBuilder.cs" />
+    <Compile Include="ChunkExtension.cs" />
     <Compile Include="Config\ConDepMissingOptionsException.cs" />
+    <Compile Include="IOfferOperations.cs" />
+    <Compile Include="IOfferResult.cs" />
+    <Compile Include="LocalOperation.cs" />
+    <Compile Include="OperationExecutor.cs" />
+    <Compile Include="OperationsBuilder.cs" />
+    <Compile Include="RemoteCodeOperation.cs" />
+    <Compile Include="RemoteOperation.cs" />
+    <Compile Include="Result.cs" />
     <Compile Include="Runbook.cs" />
     <Compile Include="ConDepInvalidEnumValueException.cs" />
     <Compile Include="ConDepNodeUrl.cs" />
     <Compile Include="Config\ServerConfig.cs" />
     <Compile Include="Harvesters\HarvesterFactory.cs" />
-    <Compile Include="IConfigureRemoteInstallation.cs" />
     <Compile Include="Builders\RemoteConfigurationBuilder.cs" />
     <Compile Include="Builders\RemoteInstallationBuilder.cs" />
     <Compile Include="Builders\LocalOperationsBuilder.cs" />
-    <Compile Include="Builders\RemoteCompositeBuilder.cs" />
     <Compile Include="Builders\RemoteDeploymentBuilder.cs" />
     <Compile Include="Builders\RemoteExecutionBuilder.cs" />
     <Compile Include="Builders\RemoteOperationsBuilder.cs" />
@@ -121,13 +131,8 @@
     <Compile Include="Config\WindowsOperatingSystem.cs" />
     <Compile Include="IDependOn.cs" />
     <Compile Include="Config\LbMode.cs" />
-    <Compile Include="IConfigureLocalOperations.cs" />
     <Compile Include="Config\TiersConfig.cs" />
-    <Compile Include="IConfigureInfrastructure.cs" />
-    <Compile Include="IConfigureRemoteDeployment.cs" />
-    <Compile Include="IConfigureRemoteExecution.cs" />
     <Compile Include="IExecuteRemotely.cs" />
-    <Compile Include="IOfferOnlyIf.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
     <Compile Include="IProvideRunbook.cs" />
     <Compile Include="LoadBalancer\ServerLoadBalancerState.cs" />
@@ -137,10 +142,7 @@
     <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="IOfferRemoteConfiguration.cs" />
     <Compile Include="PSScripts\PfxInstaller\PfxInstallerResource.cs" />
-    <Compile Include="RemoteCodeOperation.cs" />
-    <Compile Include="RemoteCompositeOperation.cs" />
     <Compile Include="Logging\RemotePowerShellLogger.cs" />
-    <Compile Include="ForEachServerOperation.cs" />
     <Compile Include="Remote\ConDepCredSSPException.cs" />
     <Compile Include="Remote\ConDepNodeValidationException.cs" />
     <Compile Include="Remote\ConDepPSHost.cs" />
@@ -170,16 +172,7 @@
     <Compile Include="LoadBalancer\ConDepLoadBalancerException.cs" />
     <Compile Include="Remote\PowerShellExecutor.cs" />
     <Compile Include="Remote\PowerShellModulesToLoad.cs" />
-    <Compile Include="Sequence\CompositeConditionalSequence.cs" />
-    <Compile Include="Sequence\CompositeSequence.cs" />
-    <Compile Include="Sequence\CompositeServersSequence.cs" />
-    <Compile Include="Sequence\ExecutionSequenceManager.cs" />
-    <Compile Include="Sequence\IManageRemoteServersSequence.cs" />
-    <Compile Include="Sequence\IOfferCompositeSequence.cs" />
-    <Compile Include="Sequence\IOfferLocalSequence.cs" />
     <Compile Include="Sequence\LoadBalancerExecutorBase.cs" />
-    <Compile Include="Sequence\LocalSequence.cs" />
-    <Compile Include="Sequence\RemoteSequence.cs" />
     <Compile Include="Sequence\RoundRobinLoadBalancerExecutor.cs" />
     <Compile Include="Sequence\StickyLoadBalancerExecutor.cs" />
     <Compile Include="Tier.cs" />
@@ -195,8 +188,6 @@
     <Compile Include="Validation\IValidateServer.cs" />
     <Compile Include="Harvesters\NetworkHarvester.cs" />
     <Compile Include="Harvesters\OperatingSystemHarvester.cs" />
-    <Compile Include="IOfferRemoteComposition.cs" />
-    <Compile Include="Configure.cs" />
     <Compile Include="IRequireRemotePowerShellScripts.cs" />
     <Compile Include="Remote\Impersonator.cs" />
     <Compile Include="Config\LoadBalancerSuspendMethod.cs" />
@@ -206,10 +197,6 @@
     <Compile Include="IOfferLocalOperations.cs" />
     <Compile Include="Config\ConDepOptions.cs" />
     <Compile Include="Resources\ConDepResourceNotFoundException.cs" />
-    <Compile Include="Sequence\IOfferRemoteSequence.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Sequence\IManageSequence.cs" />
     <Compile Include="IReportStatus.cs" />
     <Compile Include="Harvesters\ServerInfoHarvester.cs" />
     <Compile Include="Validation\StatusReporter.cs" />
@@ -224,7 +211,6 @@
     <Compile Include="Config\WebSiteConfig.cs" />
     <Compile Include="Validation\ConDepInvalidSetupException.cs" />
     <Compile Include="Resources\ConDepResourceFiles.cs" />
-    <Compile Include="LocalOperation.cs" />
     <Compile Include="Validation\IValidate.cs" />
     <Compile Include="Validation\Notification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

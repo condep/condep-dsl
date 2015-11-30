@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -16,7 +18,7 @@ namespace ConDep.Dsl.Remote
     {
         protected const string SHELL_URI = "http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
 
-        public IEnumerable<dynamic> ExecuteLocal(ServerConfig localServer, string commandOrScript, Action<PowerShellModulesToLoad> modulesToLoad = null, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
+        public dynamic ExecuteLocal(ServerConfig localServer, string commandOrScript, Action<PowerShellModulesToLoad> modulesToLoad = null, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
             var connectionInfo = new WSManConnectionInfo();
             var modules = new PowerShellModulesToLoad();
@@ -29,7 +31,7 @@ namespace ConDep.Dsl.Remote
             return ExecuteCommand(commandOrScript, connectionInfo, modules, folders, parameters, logOutput);
         }
 
-        public IEnumerable<dynamic> Execute(ServerConfig server, string commandOrScript, Action<PowerShellModulesToLoad> modulesToLoad = null, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
+        public dynamic Execute(ServerConfig server, string commandOrScript, Action<PowerShellModulesToLoad> modulesToLoad = null, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
             var folders = new RemoteScriptFolders(server);
             var modules = new PowerShellModulesToLoad();
@@ -70,7 +72,7 @@ namespace ConDep.Dsl.Remote
             return server.PowerShell.SSL ? 5986 : 5985;
         }
 
-        internal IEnumerable<dynamic> ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, PowerShellModulesToLoad modules, RemoteScriptFolders folders, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
+        internal dynamic ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, PowerShellModulesToLoad modules, RemoteScriptFolders folders, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
             var host = new ConDepPSHost();
             using (var runspace = RunspaceFactory.CreateRunspace(host, connectionInfo))
@@ -88,7 +90,7 @@ namespace ConDep.Dsl.Remote
 
                     ConfigureCommand(commandOrScript, parameters, pipeline);
 
-                    var result = pipeline.Invoke();
+                    dynamic result = pipeline.Invoke();
 
                     if (pipeline.Error.Count > 0)
                     {
@@ -102,19 +104,35 @@ namespace ConDep.Dsl.Remote
 
                     if (logOutput && result.Count > 0)
                     {
-                        Logger.WithLogSection("Script output", () =>
+                        Logger.WithLogSection("Script output:", () =>
                         {
                             foreach (var psObject in result)
                             {
-                                Logger.Info(psObject.ToString());
+                                if (psObject.ConDepResult == null)
+                                {
+                                    Logger.Info(psObject.ToString());
+                                }
                             }
                         });
                     }
 
-                    return result;
+                    return GetConDepResult(result);
                 }
             }
-        } 
+        }
+
+        private dynamic GetConDepResult(dynamic result)
+        {
+            foreach (var psObject in result)
+            {
+                if (psObject.ConDepResult != null)
+                {
+                    return psObject.ConDepResult;
+                }
+            }
+            return null;
+        }
+
         private static void ConfigureCommand(string commandOrScript, IEnumerable<CommandParameter> parameters, Pipeline pipeline)
         {
             if (parameters != null)

@@ -2,7 +2,7 @@ using System;
 
 namespace ConDep.Dsl
 {
-    public interface IOfferRemoteDeployment : IOfferOnlyIf<IOfferRemoteDeployment>
+    public interface IOfferRemoteDeployment : IOfferResult
     {
     }
 }

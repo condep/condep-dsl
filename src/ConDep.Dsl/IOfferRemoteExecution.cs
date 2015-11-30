@@ -3,7 +3,7 @@ using System.IO;
 
 namespace ConDep.Dsl
 {
-    public interface IOfferRemoteExecution : IOfferOnlyIf<IOfferRemoteExecution>
+    public interface IOfferRemoteExecution : IOfferResult
     {
     }
 }

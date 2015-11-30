@@ -135,7 +135,6 @@
     </Compile>
     <Compile Include="CompositeProviders\PowerShell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteServerOperationTests.cs" />
     <Compile Include="SimpleTestFixtureBase.cs" />
     <Compile Include="UnitTestLogger.cs" />
   </ItemGroup>

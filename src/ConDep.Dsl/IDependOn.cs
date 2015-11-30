@@ -1,6 +1,6 @@
 ﻿namespace ConDep.Dsl
 {
-    public interface IDependOn<T> where T : IProvideRunbook
+    public interface IDependOn<T> where T : Runbook
     {
          
     }

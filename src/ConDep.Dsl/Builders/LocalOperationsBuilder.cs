@@ -1,27 +1,14 @@
 using System;
+using System.Threading;
+using ConDep.Dsl.Config;
 using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
-    public class LocalOperationsBuilder : IOfferLocalOperations, IConfigureLocalOperations
+    public class LocalOperationsBuilder : LocalBuilder, IOfferLocalOperations
     {
-        private readonly IOfferLocalSequence _localSequence;
-
-        public LocalOperationsBuilder(IOfferLocalSequence localSequence)
+        public LocalOperationsBuilder(ConDepSettings settings, CancellationToken token) : base(settings, token)
         {
-            _localSequence = localSequence;
-        }
-
-        public IOfferLocalOperations ToEachServer(Action<IOfferRemoteOperations> action)
-        {
-            var builder = new RemoteOperationsBuilder(_localSequence.NewRemoteSequence(_localSequence.Name));
-            action(builder);
-            return this;
-        }
-
-        public void AddOperation(LocalOperation operation)
-        {
-            _localSequence.Add(operation);
         }
     }
 }

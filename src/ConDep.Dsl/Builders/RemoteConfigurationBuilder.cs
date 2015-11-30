@@ -1,36 +1,17 @@
 using System;
+using System.Threading;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Sequence;
 
 namespace ConDep.Dsl.Builders
 {
-    internal class RemoteConfigurationBuilder : IOfferRemoteConfiguration, IConfigureInfrastructure
+    public class RemoteConfigurationBuilder : RemoteBuilder, IOfferRemoteConfiguration
     {
-        private readonly IOfferRemoteSequence _remoteSequence;
-
-        public RemoteConfigurationBuilder(IOfferRemoteSequence remoteSequences)
+        public RemoteConfigurationBuilder(IOfferRemoteOperations dsl, ServerConfig server, ConDepSettings settings, CancellationToken token) : base(server, settings, token)
         {
-            _remoteSequence = remoteSequences;
+            Dsl = dsl;
         }
 
-        public IOfferRemoteConfiguration OnlyIf(Predicate<ServerInfo> condition)
-        {
-            return new RemoteConfigurationBuilder(_remoteSequence.NewConditionalCompositeSequence(condition));
-        }
-
-        public IOfferRemoteConfiguration OnlyIf(string conditionScript)
-        {
-            return new RemoteConfigurationBuilder(_remoteSequence.NewConditionalCompositeSequence(conditionScript));
-        }
-
-        public void AddOperation(RemoteCompositeOperation operation)
-        {
-            operation.Configure(new RemoteCompositeBuilder(_remoteSequence.NewCompositeSequence(operation)));
-        }
-
-        public void AddOperation(IExecuteRemotely operation)
-        {
-            _remoteSequence.Add(operation);
-        }
+        public override IOfferRemoteOperations Dsl { get; }
     }
 }

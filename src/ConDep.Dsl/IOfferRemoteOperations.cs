@@ -1,6 +1,6 @@
 namespace ConDep.Dsl
 {
-    public interface IOfferRemoteOperations : IOfferOnlyIf<IOfferRemoteOperations>
+    public interface IOfferRemoteOperations : IOfferResult
     {
         /// <summary>
         /// Provide operations for remote deployment.
@@ -22,4 +22,6 @@ namespace ConDep.Dsl
         /// </summary>
         IOfferRemoteInstallation Install { get; }
     }
+
+
 }
