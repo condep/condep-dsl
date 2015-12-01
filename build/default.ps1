@@ -10,6 +10,8 @@
  
 include .\..\tools\psake_ext.ps1
 
+Framework '4.6x64'
+
 function GetNugetAssemblyVersion($assemblyPath) {
 	$versionInfo = Get-Item $assemblyPath | % versioninfo
 
