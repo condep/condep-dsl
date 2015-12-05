@@ -1,5 +1,7 @@
 condep-dsl
 ==========
+
+[![Join the chat at https://gitter.im/condep/condep-dsl](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/condep/condep-dsl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 This is the core Domain Specific Language (DSL) in ConDep. You use the ConDep.Dsl when creating your own/community remote or local operations for ConDep. For details of how to do this check out [http://www.condep.io/docs/3-0/custom-operations/](http://www.condep.io/docs/3-0/custom-operations/).
 
 Need help?
