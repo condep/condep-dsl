@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.LoadBalancer;
 using ConDep.Dsl.Logging;
 
-namespace ConDep.Dsl.Sequence
+namespace ConDep.Dsl.LoadBalancer
 {
     public class RoundRobinLoadBalancerExecutor : LoadBalancerExecutorBase
     {
@@ -19,9 +18,8 @@ namespace ConDep.Dsl.Sequence
             _loadBalancer = loadBalancer;
         }
 
-        public override IEnumerable<ServerConfig> GetServerExecutionOrder(IReportStatus status, ConDepSettings settings, CancellationToken token)
+        public override IEnumerable<ServerConfig> GetServerExecutionOrder(List<ServerConfig> servers, ConDepSettings settings, CancellationToken token)
         {
-            var servers = settings.Config.Servers;
             if (settings.Options.StopAfterMarkedServer)
             {
                 return new[] { servers.SingleOrDefault(x => x.StopServer) ?? servers.First() };
@@ -32,7 +30,7 @@ namespace ConDep.Dsl.Sequence
                 var markedServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
                 if (servers.Count == 1)
                 {
-                    BringOnline(markedServer, status, settings, token);
+                    BringOnline(markedServer, settings, token);
                     return new List<ServerConfig>();
                 }
                 markedServer.LoadBalancerState.PreventDeployment = true;
@@ -41,21 +39,21 @@ namespace ConDep.Dsl.Sequence
             return servers;
         }
 
-        private void TurnRoundRobinServersAround(IEnumerable<ServerConfig> servers, ConDepSettings settings, CancellationToken token, int roundRobinMaxOfflineServers, IReportStatus status)
+        private void TurnRoundRobinServersAround(List<ServerConfig> servers, ConDepSettings settings, CancellationToken token, int roundRobinMaxOfflineServers)
         {
             var serversToBringOnline = servers.Take(roundRobinMaxOfflineServers);
             foreach (var server in serversToBringOnline)
             {
-                BringOnline(server, status, settings, _loadBalancer, token);
+                BringOnline(server, settings, _loadBalancer, token);
             }
             var serversToBringOffline = servers.Skip(roundRobinMaxOfflineServers);
             foreach (var server in serversToBringOffline)
             {
-                BringOffline(server, status, settings, _loadBalancer, token);
+                BringOffline(server, settings, _loadBalancer, token);
             }
         }
 
-        public override void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
+        public override void BringOffline(ServerConfig server, ConDepSettings settings, CancellationToken token)
         {
             if (_servers == null || !_servers.Any())
             {
@@ -70,13 +68,13 @@ namespace ConDep.Dsl.Sequence
             if (settings.Options.StopAfterMarkedServer)
             {
                 var manuelTestServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
-                BringOffline(manuelTestServer, status, settings, _loadBalancer, token);
+                BringOffline(manuelTestServer, settings, _loadBalancer, token);
                 return;
             }
 
             if (activeServerIndex == roundRobinMaxOfflineServers)
             {
-                TurnRoundRobinServersAround(servers, settings, token, roundRobinMaxOfflineServers, status);
+                TurnRoundRobinServersAround(servers, settings, token, roundRobinMaxOfflineServers);
             }
 
             if (server.LoadBalancerState.PreventDeployment) return;
@@ -86,27 +84,27 @@ namespace ConDep.Dsl.Sequence
 
             if (settings.Options.ContinueAfterMarkedServer)
             {
-                BringOffline(server, status, settings, _loadBalancer, token);
+                BringOffline(server, settings, _loadBalancer, token);
                 server.LoadBalancerState.KeepOffline = true;
                 return;
             }
 
             if (_servers.Count() == 1)
             {
-                BringOffline(server, status, settings, _loadBalancer, token);
+                BringOffline(server, settings, _loadBalancer, token);
                 return;
             }
 
-            BringOffline(server, status, settings, _loadBalancer, token);
+            BringOffline(server, settings, _loadBalancer, token);
             server.LoadBalancerState.KeepOffline = true;
         }
 
-        public override void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
+        public override void BringOnline(ServerConfig server, ConDepSettings settings, CancellationToken token)
         {
             if (server.LoadBalancerState.KeepOffline)
                 return;
 
-            BringOnline(server, status, settings, _loadBalancer, token);
+            BringOnline(server, settings, _loadBalancer, token);
         }
     }
 }

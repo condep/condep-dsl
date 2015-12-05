@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ConDep.Dsl.Validation
 {
-    public class StatusReporter : IReportStatus
+    public class StatusReporter
     {
         private readonly List<Exception> _untrappedExceptions = new List<Exception>();
         private readonly List<string> _conditionMessages = new List<string>();

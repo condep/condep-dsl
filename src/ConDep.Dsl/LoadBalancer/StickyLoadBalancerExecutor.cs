@@ -1,8 +1,7 @@
 using System.Threading;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.LoadBalancer;
 
-namespace ConDep.Dsl.Sequence
+namespace ConDep.Dsl.LoadBalancer
 {
     public class StickyLoadBalancerExecutor : LoadBalancerExecutorBase
     {
@@ -13,18 +12,18 @@ namespace ConDep.Dsl.Sequence
             _loadBalancer = loadBalancer;
         }
 
-        public override void BringOffline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
+        public override void BringOffline(ServerConfig server, ConDepSettings settings, CancellationToken token)
         {
             if (server.LoadBalancerState.CurrentState == LoadBalanceState.Offline) return;
 
-            BringOffline(server, status, settings, _loadBalancer, token);
+            BringOffline(server, settings, _loadBalancer, token);
         }
 
-        public override void BringOnline(ServerConfig server, IReportStatus status, ConDepSettings settings, CancellationToken token)
+        public override void BringOnline(ServerConfig server, ConDepSettings settings, CancellationToken token)
         {
             if (server.LoadBalancerState.CurrentState == LoadBalanceState.Online) return;
 
-            BringOnline(server, status, settings, _loadBalancer, token);
+            BringOnline(server, settings, _loadBalancer, token);
         }
     }
 }

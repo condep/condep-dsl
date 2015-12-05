@@ -20,14 +20,14 @@ namespace ConDep.Dsl.Config
             set { _timeoutInSeconds = value; }
         }
 
-        public LbMode GetModeAsEnum()
+        public LoadBalancerMode GetModeAsEnum()
         {
             switch (Mode.ToLower())
             {
                 case "sticky":
-                    return LbMode.Sticky;
+                    return LoadBalancerMode.Sticky;
                 case "roundrobin":
-                    return LbMode.RoundRobin;
+                    return LoadBalancerMode.RoundRobin;
                 default:
                     throw new NotSupportedException(string.Format("Load Balancer Mode [{0}] is not supported.", Mode));
             }

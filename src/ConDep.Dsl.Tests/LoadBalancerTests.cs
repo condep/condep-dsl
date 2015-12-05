@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using ConDep.Dsl.Config;
-using ConDep.Dsl.Sequence;
 using ConDep.Dsl.Validation;
 using log4net;
 using log4net.Appender;

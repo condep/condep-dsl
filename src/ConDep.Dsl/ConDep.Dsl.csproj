@@ -130,9 +130,8 @@
     <Compile Include="Config\ServerInfo.cs" />
     <Compile Include="Config\WindowsOperatingSystem.cs" />
     <Compile Include="IDependOn.cs" />
-    <Compile Include="Config\LbMode.cs" />
+    <Compile Include="Config\LoadBalancerMode.cs" />
     <Compile Include="Config\TiersConfig.cs" />
-    <Compile Include="IExecuteRemotely.cs" />
     <Compile Include="IOfferRemoteInstallation.cs" />
     <Compile Include="IProvideRunbook.cs" />
     <Compile Include="LoadBalancer\ServerLoadBalancerState.cs" />
@@ -172,9 +171,9 @@
     <Compile Include="LoadBalancer\ConDepLoadBalancerException.cs" />
     <Compile Include="Remote\PowerShellExecutor.cs" />
     <Compile Include="Remote\PowerShellModulesToLoad.cs" />
-    <Compile Include="Sequence\LoadBalancerExecutorBase.cs" />
-    <Compile Include="Sequence\RoundRobinLoadBalancerExecutor.cs" />
-    <Compile Include="Sequence\StickyLoadBalancerExecutor.cs" />
+    <Compile Include="LoadBalancer\LoadBalancerExecutorBase.cs" />
+    <Compile Include="LoadBalancer\RoundRobinLoadBalancerExecutor.cs" />
+    <Compile Include="LoadBalancer\StickyLoadBalancerExecutor.cs" />
     <Compile Include="Tier.cs" />
     <Compile Include="TierAttribute.cs" />
     <Compile Include="Validation\ConDepValidationException.cs" />
@@ -182,7 +181,6 @@
     <Compile Include="LoadBalancer\ILookupLoadBalancer.cs" />
     <Compile Include="Harvesters\DiskHarvester.cs" />
     <Compile Include="Harvesters\DotNetFrameworkHarvester.cs" />
-    <Compile Include="IExecuteLocally.cs" />
     <Compile Include="Harvesters\IHarvestServerInfo.cs" />
     <Compile Include="Validation\IValidateClient.cs" />
     <Compile Include="Validation\IValidateServer.cs" />
@@ -197,25 +195,17 @@
     <Compile Include="IOfferLocalOperations.cs" />
     <Compile Include="Config\ConDepOptions.cs" />
     <Compile Include="Resources\ConDepResourceNotFoundException.cs" />
-    <Compile Include="IReportStatus.cs" />
     <Compile Include="Harvesters\ServerInfoHarvester.cs" />
-    <Compile Include="Validation\StatusReporter.cs" />
     <Compile Include="ILoadBalance.cs" />
-    <Compile Include="LoadBalancer\DefaultLoadBalancer.cs" />
     <Compile Include="LoadBalancer\LoadBalanceState.cs" />
     <Compile Include="Config\ConDepEnvConfig.cs" />
     <Compile Include="Config\OperationConfig.cs" />
     <Compile Include="Config\DeploymentUserConfig.cs" />
     <Compile Include="Config\LoadBalancerConfig.cs" />
-    <Compile Include="Config\WebSiteBindingConfig.cs" />
-    <Compile Include="Config\WebSiteConfig.cs" />
     <Compile Include="Validation\ConDepInvalidSetupException.cs" />
     <Compile Include="Resources\ConDepResourceFiles.cs" />
-    <Compile Include="Validation\IValidate.cs" />
-    <Compile Include="Validation\Notification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validation\ValidationError.cs" />
-    <Compile Include="Validation\ValidationErrorType.cs" />
+    <Compile Include="Validation\StatusReporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -225,6 +215,9 @@
     <None Include="PSScripts\ConDepNode.ps1" />
     <EmbeddedResource Include="PSScripts\PfxInstaller\PfxInstaller.script" />
     <EmbeddedResource Include="Resources\node.con-dep.net.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sequence\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

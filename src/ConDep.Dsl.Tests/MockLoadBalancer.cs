@@ -8,17 +8,19 @@ namespace ConDep.Dsl.Tests
     {
         private readonly List<Tuple<string, string>> _onlineOfflineSequence = new List<Tuple<string, string>>();
 
-        public void BringOffline(string serverName, string farm, LoadBalancerSuspendMethod suspendMethod, IReportStatus status)
+        public Result BringOffline(string serverName, string farm, LoadBalancerSuspendMethod suspendMethod)
         {
             _onlineOfflineSequence.Add(new Tuple<string,string>(serverName, "offline"));
+            return Result.SuccessChanged();
         }
 
-        public void BringOnline(string serverName, string farm, IReportStatus status)
+        public Result BringOnline(string serverName, string farm)
         {
             _onlineOfflineSequence.Add(new Tuple<string, string>(serverName, "online"));
+            return Result.SuccessChanged();
         }
 
-        public LbMode Mode { get; set; }
+        public LoadBalancerMode Mode { get; set; }
 
         public IList<Tuple<string, string>> OnlineOfflineSequence { get { return _onlineOfflineSequence; } }
     }

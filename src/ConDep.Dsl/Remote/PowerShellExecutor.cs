@@ -151,8 +151,7 @@ namespace ConDep.Dsl.Remote
         {
             if (modules.LoadConDepDotNetLibrary)
             {
-                var netLibraryCmd = string.Format(@"Add-Type -Path ""{0}""",
-                    Path.Combine(folders.PSTempFolder, "ConDep.Dsl.Remote.Helpers.dll"));
+                var netLibraryCmd = $@"Add-Type -Path ""{Path.Combine(folders.PSTempFolder, "ConDep.Dsl.Remote.Helpers.dll")}""";
                 Logger.Verbose(netLibraryCmd);
                 pipeline.Commands.AddScript(netLibraryCmd);
             }
