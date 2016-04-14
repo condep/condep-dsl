@@ -8,3 +8,4 @@ before_build:
 - ps: nuget restore src/condep-dsl.sln
 build:
   project: src\condep-dsl.sln
+os: Visual Studio 2015
