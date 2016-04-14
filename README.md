@@ -1,5 +1,7 @@
 condep-dsl
 ==========
+[![Build Status: Windows](https://ci.appveyor.com/api/projects/status/wrhi4v5jcmm8olag/branch/master?svg=true)](https://ci.appveyor.com/project/condep/condep-dsl/branch/master)
+
 This is the core Domain Specific Language (DSL) in ConDep. You use the ConDep.Dsl when creating your own/community remote or local operations for ConDep. For details of how to do this check out [http://www.condep.io/docs/3-0/custom-operations/](http://www.condep.io/docs/3-0/custom-operations/).
 
 Need help?
