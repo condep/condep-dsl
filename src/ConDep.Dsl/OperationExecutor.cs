@@ -1,4 +1,5 @@
-﻿using ConDep.Dsl.Builders;
+﻿using System.Threading;
+using ConDep.Dsl.Builders;
 using ConDep.Dsl.Logging;
 using Newtonsoft.Json;
 
@@ -20,7 +21,7 @@ namespace ConDep.Dsl
         {
             Logger.WithLogSection(myOp.Name, () =>
             {
-                var result = myOp.Execute(remote.Dsl, remote.Server, remote.Settings, remote.Token);
+                var result = myOp.Execute(new RemoteOperationsBuilder(remote.Server, remote.Settings, remote.Token), remote.Server, remote.Settings, remote.Token);
                 remote.Result = result;
                 LogResultData(result.Data);
             });

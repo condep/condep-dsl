@@ -19,7 +19,5 @@ namespace ConDep.Dsl.Builders
         public ServerConfig Server { get; }
 
         public Result Result { get; set; }
-
-        public abstract IOfferRemoteOperations Dsl { get; }
     }
 }
