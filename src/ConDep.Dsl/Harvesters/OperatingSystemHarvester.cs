@@ -60,8 +60,8 @@ namespace ConDep.Dsl.Harvesters
     if(Test-Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall) {
         $regKeys += 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
     }
-
-    $packages = Get-ChildItem -Path $regKeys | Get-ItemProperty | where-object { $_.DisplayName -ne $null } | select-object -Property DisplayName,DisplayVersion | foreach{$_.DisplayName + "";"" + $_.DisplayVersion}
+    
+    [array] $packages = Get-ChildItem -Path $regKeys | Get-ItemProperty | where-object { $_.DisplayName -ne $null } | select-object -Property DisplayName,DisplayVersion | foreach{$_.DisplayName + "";"" + $_.DisplayVersion}
     $osInfo.InstalledSoftwarePackages = $packages
 
     return @{ConDepResult = $osInfo}
