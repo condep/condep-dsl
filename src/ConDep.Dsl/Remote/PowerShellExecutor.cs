@@ -119,14 +119,14 @@ namespace ConDep.Dsl.Remote
 
         private dynamic GetConDepResult(dynamic result)
         {
-            foreach (var psObject in result)
-            {
-                if (psObject.ConDepResult != null)
-                {
-                    return psObject.ConDepResult;
-                }
-            }
-            return null;
+            //foreach (var psObject in result)
+            //{
+            //    if (psObject.ConDepResult != null)
+            //    {
+            //        return psObject.ConDepResult;
+            //    }
+            //}
+            return result;
         }
 
         private static void ConfigureCommand(string commandOrScript, IEnumerable<CommandParameter> parameters, Pipeline pipeline)
