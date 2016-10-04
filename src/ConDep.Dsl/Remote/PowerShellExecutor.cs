@@ -112,12 +112,12 @@ namespace ConDep.Dsl.Remote
                         });
                     }
 
-                    return GetConDepResult(result);
+                    return GetConDepResult(result).FirstOrDefault();
                 }
             }
         }
 
-        private dynamic GetConDepResult(dynamic result)
+        private IEnumerable<dynamic> GetConDepResult(dynamic result)
         {
             //foreach (var psObject in result)
             //{
