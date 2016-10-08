@@ -29,7 +29,7 @@ namespace ConDep.Dsl.Tests
         }
 
         [Test]
-        [Ignore]
+        [Category("integration")]
         public void TestDotNetFrameworkHarvester()
         {
             ConDep.Dsl.Logging.Logger.Initialize(CreateMemoryLogger());
@@ -41,7 +41,7 @@ namespace ConDep.Dsl.Tests
         }
 
         [Test]
-        [Ignore]
+        [Category("integration")]
         public void TestOSHarvester()
         {
             ConDep.Dsl.Logging.Logger.Initialize(CreateMemoryLogger());
