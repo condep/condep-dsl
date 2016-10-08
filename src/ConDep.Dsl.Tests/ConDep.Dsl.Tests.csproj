@@ -125,6 +125,7 @@
     <Compile Include="CertTests.cs" />
     <Compile Include="CompositeProviders\NServiceBus.cs" />
     <Compile Include="ConDepResourceFilesTests.cs" />
+    <Compile Include="HarvesterTests.cs" />
     <Compile Include="ImpersonatorTests.cs" />
     <Compile Include="LoadBalancerTests.cs" />
     <Compile Include="MockLoadBalancer.cs" />

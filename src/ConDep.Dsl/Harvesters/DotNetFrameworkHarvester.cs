@@ -53,9 +53,8 @@ foreach($regKeyPath in $regKeys) {
     }
 }
 
-return @{ConDepResult = $result}", mod => mod.LoadConDepModule = false, logOutput: false);
-            var frameworkList = ((PSObject)result.FirstOrDefault()).BaseObject as ArrayList;
-            foreach (var element in frameworkList)
+return $result", mod => mod.LoadConDepModule = false, logOutput: false);
+            foreach (var element in result)
             {
                 server.GetServerInfo().DotNetFrameworks.Add(element);
             }
