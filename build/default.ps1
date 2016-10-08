@@ -2,7 +2,6 @@
 	$pwd = Split-Path $psake.build_script_file	
 	$build_directory  = "$pwd\output\condep-dsl"
 	$configuration = "Release"
-	$preString = "-beta"
 	$releaseNotes = ""
 	$nunitPath = "$pwd\..\src\packages\NUnit.Runners.2.6.3\tools"
 	$nuget = "$pwd\..\tools\nuget.exe"
@@ -13,9 +12,31 @@ include .\..\tools\psake_ext.ps1
 Framework '4.6x64'
 
 function GetNugetAssemblyVersion($assemblyPath) {
-	$versionInfo = Get-Item $assemblyPath | % versioninfo
+    
+    if(Test-Path Env:\APPVEYOR_BUILD_VERSION)
+    {
+        #When building on appveyor, set correct beta number.
+        $appVeyorBuildVersion = $env:APPVEYOR_BUILD_VERSION
+        
+        $version = $appVeyorBuildVersion.Split('-') | Select-Object -First 1
+        $betaNumber = $appVeyorBuildVersion.Split('-') | Select-Object -Last 1 | % {$_.replace("beta","")}
 
-	return "$($versionInfo.FileMajorPart).$($versionInfo.FileMinorPart).$($versionInfo.FileBuildPart)$preString"
+        switch ($betaNumber.length) 
+        { 
+            1 {$betaNumber = $betaNumber.Insert(0, '0').Insert(0, '0').Insert(0, '0').Insert(0, '0')} 
+            2 {$betaNumber = $betaNumber.Insert(0, '0').Insert(0, '0').Insert(0, '0')} 
+            3 {$betaNumber = $betaNumber.Insert(0, '0').Insert(0, '0')}
+            4 {$betaNumber = $betaNumber.Insert(0, '0')}                
+            default {$betaNumber = $betaNumber}
+        }
+
+        return "$version-beta$betaNumber"
+    }
+    else
+    {
+        $versionInfo = Get-Item $assemblyPath | % versioninfo
+        return "$($versionInfo.FileVersion)"
+    }
 }
 
 task default -depends Build-All, Test-All, Pack-All
