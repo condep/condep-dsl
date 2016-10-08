@@ -126,7 +126,7 @@ namespace ConDep.Dsl.Remote
             //        return psObject.ConDepResult;
             //    }
             //}
-            return result;
+            return result as IEnumerable<dynamic>;
         }
 
         private static void ConfigureCommand(string commandOrScript, IEnumerable<CommandParameter> parameters, Pipeline pipeline)
