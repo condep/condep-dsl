@@ -42,7 +42,7 @@ namespace ConDep.Dsl.Tests
         {
             if (_runningOnAppVeyor)
             {
-                Assert.Inconclusive();
+                Assert.Ignore();
             }
             else
             {
@@ -61,7 +61,7 @@ namespace ConDep.Dsl.Tests
         {
             if (_runningOnAppVeyor)
             {
-                Assert.Inconclusive();
+                Assert.Ignore();
             }
             else
             {
