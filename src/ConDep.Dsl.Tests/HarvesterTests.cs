@@ -39,5 +39,17 @@ namespace ConDep.Dsl.Tests
 
             harvester.Harvest(new ServerConfig() {Name = "localhost", PowerShell = new PowerShellConfig(), DeploymentUser = new DeploymentUserConfig() {UserName = "admin", Password = "GrY,helene"} });
         }
+
+        [Test]
+        [Ignore]
+        public void TestOSHarvester()
+        {
+            ConDep.Dsl.Logging.Logger.Initialize(CreateMemoryLogger());
+
+            var executor = new PowerShellExecutor();
+            var harvester = new ConDep.Dsl.Harvesters.OperatingSystemHarvester(executor);
+
+            harvester.Harvest(new ServerConfig() { Name = "localhost", PowerShell = new PowerShellConfig(), DeploymentUser = new DeploymentUserConfig() { UserName = "admin", Password = "GrY,helene" } });
+        }
     }
 }
