@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using System.Management.Automation;
 using ConDep.Dsl.Config;
 using ConDep.Dsl.Remote;
@@ -53,7 +54,7 @@ foreach($regKeyPath in $regKeys) {
 }
 
 return @{ConDepResult = $result}", mod => mod.LoadConDepModule = false, logOutput: false);
-            var frameworkList = ((PSObject)result).BaseObject as ArrayList;
+            var frameworkList = ((PSObject)result.FirstOrDefault()).BaseObject as ArrayList;
             foreach (var element in frameworkList)
             {
                 server.GetServerInfo().DotNetFrameworks.Add(element);
