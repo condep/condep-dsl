@@ -55,11 +55,6 @@ task Build {
 }
 
 task Test {
-	$exclude = ""
-	if(Test-Path Env:\APPVEYOR_BUILD_VERSION) {
-		$exclude = "/exclude:integration"
-	}
-
 	Exec { & $nunitPath\nunit-console.exe $build_directory\ConDep.Dsl.Tests\ConDep.Dsl.Tests.dll /nologo /nodots /xml=$build_directory\TestResult.xml $exclude}
 }
 

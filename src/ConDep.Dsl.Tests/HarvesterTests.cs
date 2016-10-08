@@ -15,6 +15,13 @@ namespace ConDep.Dsl.Tests
     [TestFixture]
     public class HarvesterTests
     {
+        private bool _runningOnAppVeyor;
+
+        private void Init()
+        {
+            _runningOnAppVeyor = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPVEYOR_BUILD_VERSION"));
+        }
+
         private UnitTestLogger CreateMemoryLogger()
         {
             var memAppender = new MemoryAppender { Name = "MemoryAppender" };
@@ -32,24 +39,43 @@ namespace ConDep.Dsl.Tests
         [Category("integration")]
         public void TestDotNetFrameworkHarvester()
         {
-            ConDep.Dsl.Logging.Logger.Initialize(CreateMemoryLogger());
+            if (_runningOnAppVeyor)
+            {
+                Assert.Inconclusive();
+            }
+            else
+            {
+                ConDep.Dsl.Logging.Logger.Initialize(CreateMemoryLogger());
 
-            var executor = new PowerShellExecutor();
-            var harvester = new ConDep.Dsl.Harvesters.DotNetFrameworkHarvester(executor);
+                var executor = new PowerShellExecutor();
+                var harvester = new ConDep.Dsl.Harvesters.DotNetFrameworkHarvester(executor);
 
-            harvester.Harvest(new ServerConfig() {Name = "localhost", PowerShell = new PowerShellConfig(), DeploymentUser = new DeploymentUserConfig() {UserName = "admin", Password = "GrY,helene"} });
+                harvester.Harvest(new ServerConfig() { Name = "localhost", PowerShell = new PowerShellConfig(), DeploymentUser = new DeploymentUserConfig() { UserName = "admin", Password = "GrY,helene" } });
+            }
         }
 
         [Test]
         [Category("integration")]
         public void TestOSHarvester()
         {
-            ConDep.Dsl.Logging.Logger.Initialize(CreateMemoryLogger());
+            if (_runningOnAppVeyor)
+            {
+                Assert.Inconclusive();
+            }
+            else
+            {
+                ConDep.Dsl.Logging.Logger.Initialize(CreateMemoryLogger());
 
-            var executor = new PowerShellExecutor();
-            var harvester = new ConDep.Dsl.Harvesters.OperatingSystemHarvester(executor);
+                var executor = new PowerShellExecutor();
+                var harvester = new ConDep.Dsl.Harvesters.OperatingSystemHarvester(executor);
 
-            harvester.Harvest(new ServerConfig() { Name = "localhost", PowerShell = new PowerShellConfig(), DeploymentUser = new DeploymentUserConfig() { UserName = "admin", Password = "GrY,helene" } });
+                harvester.Harvest(new ServerConfig()
+                {
+                    Name = "localhost",
+                    PowerShell = new PowerShellConfig(),
+                    DeploymentUser = new DeploymentUserConfig() {UserName = "admin", Password = "GrY,helene"}
+                });
+            }
         }
     }
 }
