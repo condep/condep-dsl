@@ -14,7 +14,7 @@ namespace ConDep.Dsl.Remote
     {
         protected const string SHELL_URI = "http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
 
-        public dynamic ExecuteLocal(ServerConfig localServer, string commandOrScript, Action<PowerShellModulesToLoad> modulesToLoad = null, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
+        public IEnumerable<dynamic> ExecuteLocal(ServerConfig localServer, string commandOrScript, Action<PowerShellModulesToLoad> modulesToLoad = null, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
             var connectionInfo = new WSManConnectionInfo();
             var modules = new PowerShellModulesToLoad();
@@ -27,7 +27,7 @@ namespace ConDep.Dsl.Remote
             return ExecuteCommand(commandOrScript, connectionInfo, modules, folders, parameters, logOutput);
         }
 
-        public dynamic Execute(ServerConfig server, string commandOrScript, Action<PowerShellModulesToLoad> modulesToLoad = null, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
+        public IEnumerable<dynamic> Execute(ServerConfig server, string commandOrScript, Action<PowerShellModulesToLoad> modulesToLoad = null, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
             var folders = new RemoteScriptFolders(server);
             var modules = new PowerShellModulesToLoad();
@@ -68,7 +68,7 @@ namespace ConDep.Dsl.Remote
             return server.PowerShell.SSL ? 5986 : 5985;
         }
 
-        internal dynamic ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, PowerShellModulesToLoad modules, RemoteScriptFolders folders, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
+        internal IEnumerable<dynamic> ExecuteCommand(string commandOrScript, WSManConnectionInfo connectionInfo, PowerShellModulesToLoad modules, RemoteScriptFolders folders, IEnumerable<CommandParameter> parameters = null, bool logOutput = true)
         {
             var host = new ConDepPSHost();
             using (var runspace = RunspaceFactory.CreateRunspace(host, connectionInfo))
@@ -112,21 +112,9 @@ namespace ConDep.Dsl.Remote
                         });
                     }
 
-                    return GetConDepResult(result).FirstOrDefault();
+                    return result;
                 }
             }
-        }
-
-        private IEnumerable<dynamic> GetConDepResult(dynamic result)
-        {
-            //foreach (var psObject in result)
-            //{
-            //    if (psObject.ConDepResult != null)
-            //    {
-            //        return psObject.ConDepResult;
-            //    }
-            //}
-            return result as IEnumerable<dynamic>;
         }
 
         private static void ConfigureCommand(string commandOrScript, IEnumerable<CommandParameter> parameters, Pipeline pipeline)

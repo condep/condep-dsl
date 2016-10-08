@@ -67,7 +67,7 @@ namespace ConDep.Dsl.Harvesters
     return @{ConDepResult = $osInfo}
 ";
 
-            var osInfoResult = _executor.Execute(server, osInfo, mod => mod.LoadConDepModule = false, logOutput: false);
+            var osInfoResult = _executor.Execute(server, osInfo, mod => mod.LoadConDepModule = false, logOutput: false).FirstOrDefault();
 
             if (osInfoResult != null)
             {
