@@ -18,7 +18,7 @@ namespace ConDep.Dsl.Tests
         private bool _runningOnAppVeyor;
 
         [SetUp]
-        private void Init()
+        public void Setup()
         {
             _runningOnAppVeyor = !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPVEYOR_BUILD_VERSION"));
         }
