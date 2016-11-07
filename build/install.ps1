@@ -1,4 +1,4 @@
-﻿$appVeyorBuildVersion = $env:APPVEYOR_BUILD_VERSION
+$appVeyorBuildVersion = $env:APPVEYOR_BUILD_VERSION
 
 $version = $appVeyorBuildVersion.Split('-') | Select-Object -First 1
 $buildNumber = $appVeyorBuildVersion.Split('-') | Select-Object -Last 1 | % {$_.replace("beta","")}
