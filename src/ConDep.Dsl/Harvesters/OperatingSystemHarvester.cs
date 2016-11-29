@@ -52,7 +52,7 @@ namespace ConDep.Dsl.Harvesters
     
     [array] $packages = Get-ChildItem -Path $regKeys | Get-ItemProperty | where-object { $_.DisplayName -ne $null } | select-object -Property DisplayName,DisplayVersion | foreach{$_.DisplayName + "";"" + $_.DisplayVersion}
     if($packages -eq $null) {
-        $packages = @{}
+        $packages = @()
     }
     $osInfo.InstalledSoftwarePackages = $packages
 
