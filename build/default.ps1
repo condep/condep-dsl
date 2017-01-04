@@ -15,25 +15,34 @@ function GetNugetAssemblyVersion($assemblyPath) {
     
     if(Test-Path Env:\APPVEYOR_BUILD_VERSION)
     {
-        #When building on appveyor, set correct beta number.
         $appVeyorBuildVersion = $env:APPVEYOR_BUILD_VERSION
-        
-        $version = $appVeyorBuildVersion.Split('-') | Select-Object -First 1
-        $betaNumber = $appVeyorBuildVersion.Split('-') | Select-Object -Last 1 | % {$_.replace("beta","")}
+     
+		# Getting the version number. Without the beta part, if its a beta package   
+        $version = $appVeyorBuildVersion.Split('.')
+        $major = $version[0] 
+        $minor = $version[1] 
+        $patch = $version[2].Split('-') | Select-Object -First 1
 
-        switch ($betaNumber.length) 
-        { 
-            1 {$betaNumber = $betaNumber.Insert(0, '0').Insert(0, '0').Insert(0, '0').Insert(0, '0')} 
-            2 {$betaNumber = $betaNumber.Insert(0, '0').Insert(0, '0').Insert(0, '0')} 
-            3 {$betaNumber = $betaNumber.Insert(0, '0').Insert(0, '0')}
-            4 {$betaNumber = $betaNumber.Insert(0, '0')}                
-            default {$betaNumber = $betaNumber}
-        }
-
-        return "$version-beta$betaNumber"
+        # Setting beta postfix, if beta build. The beta number must be 5 digits, therefor this operation.
+        $betaString = ""
+        if($appVeyorBuildVersion.Contains("beta"))
+        {
+        	$buildNumber = $appVeyorBuildVersion.Split('-') | Select-Object -Last 1 | % {$_.replace("beta","")}
+        	switch ($buildNumber.length) 
+        	{	 
+            	1 {$buildNumber = $buildNumber.Insert(0, '0').Insert(0, '0').Insert(0, '0').Insert(0, '0')} 
+            	2 {$buildNumber = $buildNumber.Insert(0, '0').Insert(0, '0').Insert(0, '0')} 
+            	3 {$buildNumber = $buildNumber.Insert(0, '0').Insert(0, '0')}
+            	4 {$buildNumber = $buildNumber.Insert(0, '0')}                
+            	default {$buildNumber = $buildNumber}
+        	}
+        	$betaString = "-beta$buildNumber" 
+        }	
+        return "$major.$minor.$patch$betaString"
     }
     else
     {
+		#When building on local machine, set versionnumber from assembly info.
         $versionInfo = Get-Item $assemblyPath | % versioninfo
         return "$($versionInfo.FileVersion)"
     }
@@ -42,9 +51,25 @@ function GetNugetAssemblyVersion($assemblyPath) {
 task default -depends Build-All, Test-All, Pack-All
 task ci -depends Build-All, Pack-All
 
-task Build-All -depends Clean, ResotreNugetPackages, Build, Create-BuildSpec-ConDep-Dsl
+task Build-All -depends Clean, ResotreNugetPackages, Build, Check-VersionExists, Create-BuildSpec-ConDep-Dsl
 task Test-All -depends Test
 task Pack-All -depends Pack-ConDep-Dsl
+
+task Check-VersionExists {
+	$version = $(GetNugetAssemblyVersion $build_directory\ConDep.Dsl\ConDep.Dsl.dll) 
+	Exec { 
+		$packages = & $nuget list "ConDep.Dsl" -source "https://www.myget.org/F/condep/api/v3/index.json" -prerelease -allversions
+		ForEach($package in $packages){
+			$packageName = $package.Split(' ') | Select-Object -First 1
+			if($packageName -eq "ConDep.Dsl"){
+				$packageVersionNumber = $package.Split(' ') | Select-Object -Last 1
+				if($packageVersionNumber -eq $version){
+					throw "ConDep.Dsl $packageVersionNumber already exists on myget. Have you forgot to update version in appveyor.yml?"
+				}
+			}
+		}
+	}
+}
 
 task ResotreNugetPackages {
 	Exec { & $nuget restore "$pwd\..\src\condep-dsl.sln" }
@@ -69,8 +94,8 @@ task Create-BuildSpec-ConDep-Dsl {
 		-version $(GetNugetAssemblyVersion $build_directory\ConDep.Dsl\ConDep.Dsl.dll) `
 		-id "ConDep.Dsl" `
 		-title "ConDep.Dsl" `
-		-licenseUrl "http://www.con-dep.net/license/" `
-		-projectUrl "http://www.con-dep.net/" `
+		-licenseUrl "http://www.condep.io/license/" `
+		-projectUrl "http://www.condep.io/" `
 		-description "Note: This package is for extending the ConDep DSL. If you're looking for ConDep to do deployment or infrastructure as code, please use the ConDep package. ConDep is a highly extendable Domain Specific Language for Continuous Deployment, Continuous Delivery and Infrastructure as Code on Windows." `
 		-iconUrl "https://raw.github.com/condep/ConDep/master/images/ConDepNugetLogo.png" `
 		-releaseNotes "$releaseNotes" `
@@ -82,8 +107,8 @@ task Create-BuildSpec-ConDep-Dsl {
 			@{ Name="Microsoft.AspNet.WebApi.Client"; Version="[4.0.30506]"}
 		) `
 		-files @(
-			@{ Path="ConDep.Dsl\ConDep.Dsl.dll"; Target="lib/net40"}, 
-			@{ Path="ConDep.Dsl\ConDep.Dsl.xml"; Target="lib/net40"}
+			@{ Path="ConDep.Dsl\ConDep.Dsl.dll"; Target="lib/net45"}, 
+			@{ Path="ConDep.Dsl\ConDep.Dsl.xml"; Target="lib/net45"}
 		)
 }
 
