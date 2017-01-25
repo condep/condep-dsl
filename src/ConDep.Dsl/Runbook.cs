@@ -9,9 +9,15 @@ namespace ConDep.Dsl
     {
         public abstract void Execute(IOfferOperations dsl, ConDepSettings settings);
 
-        public static void Execute<t>(IOfferOperations dsl, ConDepSettings settings) where t : Runbook, new()
+        /// <summary>
+        /// Will execute a Runbook of given type T. Use this if you want to execute a Runbook from another Runbook.
+        /// </summary>
+        /// <typeparam name="T">Runbook type</typeparam>
+        /// <param name="dsl">The ConDep DSL</param>
+        /// <param name="settings">The ConDep settings</param>
+        public static void Execute<T>(IOfferOperations dsl, ConDepSettings settings) where T : Runbook, new()
         {
-            var runbook = new t();
+            var runbook = new T();
             runbook.Execute(dsl, settings);
         }
     }
