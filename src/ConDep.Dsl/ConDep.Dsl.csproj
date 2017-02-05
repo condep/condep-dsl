@@ -108,6 +108,7 @@
     <Compile Include="OperationsBuilder.cs" />
     <Compile Include="RemoteCodeOperation.cs" />
     <Compile Include="RemoteOperation.cs" />
+    <Compile Include="Remote\FilePublisher.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="Runbook.cs" />
     <Compile Include="ConDepInvalidEnumValueException.cs" />
