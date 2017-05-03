@@ -66,27 +66,35 @@ namespace ConDep.Dsl.Remote.Node
 
             var syncResponse = _client.GetAsync(url2).Result;
 
-            if (syncResponse.IsSuccessStatusCode)
-            {
-                var webAppInfo = syncResponse.Content.ReadAsAsync<WebAppInfo>().Result;
-                if (!string.IsNullOrWhiteSpace(dstPath) && webAppInfo.Exist && !string.Equals(webAppInfo.PhysicalPath, dstPath, StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new ArgumentException(string.Format("Web app {0} already exist and physical path differs from path provided.", webAppName));
-                }
+            if (!syncResponse.IsSuccessStatusCode)
+                throw new ConDepResourceNotFoundException(string.Format("Unable to sync Web Application using {0}. Returned status code was {1}.", url2, syncResponse.StatusCode));
 
-                var path = string.IsNullOrWhiteSpace(dstPath) ? webAppInfo.PhysicalPath : dstPath;
-                foreach (var link in webAppInfo.Links)
+            var webAppInfo = syncResponse.Content.ReadAsAsync<WebAppInfo>().Result;
+
+            if (!string.IsNullOrWhiteSpace(dstPath) && webAppInfo.Exist)
+            {
+                var existingDst = webAppInfo.PhysicalPath.TrimEnd('\\');
+                var newDst = dstPath.TrimEnd('\\');
+
+                if (!string.Equals(existingDst, newDst, StringComparison.OrdinalIgnoreCase))
+                    throw new ArgumentException(string.Format("Web app {0} already exists and physical path ({1}) differs from path provided ({2}).", webAppName, existingDst, newDst));
+
+                dstPath = webAppInfo.PhysicalPath;
+            }
+
+            var path = string.IsNullOrWhiteSpace(dstPath) ? webAppInfo.PhysicalPath : dstPath;
+
+            foreach (var link in webAppInfo.Links)
+            {
+                switch (link.Rel)
                 {
-                    switch (link.Rel)
-                    {
-                        case "http://www.con-dep.net/rels/iis/web_app_template":
-                            CreateWebApp(link, webAppName, path);
-                            break;
-                        case "http://www.con-dep.net/rels/sync/dir_template":
-                            return SyncDirByUrl(srcPath, string.Format(link.Href, path));
-                        case "http://www.con-dep.net/rels/sync/directory":
-                            return SyncDirByUrl(srcPath, link.Href);
-                    }
+                    case "http://www.con-dep.net/rels/iis/web_app_template":
+                        CreateWebApp(link, webAppName, path);
+                        break;
+                    case "http://www.con-dep.net/rels/sync/dir_template":
+                        return SyncDirByUrl(srcPath, string.Format(link.Href, path));
+                    case "http://www.con-dep.net/rels/sync/directory":
+                        return SyncDirByUrl(srcPath, link.Href);
                 }
             }
             throw new ConDepResourceNotFoundException(string.Format("Unable to sync Web Application using {0}. Returned status code was {1}.", url2, syncResponse.StatusCode));
