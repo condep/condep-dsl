@@ -18,9 +18,14 @@ namespace ConDep.Dsl.Config
 
         /// <summary>
         /// Each server will be taken offline, operations executed and then taken online
-        /// again immidiately. This is the recommended approuch since it causes the least
+        /// again immidiately. This is the recommended approach since it causes the least
         /// downtime, but will require your load balancer to handle Sticky Sessions.
         /// </summary>
-        Sticky
+        Sticky,
+
+        /// <summary>
+        /// Like Sticky, but prioritises the already offline load balancers.
+        /// </summary>
+        OfflinePriority
     }
 }

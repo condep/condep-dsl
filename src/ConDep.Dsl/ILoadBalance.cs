@@ -1,4 +1,5 @@
 ﻿using ConDep.Dsl.Config;
+using ConDep.Dsl.LoadBalancer;
 
 namespace ConDep.Dsl
 {
@@ -10,5 +11,6 @@ namespace ConDep.Dsl
         Result BringOffline(string serverName, string farm, LoadBalancerSuspendMethod suspendMethod);
         Result BringOnline(string serverName, string farm);
         LoadBalancerMode Mode { get; set; }
+        LoadBalanceState GetServerState(string serverName, string farm);
     }
 }
