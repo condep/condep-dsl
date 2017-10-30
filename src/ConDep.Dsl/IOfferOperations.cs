@@ -12,7 +12,7 @@ namespace ConDep.Dsl
         /// </summary>
         /// <param name="mode">Which load balancer mode to use during execution</param>
         /// <param name="farm"></param>
-        /// <param name="dsl"></param>
+        /// <param name="remote"></param>
         /// <returns></returns>
         IOfferOperations LoadBalance(LoadBalancerMode mode, string farm, Action<IOfferRemoteOperations> remote);
 

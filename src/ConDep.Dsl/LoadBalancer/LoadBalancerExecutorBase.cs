@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -11,11 +12,12 @@ namespace ConDep.Dsl.LoadBalancer
         public abstract void BringOffline(ServerConfig server, ConDepSettings settings, CancellationToken token);
         public abstract void BringOnline(ServerConfig server, ConDepSettings settings, CancellationToken token);
 
-        public virtual IEnumerable<ServerConfig> GetServerExecutionOrder(List<ServerConfig> servers, ConDepSettings settings, CancellationToken token)
+        public virtual IEnumerable<ServerConfig> GetServerExecutionOrder(List<ServerConfig> servers,
+            ConDepSettings settings, CancellationToken token)
         {
             if (settings.Options.StopAfterMarkedServer)
             {
-                return new[] { servers.SingleOrDefault(x => x.StopServer) ?? servers.First() };
+                return new[] {servers.SingleOrDefault(x => x.StopServer) ?? servers.First()};
             }
 
             if (settings.Options.ContinueAfterMarkedServer)
@@ -23,13 +25,14 @@ namespace ConDep.Dsl.LoadBalancer
                 var markedServer = servers.SingleOrDefault(x => x.StopServer) ?? servers.First();
                 BringOnline(markedServer, settings, token);
 
-                return servers.Count == 1 ? new List<ServerConfig>() : servers.Except(new[] { markedServer });
+                return servers.Count == 1 ? new List<ServerConfig>() : servers.Except(new[] {markedServer});
             }
 
             return servers;
         }
 
-        protected void BringOffline(ServerConfig server, ConDepSettings settings, ILoadBalance loadBalancer, CancellationToken token)
+        protected void BringOffline(ServerConfig server, ConDepSettings settings, ILoadBalance loadBalancer,
+            CancellationToken token)
         {
             if (settings.Config.LoadBalancer == null) return;
             if (server.LoadBalancerState.CurrentState == LoadBalanceState.Offline) return;
@@ -41,7 +44,9 @@ namespace ConDep.Dsl.LoadBalancer
             });
 
         }
-        protected void BringOnline(ServerConfig server, ConDepSettings settings, ILoadBalance loadBalancer, CancellationToken token)
+
+        protected void BringOnline(ServerConfig server, ConDepSettings settings, ILoadBalance loadBalancer,
+            CancellationToken token)
         {
             if (settings.Config.LoadBalancer == null) return;
             if (server.LoadBalancerState.CurrentState == LoadBalanceState.Online) return;
@@ -52,6 +57,12 @@ namespace ConDep.Dsl.LoadBalancer
                 server.LoadBalancerState.CurrentState = LoadBalanceState.Online;
             });
 
+        }
+
+        protected LoadBalanceState GetServerState(ServerConfig server, ILoadBalance loadBalancer)
+        {
+            if (loadBalancer == null) throw new ArgumentException("Missing loadbalancer");
+            return loadBalancer.GetServerState(server.Name, server.LoadBalancerFarm);
         }
     }
 }

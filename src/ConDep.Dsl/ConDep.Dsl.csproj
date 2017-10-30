@@ -104,6 +104,7 @@
     <Compile Include="Config\ConDepMissingOptionsException.cs" />
     <Compile Include="IOfferOperations.cs" />
     <Compile Include="IOfferResult.cs" />
+    <Compile Include="LoadBalancer\OfflinePriorityLoadBalancerExecutor.cs" />
     <Compile Include="LocalOperation.cs" />
     <Compile Include="OperationExecutor.cs" />
     <Compile Include="OperationsBuilder.cs" />

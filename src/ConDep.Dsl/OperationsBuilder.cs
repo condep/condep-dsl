@@ -282,6 +282,9 @@ namespace ConDep.Dsl
                 case LoadBalancerMode.Sticky:
                     lbExecutor = new StickyLoadBalancerExecutor(loadBalancer);
                     break;
+                case LoadBalancerMode.OfflinePriority:
+                    lbExecutor = new OfflinePriorityLoadBalancerExecutor(loadBalancer);
+                    break;
                 default:
                     throw new ConDepLoadBalancerException("Load balancer mode not supported");
             }
