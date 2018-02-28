@@ -102,9 +102,9 @@ task Create-BuildSpec-ConDep-Dsl {
 		-tags "Continuous Deployment Delivery Infrastructure WebDeploy Deploy msdeploy IIS automation powershell remote aws azure" `
 		-dependencies @(
 			@{ Name="log4net"; Version="[2.0.0]"},
-			@{ Name="Newtonsoft.Json"; Version="[6.0.6,7)"},
+			@{ Name="Newtonsoft.Json"; Version="[6,11]"},
 			@{ Name="SlowCheetah.Tasks.Unofficial"; Version="[1.0.0]"},
-			@{ Name="Microsoft.AspNet.WebApi.Client"; Version="[4.0.30506]"}
+			@{ Name="Microsoft.AspNet.WebApi.Client"; Version="[4,5]"}
 		) `
 		-files @(
 			@{ Path="ConDep.Dsl\ConDep.Dsl.dll"; Target="lib/net45"}, 
