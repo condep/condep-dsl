@@ -104,7 +104,7 @@ task Create-BuildSpec-ConDep-Dsl {
 			@{ Name="log4net"; Version="[2.0.0]"},
 			@{ Name="Newtonsoft.Json"; Version="[6,11]"},
 			@{ Name="SlowCheetah.Tasks.Unofficial"; Version="[1.0.0]"},
-			@{ Name="Microsoft.AspNet.WebApi.Client"; Version="5"}
+			@{ Name="Microsoft.AspNet.WebApi.Client"; Version="[5,6)"}
 		) `
 		-files @(
 			@{ Path="ConDep.Dsl\ConDep.Dsl.dll"; Target="lib/net45"}, 
