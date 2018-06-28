@@ -92,8 +92,10 @@
     <Compile Include="Builders\RemoteBuilder.cs" />
     <Compile Include="ChunkExtension.cs" />
     <Compile Include="Config\ConDepMissingOptionsException.cs" />
+    <Compile Include="Config\SecretsProviderConfig.cs" />
     <Compile Include="IOfferOperations.cs" />
     <Compile Include="IOfferResult.cs" />
+    <Compile Include="IProvideSecrets.cs" />
     <Compile Include="LoadBalancer\OfflinePriorityLoadBalancerExecutor.cs" />
     <Compile Include="LocalOperation.cs" />
     <Compile Include="OperationExecutor.cs" />
@@ -167,6 +169,8 @@
     <Compile Include="LoadBalancer\LoadBalancerExecutorBase.cs" />
     <Compile Include="LoadBalancer\RoundRobinLoadBalancerExecutor.cs" />
     <Compile Include="LoadBalancer\StickyLoadBalancerExecutor.cs" />
+    <Compile Include="SecretsProvider\ConDepSecretsProviderException.cs" />
+    <Compile Include="SecretsProvider\ILookupSecretsProvider.cs" />
     <Compile Include="Tier.cs" />
     <Compile Include="TierAttribute.cs" />
     <Compile Include="Validation\ConDepValidationException.cs" />

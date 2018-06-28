@@ -19,6 +19,7 @@ namespace ConDep.Dsl.Config
             set { _powerShellScriptFolders = value; }
         }
 
+        public SecretsProviderConfig SecretsProvider { get; set; }
         public LoadBalancerConfig LoadBalancer { get; set; }
         public IList<ServerConfig> Servers { get; set; }
         public IList<TiersConfig> Tiers { get; set; }
